@@ -23,6 +23,7 @@ An interactive web application showcasing all 20+ Python mini projects with beau
 ### 🔢 Math Tools
 - **Fibonacci Series** - Visual sequence with golden spiral
 - **Pascal's Triangle** - Beautiful hexagon grid visualization
+- **Projectile Motion** - Launch simulation with target-hit challenge
 - **Armstrong Numbers** - Check special number properties (Coming Soon)
 - **Calculator** - Full-featured calculator with power operations
 - **Collatz Conjecture** - Explore the 3n+1 problem (Coming Soon)

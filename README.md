@@ -6,7 +6,7 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Projects](https://img.shields.io/badge/projects-20-orange.svg)]()
+[![Projects](https://img.shields.io/badge/projects-21-orange.svg)]()
 [![Code Scanning](https://img.shields.io/badge/CodeQL-enabled-brightgreen.svg)]()
 
 **🚀 Perfect for beginners | 💡 Learn by doing | 🎨 Beautiful UI | 🐢 Turtle graphics | ⚡ Zero setup required**
@@ -65,6 +65,17 @@ python Rock-Paper-Scissor.py
 ---
 
 ## 🎮 Projects
+
+### 🚀 **Physics & Simulation**
+
+#### 🎯 Projectile Motion Game
+Launch projectiles, visualize trajectories, and hit random targets!
+- 🚀 Practice mode with full trajectory stats
+- 🎯 Target challenge mode with hit-zone accuracy
+- 📈 Matplotlib plot for each launch
+```bash
+python Projectile-Motion-Game.py
+```
 
 ### 🎲 **Games** - Test Your Luck & Skills!
 
