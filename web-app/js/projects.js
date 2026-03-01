@@ -749,16 +749,6 @@ function getPascalTriangleHTML() {
                 text-align: center;
             }
             
-            .btn-generate {
-                background: var(--primary-color);
-                color: white;
-                border: none;
-                padding: 0.75rem 2rem;
-                border-radius: 50px;
-                cursor: pointer;
-                font-size: 1rem;
-            }
-            
             .pascal-display {
                 display: flex;
                 flex-direction: column;
@@ -2422,21 +2412,6 @@ function getTurtleStarHTML() {
                 margin: 0 auto 2rem;
             }
             
-            .btn-generate {
-                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-                color: white;
-                border: none;
-                padding: 1rem 3rem;
-                border-radius: 50px;
-                font-size: 1.2rem;
-                cursor: pointer;
-                transition: var(--transition);
-            }
-            
-            .btn-generate:hover {
-                transform: scale(1.05);
-                box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
-            }
         </style>
     `;
 }
