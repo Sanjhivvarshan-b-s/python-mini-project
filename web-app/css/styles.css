@@ -196,7 +196,7 @@ body {
 }
 
 .project-card:hover .card-icon {
-    animation: spin 0.6s ease;
+    animation: bounce 2s infinite;
 }
 
 .project-card h3 {
@@ -334,15 +334,6 @@ body {
     }
     50% {
         transform: translateY(-10px);
-    }
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
     }
 }
 

@@ -1553,25 +1553,32 @@ function initCollatz() {
         
         if (!number || number < 1) {
             sequenceDiv.innerHTML = '<p style="color: var(--danger-color);">⚠️ Please enter a positive integer!</p>';
+            statsDiv.innerHTML = '';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             return;
         }
         
         const originalNumber = number;
         const sequence = [number];
+        const maxSteps = 20000;
+        let steps = 0;
         
-        // Generate sequence
-        while (number !== 1) {
+        // Generate sequence with a safety limit
+        while (number !== 1 && steps < maxSteps) {
             if (number % 2 === 0) {
                 number = number / 2;
             } else {
                 number = 3 * number + 1;
             }
             sequence.push(number);
+            steps++;
         }
+
+        const reachedOne = number === 1;
         
         // Display stats
-        const steps = sequence.length - 1;
         const maxNum = Math.max(...sequence);
+        const statusText = reachedOne ? 'Reached 1 ✅' : `Not reached in ${maxSteps} steps ❌`;
         
         statsDiv.innerHTML = `
             <div class="stat-box">
@@ -1579,21 +1586,23 @@ function initCollatz() {
                 <div class="stat-value">${originalNumber}</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Total Steps</div>
+                <div class="stat-label">Status</div>
+                <div class="stat-value" style="font-size: 1rem; line-height: 1.3;">${statusText}</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Steps Taken</div>
                 <div class="stat-value">${steps}</div>
             </div>
             <div class="stat-box">
                 <div class="stat-label">Highest Number</div>
                 <div class="stat-value">${maxNum}</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-label">Sequence Length</div>
-                <div class="stat-value">${sequence.length}</div>
-            </div>
         `;
         
         // Display sequence
-        sequenceDiv.innerHTML = '';
+        sequenceDiv.innerHTML = reachedOne
+            ? '<p style="margin-bottom: 1rem; color: var(--success-color); font-weight: 600;">✅ This number reaches 1.</p>'
+            : `<p style="margin-bottom: 1rem; color: var(--warning-color); font-weight: 600;">⚠️ Could not confirm reach to 1 within ${maxSteps} steps.</p>`;
         sequence.forEach((num, index) => {
             const numEl = document.createElement('span');
             numEl.className = 'sequence-number';
@@ -1609,7 +1618,7 @@ function initCollatz() {
             }
         });
         
-        // Draw graph
+        // Draw graph for the generated sequence
         drawGraph(sequence);
     }
     
@@ -2372,8 +2381,7 @@ function initHangman() {
     drawGallows();
 }
 
-function getCollatzHTML() { return '<h2>🔢 Collatz Conjecture - Coming Soon!</h2>'; }
-function initCollatz() {}
+// Collatz implementation is defined above.
 
 function getPrimeAnalyzerHTML() { return '<h2>🔱 Prime Analyzer - Coming Soon!</h2>'; }
 function initPrimeAnalyzer() {}
@@ -2434,7 +2442,8 @@ function getTurtleStarHTML() {
 }
 
 function getTurtleStarDesign() {
-    const canvas = document.getElementById('turtleCanvas');
+    const canvas = arguments[0] || document.getElementById('turtleCanvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
     // Clear canvas
@@ -2486,7 +2495,8 @@ function getTurtleSpiralHTML() {
 }
 
 function getTurtleRainbowSpiral() {
-    const canvas = document.getElementById('turtleCanvas');
+    const canvas = arguments[0] || document.getElementById('turtleCanvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
     // Clear canvas
@@ -2535,7 +2545,8 @@ function getTurtleRainbowMandalaHTML() {
 }
 
 function getTurtleRainbowMandala() {
-    const canvas = document.getElementById('turtleCanvas');
+    const canvas = arguments[0] || document.getElementById('turtleCanvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
     // Clear canvas
@@ -2590,7 +2601,8 @@ function getTurtleMandalaHTML() {
 }
 
 function getTurtleMandalaDesign() {
-    const canvas = document.getElementById('turtleCanvas');
+    const canvas = arguments[0] || document.getElementById('turtleCanvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
     // Clear canvas
@@ -2749,23 +2761,81 @@ function getTurtleMandalaDesign() {
 // ============================================
 // TURTLE GRAPHICS INITIALIZER
 // ============================================
+let activeTurtleAnimation = null;
+
+function animateTurtleDesign(drawFunction, duration = 1400) {
+    const canvas = document.getElementById('turtleCanvas');
+    if (!canvas) return;
+
+    if (activeTurtleAnimation) {
+        activeTurtleAnimation();
+    }
+
+    const ctx = canvas.getContext('2d');
+    const offscreen = document.createElement('canvas');
+    offscreen.width = canvas.width;
+    offscreen.height = canvas.height;
+
+    drawFunction(offscreen);
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const maxRadius = Math.hypot(centerX, centerY);
+    let startTime = null;
+    let frameId = null;
+    let cancelled = false;
+
+    function renderFrame(timestamp) {
+        if (cancelled) return;
+
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const revealRadius = maxRadius * progress;
+
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, revealRadius, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(offscreen, 0, 0);
+        ctx.restore();
+
+        if (progress < 1) {
+            frameId = requestAnimationFrame(renderFrame);
+        }
+    }
+
+    frameId = requestAnimationFrame(renderFrame);
+
+    activeTurtleAnimation = () => {
+        cancelled = true;
+        if (frameId) cancelAnimationFrame(frameId);
+    };
+}
+
 function initTurtleGraphics(type) {
     const generateBtn = document.getElementById('generateBtn');
+    const canvas = document.getElementById('turtleCanvas');
+
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
     
     const drawFunctions = {
-        'star': getTurtleStarDesign,
-        'spiral': getTurtleRainbowSpiral,
-        'rainbow-mandala': getTurtleRainbowMandala,
-        'mandala': getTurtleMandalaDesign
+        'star': () => animateTurtleDesign(getTurtleStarDesign, 1100),
+        'spiral': () => animateTurtleDesign(getTurtleRainbowSpiral, 1400),
+        'rainbow-mandala': () => animateTurtleDesign(getTurtleRainbowMandala, 1700),
+        'mandala': () => animateTurtleDesign(getTurtleMandalaDesign, 1900)
     };
     
     const drawFunction = drawFunctions[type];
     
-    if (drawFunction) {
-        // Draw immediately
-        setTimeout(drawFunction, 100);
-        
-        // Add click handler for regenerate
+    if (drawFunction && generateBtn) {
         generateBtn.addEventListener('click', drawFunction);
     }
 }
