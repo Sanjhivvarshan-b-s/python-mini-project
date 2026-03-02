@@ -51,40 +51,6 @@ const modal = document.getElementById('projectModal');
 const modalClose = document.getElementById('modalClose');
 const modalBody = document.getElementById('modalBody');
 
-const projectSourcePaths = {
-    'rock-paper-scissor': 'games/Rock-Paper-Scissor/Rock-Paper-Scissor.py',
-    'dice-rolling': 'games/Roling-Dice/Roling-Dice.py',
-    'coin-flip': 'games/Flipping-toss/Flipping-toss.py',
-    'number-guessing': 'games/Number-Guessing-Game/Number-Guessing-Game.py',
-    'hangman': 'games/Hangman-Game/Hangman-Game.py',
-    'flames': 'games/FLAMES-Game/FLAMES-Game.py',
-    'fibonacci': 'math/Fibonacci-Series/Fibonacci-Series.py',
-    'pascal-triangle': 'math/Pascal-Triangle/Pascal-Triangle.py',
-    'armstrong': 'math/Armstrong-Number/Armstrong-Number.py',
-    'calculator': 'math/Simple-Calculator/Simple-Calculator.py',
-    'collatz': 'math/Collatz-Conjecture/Collatz-Conjecture.py',
-    'prime-analyzer': 'math/Prime-Number-Analyzer/Prime-Number-Analyzer.py',
-    'projectile-motion': 'math/Projectile-Motion-Game/Projectile-Motion-Game.py',
-    'morse-code': 'utilities/Text-to-Morse/Text-to-Morse.py',
-    'tower-of-hanoi': 'utilities/Tower-of-Hanoi/Tower-of-Hanoi.py'
-};
-
-function renderProjectSourceLink(projectName) {
-    const sourcePath = projectSourcePaths[projectName];
-    if (!sourcePath) {
-        return '';
-    }
-
-    const sourceUrl = `https://github.com/yourusername/python-mini-project/blob/main/${sourcePath}`;
-    return `
-        <div style="margin-top: 1rem; text-align: right;">
-            <a href="${sourceUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">
-                <i class="fab fa-github"></i> View Python Source
-            </a>
-        </div>
-    `;
-}
-
 // Close modal
 modalClose.addEventListener('click', () => {
     modal.classList.remove('active');
@@ -133,7 +99,7 @@ function openProject(projectName) {
 function loadProjectContent(projectName) {
     // This will be populated by projects.js
     const projectContent = getProjectHTML(projectName);
-    modalBody.innerHTML = projectContent + renderProjectSourceLink(projectName);
+    modalBody.innerHTML = projectContent;
     
     // Initialize project-specific JavaScript
     initializeProject(projectName);
