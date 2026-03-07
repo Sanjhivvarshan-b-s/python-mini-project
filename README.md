@@ -6,7 +6,7 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Projects](https://img.shields.io/badge/projects-17-orange.svg)]()
+[![Projects](https://img.shields.io/badge/projects-20-orange.svg)]()
 [![Code Scanning](https://img.shields.io/badge/CodeQL-enabled-brightgreen.svg)]()
 
 **🚀 Perfect for beginners | 💡 Learn by doing | 🎨 Beautiful UI | ⚡ Zero setup required**
@@ -35,7 +35,7 @@ We built this collection to make learning Python **fun, interactive, and instant
 ## ⚡ Quick Start
 
 ### 🌐 **Try the Web App** (Recommended!)
-Experience all 17 projects in your browser with beautiful animations and visualizations!
+Experience all 20 projects in your browser with beautiful animations and visualizations!
 
 ```bash
 # Clone the repository
@@ -110,6 +110,33 @@ python games/Roling-Dice/Roling-Dice.py
 <tr>
 <td width="50%">
 
+#### 🧭 Coordinate to Polar Transformation
+Convert Cartesian coordinates into polar representation!
+- 📍 Input (x, y) coordinates
+- 📏 Computes radius r = sqrt(x^2 + y^2)
+- 📐 Shows angle in both degrees and radians
+```bash
+python math/Coordinate-to-Polar-Transformation/Coordinate-to-Polar-Transformation.py
+```
+
+</td>
+<td width="50%">
+
+#### ∂ Derivative Calculator
+Perform full polynomial derivative operations!
+- 🧮 First derivative and nth derivative support
+- 📍 Evaluate derivative value at any x
+- ✍️ Input polynomial using coefficient list
+```bash
+python math/Derivative-Calculator/Derivative-Calculator.py
+```
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
 #### 🪙 Coin Flip
 Can you predict heads or tails?
 - 👑 Heads vs 🦅 Tails
@@ -159,6 +186,22 @@ python games/FLAMES-Game/FLAMES-Game.py
 ```
 
 </td>
+</tr>
+
+<tr>
+<td width="50%">
+
+#### 📐 AP/GP/AGP/HP Recognizer
+Identify progression types from a number sequence!
+- 🔍 Detects Arithmetic, Geometric, Arithmetic-Geometric, and Harmonic patterns
+- 🧠 Supports integer and decimal values
+- 📘 Great for quick sequence practice
+```bash
+python math/AP-GP-AGP-HP-Recognizer/AP-GP-AGP-HP-Recognizer.py
+```
+
+</td>
+<td width="50%"></td>
 </tr>
 </table>
 
@@ -282,7 +325,7 @@ python utilities/Tower-of-Hanoi/Tower-of-Hanoi.py
 ## ✨ Features
 
 ### 🌐 Interactive Web Application
-- **All 17 Projects in Your Browser** - No Python installation required!
+- **All 20 Projects in Your Browser** - No Python installation required!
 - **Beautiful Animations** - Smooth transitions and visual effects
 - **Dark/Light Theme** - Toggle between themes for comfort
 - **Category Filtering** - Browse by Games, Math, or Utilities
@@ -337,7 +380,7 @@ Working through these projects, you'll master:
 
 3. **Open your browser** and visit `http://localhost:8000`
 
-4. **Enjoy all 17 projects** with beautiful animations! 🎉
+4. **Enjoy all 20 projects** with beautiful animations! 🎉
 
 ### 🐍 Python CLI Projects
 

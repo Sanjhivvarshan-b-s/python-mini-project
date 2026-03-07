@@ -9,12 +9,15 @@ function getProjectHTML(projectName) {
         'hangman': getHangmanHTML(),
         'flames': getFlamesHTML(),
         'fibonacci': getFibonacciHTML(),
+        'progression-recognizer': getProgressionRecognizerHTML(),
         'pascal-triangle': getPascalTriangleHTML(),
         'armstrong': getArmstrongHTML(),
         'calculator': getCalculatorHTML(),
         'collatz': getCollatzHTML(),
         'prime-analyzer': getPrimeAnalyzerHTML(),
         'projectile-motion': getProjectileMotionHTML(),
+        'coordinate-polar-transform': getCoordinatePolarTransformHTML(),
+        'derivative-calculator': getDerivativeCalculatorHTML(),
         'morse-code': getMorseCodeHTML(),
         'tower-of-hanoi': getTowerOfHanoiHTML()
     };
@@ -31,12 +34,15 @@ function initializeProject(projectName) {
         'hangman': initHangman,
         'flames': initFlames,
         'fibonacci': initFibonacci,
+        'progression-recognizer': initProgressionRecognizer,
         'pascal-triangle': initPascalTriangle,
         'armstrong': initArmstrong,
         'calculator': initCalculator,
         'collatz': initCollatz,
         'prime-analyzer': initPrimeAnalyzer,
         'projectile-motion': initProjectileMotion,
+        'coordinate-polar-transform': initCoordinatePolarTransform,
+        'derivative-calculator': initDerivativeCalculator,
         'morse-code': initMorseCode,
         'tower-of-hanoi': initTowerOfHanoi
     };
@@ -3524,4 +3530,713 @@ function initProjectileMotion() {
     });
 
     simulate();
+}
+
+function getProgressionRecognizerHTML() {
+    return `
+        <div class="project-content">
+            <h2>📐 AP / GP / AGP / HP Recognizer</h2>
+            <div class="progression-container">
+                <p class="progression-help">
+                    Enter at least 4 numbers separated by commas.<br>
+                    Example: <strong>2, 4, 6, 8</strong> or <strong>3, 6, 12, 24</strong>
+                </p>
+
+                <div class="progression-input-wrap">
+                    <label for="progressionInput">Sequence</label>
+                    <input id="progressionInput" type="text" placeholder="e.g. 1, 2, 3, 4">
+                </div>
+
+                <div class="progression-actions">
+                    <button class="btn-primary" id="recognizeProgressionBtn">Recognize</button>
+                </div>
+
+                <div class="progression-output" id="progressionOutput">Waiting for input...</div>
+            </div>
+        </div>
+
+        <style>
+            .progression-container {
+                text-align: center;
+                padding: 1.5rem;
+                max-width: 760px;
+                margin: 0 auto;
+            }
+
+            .progression-help {
+                color: var(--text-secondary);
+                line-height: 1.6;
+                margin-bottom: 1rem;
+            }
+
+            .progression-input-wrap {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: left;
+                margin-bottom: 1rem;
+            }
+
+            .progression-input-wrap label {
+                font-weight: 600;
+                color: var(--text-secondary);
+            }
+
+            .progression-input-wrap input {
+                padding: 0.8rem;
+                border-radius: 10px;
+                border: 2px solid var(--border-color);
+                background: var(--surface-color);
+                color: var(--text-primary);
+                font-size: 1rem;
+            }
+
+            .progression-actions {
+                margin: 1rem 0;
+            }
+
+            .progression-output {
+                background: var(--surface-color);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1rem;
+                text-align: left;
+                line-height: 1.7;
+                white-space: pre-line;
+                min-height: 90px;
+            }
+        </style>
+    `;
+}
+
+function initProgressionRecognizer() {
+    const EPS = 1e-9;
+    const input = document.getElementById('progressionInput');
+    const button = document.getElementById('recognizeProgressionBtn');
+    const output = document.getElementById('progressionOutput');
+
+    function isClose(a, b, eps = EPS) {
+        return Math.abs(a - b) <= eps;
+    }
+
+    function parseSequence(raw) {
+        const parts = raw
+            .split(',')
+            .map((item) => item.trim())
+            .filter((item) => item.length > 0);
+
+        if (parts.length < 4) {
+            return { error: 'Please enter at least 4 numbers.' };
+        }
+
+        const sequence = [];
+        for (const part of parts) {
+            const value = Number(part);
+            if (!Number.isFinite(value)) {
+                return { error: `Invalid value: ${part}` };
+            }
+            sequence.push(value);
+        }
+
+        return { sequence };
+    }
+
+    function formatNumber(value) {
+        if (isClose(value, Math.round(value))) {
+            return String(Math.round(value));
+        }
+        return Number(value.toFixed(6)).toString();
+    }
+
+    function checkAP(sequence) {
+        const diff = sequence[1] - sequence[0];
+        for (let i = 2; i < sequence.length; i++) {
+            if (!isClose(sequence[i] - sequence[i - 1], diff)) {
+                return { ok: false };
+            }
+        }
+        return { ok: true, diff };
+    }
+
+    function checkGP(sequence) {
+        const allZero = sequence.every((value) => isClose(value, 0));
+        if (allZero) {
+            return { ok: true, ratio: 0 };
+        }
+
+        for (let i = 1; i < sequence.length; i++) {
+            if (isClose(sequence[i - 1], 0)) {
+                return { ok: false };
+            }
+        }
+
+        const ratio = sequence[1] / sequence[0];
+        for (let i = 2; i < sequence.length; i++) {
+            if (!isClose(sequence[i] / sequence[i - 1], ratio)) {
+                return { ok: false };
+            }
+        }
+
+        return { ok: true, ratio };
+    }
+
+    function checkHP(sequence) {
+        if (sequence.some((value) => isClose(value, 0))) {
+            return { ok: false };
+        }
+
+        const reciprocal = sequence.map((value) => 1 / value);
+        const apCheck = checkAP(reciprocal);
+
+        if (!apCheck.ok) {
+            return { ok: false };
+        }
+
+        return { ok: true, reciprocalDiff: apCheck.diff };
+    }
+
+    function agpCandidates(sequence) {
+        const s0 = sequence[0];
+        const s1 = sequence[1];
+        const s2 = sequence[2];
+
+        if (isClose(s0, 0)) {
+            if (isClose(s1, 0)) {
+                return [];
+            }
+            return [s2 / (2 * s1)];
+        }
+
+        const a = s0;
+        const b = -2 * s1;
+        const c = s2;
+        const disc = b * b - 4 * a * c;
+
+        if (disc < -EPS) {
+            return [];
+        }
+
+        if (isClose(disc, 0)) {
+            return [-b / (2 * a)];
+        }
+
+        if (disc < 0) {
+            return [];
+        }
+
+        const sqrtDisc = Math.sqrt(disc);
+        const r1 = (-b + sqrtDisc) / (2 * a);
+        const r2 = (-b - sqrtDisc) / (2 * a);
+
+        if (isClose(r1, r2)) {
+            return [r1];
+        }
+
+        return [r1, r2];
+    }
+
+    function checkAGP(sequence) {
+        for (const ratio of agpCandidates(sequence)) {
+            let valid = true;
+
+            for (let i = 2; i < sequence.length; i++) {
+                const expected = 2 * ratio * sequence[i - 1] - ratio * ratio * sequence[i - 2];
+                if (!isClose(sequence[i], expected, 1e-7)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) {
+                return { ok: true, ratio };
+            }
+        }
+
+        return { ok: false };
+    }
+
+    function recognize() {
+        const parsed = parseSequence(input.value);
+        if (parsed.error) {
+            output.textContent = `❌ ${parsed.error}`;
+            return;
+        }
+
+        const sequence = parsed.sequence;
+        const matches = [];
+
+        const ap = checkAP(sequence);
+        if (ap.ok) {
+            matches.push(`- AP (d = ${formatNumber(ap.diff)})`);
+        }
+
+        const gp = checkGP(sequence);
+        if (gp.ok) {
+            matches.push(`- GP (r = ${formatNumber(gp.ratio)})`);
+        }
+
+        const agp = checkAGP(sequence);
+        if (agp.ok) {
+            matches.push(`- AGP (r = ${formatNumber(agp.ratio)})`);
+        }
+
+        const hp = checkHP(sequence);
+        if (hp.ok) {
+            matches.push(`- HP (reciprocal AP d = ${formatNumber(hp.reciprocalDiff)})`);
+        }
+
+        const header = `Sequence: ${sequence.map(formatNumber).join(', ')}`;
+        if (matches.length === 0) {
+            output.textContent = `${header}\n\n❌ Not AP, GP, AGP, or HP for these terms.`;
+            return;
+        }
+
+        output.textContent = `${header}\n\n✅ Recognized as:\n${matches.join('\n')}`;
+    }
+
+    button.addEventListener('click', recognize);
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            recognize();
+        }
+    });
+}
+
+function getCoordinatePolarTransformHTML() {
+    return `
+        <div class="project-content">
+            <h2>🧭 Coordinate to Polar Transformation</h2>
+            <div class="coord-polar-container">
+                <p class="coord-polar-help">Enter Cartesian coordinates (x, y) to get polar form (r, theta).</p>
+
+                <div class="coord-grid">
+                    <div class="control-group">
+                        <label for="cartesianX">X Coordinate</label>
+                        <input id="cartesianX" type="number" step="any" value="3">
+                    </div>
+                    <div class="control-group">
+                        <label for="cartesianY">Y Coordinate</label>
+                        <input id="cartesianY" type="number" step="any" value="4">
+                    </div>
+                </div>
+
+                <div class="coord-actions">
+                    <button class="btn-primary" id="convertCoordinateBtn">Convert</button>
+                </div>
+
+                <div class="coord-stats">
+                    <div class="stat-chip">📏 r: <span id="polarRadius">0</span></div>
+                    <div class="stat-chip">📐 theta (deg): <span id="polarThetaDeg">0</span></div>
+                    <div class="stat-chip">🔁 theta (rad): <span id="polarThetaRad">0</span></div>
+                </div>
+
+                <canvas id="coordPolarCanvas" width="760" height="360"></canvas>
+                <p class="coord-result" id="coordPolarResult">Click convert to visualize the point and its polar angle.</p>
+            </div>
+        </div>
+
+        <style>
+            .coord-polar-container {
+                text-align: center;
+                padding: 1.5rem;
+                max-width: 780px;
+                margin: 0 auto;
+            }
+
+            .coord-polar-help {
+                color: var(--text-secondary);
+                margin-bottom: 1rem;
+            }
+
+            .coord-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .coord-actions {
+                margin-bottom: 1rem;
+            }
+
+            .coord-stats {
+                display: flex;
+                gap: 0.8rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-bottom: 1rem;
+            }
+
+            #coordPolarCanvas {
+                width: 100%;
+                max-width: 760px;
+                background: var(--surface-color);
+                border: 2px solid var(--border-color);
+                border-radius: 14px;
+                box-shadow: var(--shadow);
+            }
+
+            .coord-result {
+                margin-top: 0.9rem;
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                min-height: 1.3rem;
+            }
+        </style>
+    `;
+}
+
+function initCoordinatePolarTransform() {
+    const xInput = document.getElementById('cartesianX');
+    const yInput = document.getElementById('cartesianY');
+    const convertBtn = document.getElementById('convertCoordinateBtn');
+
+    const radiusEl = document.getElementById('polarRadius');
+    const thetaDegEl = document.getElementById('polarThetaDeg');
+    const thetaRadEl = document.getElementById('polarThetaRad');
+    const resultEl = document.getElementById('coordPolarResult');
+
+    const canvas = document.getElementById('coordPolarCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function formatNumber(value) {
+        if (Math.abs(value - Math.round(value)) < 1e-9) {
+            return String(Math.round(value));
+        }
+        return Number(value.toFixed(6)).toString();
+    }
+
+    function quadrantOf(x, y) {
+        if (x === 0 && y === 0) return 'Origin';
+        if (x > 0 && y > 0) return 'Quadrant I';
+        if (x < 0 && y > 0) return 'Quadrant II';
+        if (x < 0 && y < 0) return 'Quadrant III';
+        if (x > 0 && y < 0) return 'Quadrant IV';
+        if (x === 0) return 'Y-axis';
+        return 'X-axis';
+    }
+
+    function drawCoordinatePlane(x, y, radius, thetaRad) {
+        const width = canvas.width;
+        const height = canvas.height;
+        const cx = width / 2;
+        const cy = height / 2;
+
+        const maxAbs = Math.max(5, Math.abs(x), Math.abs(y));
+        const scale = (Math.min(width, height) / 2 - 35) / maxAbs;
+
+        ctx.clearRect(0, 0, width, height);
+
+        ctx.fillStyle = '#0f172a10';
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+
+        ctx.beginPath();
+        ctx.moveTo(20, cy);
+        ctx.lineTo(width - 20, cy);
+        ctx.moveTo(cx, 20);
+        ctx.lineTo(cx, height - 20);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '12px Arial';
+        ctx.fillText('x', width - 28, cy - 8);
+        ctx.fillText('y', cx + 10, 30);
+
+        const px = cx + x * scale;
+        const py = cy - y * scale;
+
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.max(26, radius * scale * 0.25), 0, -thetaRad, thetaRad < 0);
+        ctx.stroke();
+
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ef4444';
+        ctx.fillText(`(${formatNumber(x)}, ${formatNumber(y)})`, px + 8, py - 8);
+    }
+
+    function convert() {
+        const x = Number(xInput.value);
+        const y = Number(yInput.value);
+
+        if (!Number.isFinite(x) || !Number.isFinite(y)) {
+            resultEl.textContent = '❌ Please enter valid numeric coordinates.';
+            return;
+        }
+
+        const radius = Math.hypot(x, y);
+        const thetaRad = Math.atan2(y, x);
+        let thetaDeg = (thetaRad * 180) / Math.PI;
+        if (thetaDeg < 0) {
+            thetaDeg += 360;
+        }
+
+        radiusEl.textContent = formatNumber(radius);
+        thetaDegEl.textContent = formatNumber(thetaDeg);
+        thetaRadEl.textContent = formatNumber(thetaRad);
+
+        drawCoordinatePlane(x, y, radius, thetaRad);
+        resultEl.textContent = `✅ ${quadrantOf(x, y)} | Polar: r = ${formatNumber(radius)}, theta = ${formatNumber(thetaDeg)} degrees`;
+    }
+
+    convertBtn.addEventListener('click', convert);
+    [xInput, yInput].forEach((input) => {
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                convert();
+            }
+        });
+    });
+
+    convert();
+}
+
+function getDerivativeCalculatorHTML() {
+    return `
+        <div class="project-content">
+            <h2>∂ Polynomial Derivative Calculator</h2>
+            <div class="derivative-container">
+                <p class="derivative-help">Enter coefficients from highest power to constant. Example: <strong>3,0,-2,7</strong> for 3x^3 - 2x + 7.</p>
+
+                <div class="control-group">
+                    <label for="derivativeCoeffs">Coefficients</label>
+                    <input id="derivativeCoeffs" type="text" placeholder="e.g. 3,0,-2,7">
+                </div>
+
+                <div class="derivative-grid">
+                    <div class="control-group">
+                        <label for="derivativeOrder">Derivative Order (n)</label>
+                        <input id="derivativeOrder" type="number" min="1" value="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="derivativeX">Evaluate At x</label>
+                        <input id="derivativeX" type="number" step="any" value="1">
+                    </div>
+                </div>
+
+                <div class="derivative-actions">
+                    <button class="btn-primary" id="calcFirstDerivativeBtn">1st Derivative</button>
+                    <button class="btn-primary" id="calcNthDerivativeBtn">Nth Derivative</button>
+                    <button class="btn-primary" id="evalDerivativeBtn">Evaluate</button>
+                </div>
+
+                <div class="derivative-output" id="derivativeOutput">Waiting for input...</div>
+            </div>
+        </div>
+
+        <style>
+            .derivative-container {
+                text-align: center;
+                padding: 1.5rem;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .derivative-help {
+                color: var(--text-secondary);
+                margin-bottom: 1rem;
+                line-height: 1.6;
+            }
+
+            .derivative-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+
+            .derivative-actions {
+                display: flex;
+                gap: 0.8rem;
+                justify-content: center;
+                margin: 1rem 0;
+                flex-wrap: wrap;
+            }
+
+            .derivative-output {
+                background: var(--surface-color);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1rem;
+                text-align: left;
+                white-space: pre-line;
+                min-height: 110px;
+                line-height: 1.7;
+            }
+        </style>
+    `;
+}
+
+function initDerivativeCalculator() {
+    const coeffInput = document.getElementById('derivativeCoeffs');
+    const orderInput = document.getElementById('derivativeOrder');
+    const xInput = document.getElementById('derivativeX');
+
+    const firstBtn = document.getElementById('calcFirstDerivativeBtn');
+    const nthBtn = document.getElementById('calcNthDerivativeBtn');
+    const evalBtn = document.getElementById('evalDerivativeBtn');
+
+    const output = document.getElementById('derivativeOutput');
+
+    function formatNumber(value) {
+        if (Math.abs(value - Math.round(value)) < 1e-9) {
+            return String(Math.round(value));
+        }
+        return Number(value.toFixed(6)).toString();
+    }
+
+    function parseCoefficients(raw) {
+        const parts = raw
+            .split(',')
+            .map((item) => item.trim())
+            .filter((item) => item.length > 0);
+
+        if (parts.length === 0) {
+            return { error: 'Please enter at least one coefficient.' };
+        }
+
+        const coeffs = [];
+        for (const part of parts) {
+            const value = Number(part);
+            if (!Number.isFinite(value)) {
+                return { error: `Invalid coefficient: ${part}` };
+            }
+            coeffs.push(value);
+        }
+
+        while (coeffs.length > 1 && Math.abs(coeffs[0]) < 1e-12) {
+            coeffs.shift();
+        }
+
+        return { coeffs };
+    }
+
+    function derivativeCoeffs(coeffs) {
+        const degree = coeffs.length - 1;
+        if (degree <= 0) {
+            return [0];
+        }
+
+        const out = [];
+        for (let i = 0; i < coeffs.length - 1; i++) {
+            const power = degree - i;
+            out.push(coeffs[i] * power);
+        }
+        return out;
+    }
+
+    function nthDerivativeCoeffs(coeffs, n) {
+        let result = coeffs.slice();
+        for (let i = 0; i < n; i++) {
+            result = derivativeCoeffs(result);
+            if (result.length === 1 && Math.abs(result[0]) < 1e-12) {
+                return [0];
+            }
+        }
+        return result;
+    }
+
+    function evaluate(coeffs, x) {
+        let value = 0;
+        for (const coeff of coeffs) {
+            value = value * x + coeff;
+        }
+        return value;
+    }
+
+    function polynomialToString(coeffs) {
+        const degree = coeffs.length - 1;
+        const terms = [];
+
+        for (let i = 0; i < coeffs.length; i++) {
+            const coeff = coeffs[i];
+            const power = degree - i;
+            if (Math.abs(coeff) < 1e-12) {
+                continue;
+            }
+
+            const sign = coeff >= 0 ? '+' : '-';
+            const absCoeff = Math.abs(coeff);
+            let body = '';
+
+            if (power === 0) {
+                body = formatNumber(absCoeff);
+            } else if (power === 1) {
+                body = Math.abs(absCoeff - 1) < 1e-12 ? 'x' : `${formatNumber(absCoeff)}x`;
+            } else {
+                body = Math.abs(absCoeff - 1) < 1e-12 ? `x^${power}` : `${formatNumber(absCoeff)}x^${power}`;
+            }
+
+            terms.push({ sign, body });
+        }
+
+        if (terms.length === 0) {
+            return '0';
+        }
+
+        let expression = terms[0].sign === '+' ? terms[0].body : `-${terms[0].body}`;
+        for (let i = 1; i < terms.length; i++) {
+            expression += ` ${terms[i].sign} ${terms[i].body}`;
+        }
+        return expression;
+    }
+
+    function getInputs() {
+        const parsed = parseCoefficients(coeffInput.value);
+        if (parsed.error) {
+            output.textContent = `❌ ${parsed.error}`;
+            return null;
+        }
+
+        const order = Math.max(1, parseInt(orderInput.value, 10) || 1);
+        const x = Number(xInput.value);
+
+        if (!Number.isFinite(x)) {
+            output.textContent = '❌ Please enter a valid x value.';
+            return null;
+        }
+
+        return { coeffs: parsed.coeffs, order, x };
+    }
+
+    firstBtn.addEventListener('click', () => {
+        const data = getInputs();
+        if (!data) return;
+
+        const first = derivativeCoeffs(data.coeffs);
+        output.textContent = `f(x) = ${polynomialToString(data.coeffs)}\n\nf'(x) = ${polynomialToString(first)}`;
+    });
+
+    nthBtn.addEventListener('click', () => {
+        const data = getInputs();
+        if (!data) return;
+
+        const nth = nthDerivativeCoeffs(data.coeffs, data.order);
+        output.textContent = `f(x) = ${polynomialToString(data.coeffs)}\n\n${data.order}th derivative = ${polynomialToString(nth)}`;
+    });
+
+    evalBtn.addEventListener('click', () => {
+        const data = getInputs();
+        if (!data) return;
+
+        const nth = nthDerivativeCoeffs(data.coeffs, data.order);
+        const value = evaluate(nth, data.x);
+        output.textContent = `f(x) = ${polynomialToString(data.coeffs)}\n\nDerivative used: ${polynomialToString(nth)}\nValue at x = ${formatNumber(data.x)} is ${formatNumber(value)}`;
+    });
 }

@@ -22,6 +22,9 @@ An interactive web application showcasing Python mini projects with beautiful vi
 
 ### 🔢 Math Tools
 - **Fibonacci Series** - Visual sequence with golden spiral
+- **AP/GP/AGP/HP Recognizer** - Detect progression types from a sequence
+- **Coordinate to Polar Transformation** - Convert Cartesian (x, y) to polar (r, theta)
+- **Derivative Calculator** - Compute polynomial derivatives and evaluate at x
 - **Pascal's Triangle** - Beautiful hexagon grid visualization
 - **Projectile Motion** - Calculate TOF, Hmax, and Range
 - **Armstrong Numbers** - Check special number properties (Coming Soon)
