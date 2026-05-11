@@ -3292,6 +3292,11 @@ function initTowerOfHanoi() {
     
     async function solve() {
         if (isAnimating) return;
+
+        if (diskCount < 3 || diskCount > 7) {
+            alert("Visualization supports only 3 to 7 disks");
+            return;
+        }
         
         isAnimating = true;
         solveBtn.disabled = true;
