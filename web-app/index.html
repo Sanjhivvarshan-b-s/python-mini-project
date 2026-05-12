@@ -8,32 +8,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" aria-label="Primary">
         <div class="container">
             <div class="logo">
                 <h1>🎮 Python Mini Projects</h1>
             </div>
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
+            <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light mode">
+                <i class="fas fa-moon" aria-hidden="true"></i>
             </button>
         </div>
     </nav>
 
+    <main id="main-content" tabindex="-1">
     <!-- Category Tabs -->
-    <section class="tabs-section">
+    <section class="tabs-section" aria-label="Project categories">
         <div class="container">
-            <div class="tabs">
-                <button class="tab active" data-category="all">🌟 All Projects</button>
-                <button class="tab" data-category="games">🎮 Games</button>
-                <button class="tab" data-category="math">🔢 Math</button>
-                <button class="tab" data-category="utilities">🔐 Utilities</button>
+            <div class="tabs" role="tablist" aria-label="Filter projects by category">
+                <button type="button" class="tab active" role="tab" id="tab-all" data-category="all" aria-selected="true" aria-controls="projectsGrid" tabindex="0">🌟 All Projects</button>
+                <button type="button" class="tab" role="tab" id="tab-games" data-category="games" aria-selected="false" aria-controls="projectsGrid" tabindex="-1">🎮 Games</button>
+                <button type="button" class="tab" role="tab" id="tab-math" data-category="math" aria-selected="false" aria-controls="projectsGrid" tabindex="-1">🔢 Math</button>
+                <button type="button" class="tab" role="tab" id="tab-utilities" data-category="utilities" aria-selected="false" aria-controls="projectsGrid" tabindex="-1">🔐 Utilities</button>
             </div>
         </div>
     </section>
 
     <!-- Projects Grid -->
-    <section class="projects-section">
+    <section class="projects-section" aria-label="Projects">
         <div class="container">
             <div class="projects-grid" id="projectsGrid">
                 
@@ -168,11 +171,13 @@
             </div>
         </div>
     </section>
+    </main>
 
     <!-- Project Modal -->
-    <div class="modal" id="projectModal">
+    <div class="modal" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="modalDialogTitle" aria-hidden="true">
         <div class="modal-content">
-            <button class="modal-close" id="modalClose">&times;</button>
+            <h2 id="modalDialogTitle" class="modal-dialog-title visually-hidden" tabindex="-1">Interactive project</h2>
+            <button type="button" class="modal-close" id="modalClose" aria-label="Close project dialog">&times;</button>
             <div id="modalBody"></div>
         </div>
     </div>
@@ -182,8 +187,8 @@
         <div class="container">
             <p>Made with ❤️ for Python learners everywhere</p>
             <p>
-                <a href="https://github.com/yourusername/python-mini-project" target="_blank">
-                    <i class="fab fa-github"></i> View on GitHub
+                <a href="https://github.com/steam-bell-92/python-mini-project" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-github" aria-hidden="true"></i> View on GitHub
                 </a>
             </p>
         </div>

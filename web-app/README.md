@@ -52,7 +52,7 @@ Deploy to GitHub Pages for free hosting:
 1. Push to GitHub
 2. Go to Settings → Pages
 3. Select main branch and /web-app folder
-4. Your site will be live at `https://yourusername.github.io/python-mini-project/`
+4. Your site will be live at `https://steam-bell-92.github.io/python-mini-project/` (replace `steam-bell-92` with your GitHub username if you fork)
 
 ### Option 3: Python HTTP Server
 ```bash
@@ -142,7 +142,7 @@ Same as parent project - MIT License
 
 ## 🎉 Credits
 
-Web adaptation of the [Python Mini Projects](https://github.com/yourusername/python-mini-project) collection.
+Web adaptation of the [Python Mini Projects](https://github.com/steam-bell-92/python-mini-project) collection.
 
 Made with ❤️ for learners everywhere!
 

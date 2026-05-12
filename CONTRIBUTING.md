@@ -32,7 +32,7 @@ git clone https://github.com/YOUR_USERNAME/python-mini-project.git
 cd python-mini-project
 
 # Add upstream remote
-git remote add upstream https://github.com/ORIGINAL_OWNER/python-mini-project.git
+git remote add upstream https://github.com/steam-bell-92/python-mini-project.git
 ```
 
 ### 2. Create a Branch
