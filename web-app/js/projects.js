@@ -19,7 +19,8 @@ function getProjectHTML(projectName) {
         'coordinate-polar-transform': getCoordinatePolarTransformHTML(),
         'derivative-calculator': getDerivativeCalculatorHTML(),
         'morse-code': getMorseCodeHTML(),
-        'tower-of-hanoi': getTowerOfHanoiHTML()
+        'tower-of-hanoi': getTowerOfHanoiHTML(),
+        'number-converter': getNumberConverterHTML()
     };
     
     return projects[projectName] || '<h2>Project Coming Soon!</h2>';
@@ -44,7 +45,8 @@ function initializeProject(projectName) {
         'coordinate-polar-transform': initCoordinatePolarTransform,
         'derivative-calculator': initDerivativeCalculator,
         'morse-code': initMorseCode,
-        'tower-of-hanoi': initTowerOfHanoi
+        'tower-of-hanoi': initTowerOfHanoi,
+        'number-converter': initNumberConverter
     };
     
     if (initializers[projectName]) {
@@ -4238,5 +4240,88 @@ function initDerivativeCalculator() {
         const nth = nthDerivativeCoeffs(data.coeffs, data.order);
         const value = evaluate(nth, data.x);
         output.textContent = `f(x) = ${polynomialToString(data.coeffs)}\n\nDerivative used: ${polynomialToString(nth)}\nValue at x = ${formatNumber(data.x)} is ${formatNumber(value)}`;
+    });
+}
+
+// ============================================
+// NUMBER SYSTEM CONVERTER
+// ============================================
+function getNumberConverterHTML() {
+    return `
+        <div class="project-content">
+            <h2>🔢 Number System Converter</h2>
+            <div class="converter-container">
+                <div class="input-group">
+                    <label>Convert from:</label>
+                    <select id="baseFrom">
+                        <option value="10">Decimal (Base 10)</option>
+                        <option value="2">Binary (Base 2)</option>
+                        <option value="8">Octal (Base 8)</option>
+                        <option value="16">Hexadecimal (Base 16)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="numInput" placeholder="Enter number here..." />
+                </div>
+                <button class="btn-convert" id="convertBtn">Convert</button>
+                
+                <div class="results" id="convResults" style="display:none; margin-top:20px; text-align:left;">
+                    <h3 style="margin-bottom:15px;">✨ Conversions</h3>
+                    <div id="resDec" class="res-item"><strong>Decimal:</strong> <span></span></div>
+                    <div id="resBin" class="res-item"><strong>Binary:</strong> <span></span></div>
+                    <div id="resOct" class="res-item"><strong>Octal:</strong> <span></span></div>
+                    <div id="resHex" class="res-item"><strong>Hexadecimal:</strong> <span></span></div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .converter-container { padding: 2rem; max-width: 500px; margin: 0 auto; text-align: center; }
+            .input-group { margin-bottom: 1.5rem; text-align: left; }
+            .input-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+            .input-group select, .input-group input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--text-color); }
+            .btn-convert { background: var(--primary-color); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-size: 1.1rem; cursor: pointer; transition: var(--transition); width: 100%; margin-bottom: 1rem; }
+            .btn-convert:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
+            .res-item { background: var(--surface-color); margin-bottom: 0.5rem; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary-color); }
+            .res-item span { font-family: monospace; font-size: 1.1rem; float: right; color: var(--primary-color); font-weight: bold; }
+        </style>
+    `;
+}
+
+function initNumberConverter() {
+    const convertBtn = document.getElementById('convertBtn');
+    const baseFrom = document.getElementById('baseFrom');
+    const numInput = document.getElementById('numInput');
+    const results = document.getElementById('convResults');
+    const resDec = document.querySelector('#resDec span');
+    const resBin = document.querySelector('#resBin span');
+    const resOct = document.querySelector('#resOct span');
+    const resHex = document.querySelector('#resHex span');
+
+    convertBtn.addEventListener('click', () => {
+        const val = numInput.value.trim();
+        if (!val) {
+            results.style.display = 'none';
+            return;
+        }
+        const base = parseInt(baseFrom.value);
+        try {
+            if (base === 2 && !/^[01]+$/.test(val)) throw new Error('Invalid binary');
+            if (base === 8 && !/^[0-7]+$/.test(val)) throw new Error('Invalid octal');
+            if (base === 10 && !/^\d+$/.test(val)) throw new Error('Invalid decimal');
+            if (base === 16 && !/^[0-9a-fA-F]+$/.test(val)) throw new Error('Invalid hex');
+
+            const dec = parseInt(val, base);
+            if (isNaN(dec)) throw new Error('Invalid number');
+            
+            resDec.textContent = dec.toString(10);
+            resBin.textContent = dec.toString(2);
+            resOct.textContent = dec.toString(8);
+            resHex.textContent = dec.toString(16).toUpperCase();
+            
+            results.style.display = 'block';
+        } catch (e) {
+            alert("❌ Invalid input for the selected base system!");
+            results.style.display = 'none';
+        }
     });
 }
