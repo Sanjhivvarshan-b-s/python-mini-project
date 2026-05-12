@@ -746,7 +746,7 @@ function initCoinFlip() {
 
     function setCoinFace(isHeads, seed) {
         const targetY = isHeads ? 0 : 180;
-        const flipX = 360 * (4 + (seed % 3)) + 90;
+        const flipX = 360 * (4 + (seed % 3));
         const flipY = 360 * (3 + (seed % 2)) + targetY;
         coin.style.setProperty('--flip-x', `${flipX}deg`);
         coin.style.setProperty('--flip-y', `${flipY}deg`);
