@@ -914,6 +914,11 @@ function initNumberGuessing() {
     
     function makeGuess() {
         const guess = parseInt(guessInput.value);
+        if (guess < minRange || guess > maxRange) {
+            feedback.textContent = `⚠️ Please enter a number between ${minRange} and ${maxRange}`;
+            feedback.style.color = 'var(--warning-color)';
+            return;
+        }
         
         if (isNaN(guess) || guess < 1 || guess > 100) {
             feedback.textContent = '⚠️ Please enter a number between 1 and 100!';
@@ -923,6 +928,7 @@ function initNumberGuessing() {
         
         attempts++;
         attemptsDisplay.textContent = attempts;
+        const difference = Math.abs(guess - secretNumber);
         
         if (guess === secretNumber) {
             feedback.textContent = `🎉 Congratulations! You found it in ${attempts} attempts!`;
@@ -930,11 +936,19 @@ function initNumberGuessing() {
             guessInput.disabled = true;
             submitBtn.disabled = true;
         } else if (guess < secretNumber) {
-            feedback.textContent = '📈 Too low! Try higher!';
+            if (difference <= 5) {
+                feedback.textContent = '📈 Slightly low! Try a bit higher!';
+            }else {
+                feedback.textContent = '📈 Too low! Try higher!';
+            }
             feedback.style.color = 'var(--primary-color)';
             minRange = Math.max(minRange, guess + 1);
         } else {
-            feedback.textContent = '📉 Too high! Try lower!';
+            if (difference <= 5) {
+                feedback.textContent = '📉 Slightly high! Try a bit lower!';
+            } else {
+                feedback.textContent = '📉 Too high! Try lower!';
+            }
             feedback.style.color = 'var(--danger-color)';
             maxRange = Math.min(maxRange, guess - 1);
         }
