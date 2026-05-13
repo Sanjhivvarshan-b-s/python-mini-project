@@ -6,7 +6,7 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Projects](https://img.shields.io/badge/projects-20-orange.svg)]()
+[![Projects](https://img.shields.io/badge/projects-21-orange.svg)]()
 [![Code Scanning](https://img.shields.io/badge/CodeQL-enabled-brightgreen.svg)]()
 
 **🚀 Perfect for beginners | 💡 Learn by doing | 🎨 Beautiful UI | ⚡ Zero setup required**
@@ -35,7 +35,7 @@ We built this collection to make learning Python **fun, interactive, and instant
 ## ⚡ Quick Start
 
 ### 🌐 **Try the Web App** (Recommended!)
-Experience all 20 projects in your browser with beautiful animations and visualizations!
+Experience all 21 projects in your browser with beautiful animations and visualizations!
 
 ```bash
 # Clone the repository
@@ -320,12 +320,28 @@ python utilities/Tower-of-Hanoi/Tower-of-Hanoi.py
 
 </td>
 </tr>
+
+<tr>
+<td width="50%">
+
+#### 🔢 Number System Converter
+Convert between Decimal, Binary, Hex, and Octal!
+- 🔄 Seamless base conversions
+- 📚 Educational step-by-step logic
+- 🖥️ Zero-dependency built-in functions
+```bash
+python utilities/Number-System-Converter/Number-System-Converter.py
+```
+
+</td>
+<td width="50%"></td>
+</tr>
 </table>
 
 ## ✨ Features
 
 ### 🌐 Interactive Web Application
-- **All 20 Projects in Your Browser** - No Python installation required!
+- **All 21 Projects in Your Browser** - No Python installation required!
 - **Beautiful Animations** - Smooth transitions and visual effects
 - **Dark/Light Theme** - Toggle between themes for comfort
 - **Category Filtering** - Browse by Games, Math, or Utilities
@@ -380,7 +396,7 @@ Working through these projects, you'll master:
 
 3. **Open your browser** and visit `http://localhost:8000`
 
-4. **Enjoy all 20 projects** with beautiful animations! 🎉
+4. **Enjoy all 21 projects** with beautiful animations! 🎉
 
 ### 🐍 Python CLI Projects
 
