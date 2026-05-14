@@ -21,7 +21,8 @@ function getProjectHTML(projectName) {
         'morse-code': getMorseCodeHTML(),
         'tower-of-hanoi': getTowerOfHanoiHTML(),
         'number-converter': getNumberConverterHTML(),
-        'typing-speed-tester': getTypingSpeedTesterHTML()
+        'typing-speed-tester': getTypingSpeedTesterHTML(),
+        'simon-says': getSimonSaysHTML()
     };
     
     return projects[projectName] || '<h2>Project Coming Soon!</h2>';
@@ -49,6 +50,7 @@ function initializeProject(projectName) {
         'tower-of-hanoi': initTowerOfHanoi,
         'number-converter': initNumberConverter,
         'typing-speed-tester': initTypingSpeedTester,
+        'simon-says': initSimonSays
     };
     
     if (initializers[projectName]) {
@@ -4312,11 +4314,11 @@ function getDerivativeCalculatorHTML() {
                 background: var(--surface-color);
                 border: 1px solid var(--border-color);
                 border-radius: 12px;
-                padding: 1rem;
-                text-align: left;
-                white-space: pre-line;
-                min-height: 110px;
-                line-height: 1.7;
+                padding: 1.5rem;
+                margin-top: 1.5rem;
+                font-family: monospace;
+                white-space: pre-wrap;
+                word-wrap: break-word;
             }
         </style>
     `;
@@ -4560,5 +4562,240 @@ function initNumberConverter() {
             alert("❌ Invalid input for the selected base system!");
             results.style.display = 'none';
         }
+    });
+}
+
+
+// ============================================
+// SIMON SAYS
+// ============================================
+function getSimonSaysHTML() {
+    return `
+        <div class="project-content">
+            <h2>🎮 Simon Says - Memory Game</h2>
+            <div class="simon-container">
+                <div class="simon-info">
+                    <div class="info-item">
+                        <span>Current Round:</span>
+                        <span id="simonRound">1</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Sequence Length:</span>
+                        <span id="simonLength">1</span>
+                    </div>
+                </div>
+                
+                <div class="simon-display">
+                    <div class="simon-message" id="simonMessage">Watch the sequence!</div>
+                </div>
+                
+                <div class="simon-buttons">
+                    <button class="simon-btn red" data-color="R" style="background: #ef4444;">🔴</button>
+                    <button class="simon-btn blue" data-color="B" style="background: #3b82f6;">🔵</button>
+                    <button class="simon-btn green" data-color="G" style="background: #10b981;">🟢</button>
+                    <button class="simon-btn yellow" data-color="Y" style="background: #fbbf24;">🟡</button>
+                </div>
+                
+                <div class="simon-controls">
+                    <button class="btn-play-game" id="simonStart">Start Game</button>
+                    <button class="btn-reset" id="simonReset">Reset</button>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+            .simon-container {
+                text-align: center;
+                padding: 2rem;
+            }
+            
+            .simon-info {
+                display: flex;
+                gap: 2rem;
+                justify-content: center;
+                margin-bottom: 2rem;
+            }
+            
+            .simon-info .info-item span:last-child {
+                font-size: 1.8rem;
+                font-weight: bold;
+                color: var(--primary-color);
+            }
+            
+            .simon-display {
+                margin: 2rem 0;
+            }
+            
+            .simon-message {
+                font-size: 1.5rem;
+                font-weight: bold;
+                min-height: 2.5rem;
+                color: var(--primary-color);
+                margin-bottom: 2rem;
+            }
+            
+            .simon-buttons {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                width: fit-content;
+                margin: 2rem auto;
+            }
+            
+            .simon-btn {
+                width: 100px;
+                height: 100px;
+                border: none;
+                border-radius: 15px;
+                font-size: 2.5rem;
+                cursor: pointer;
+                transition: var(--transition);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            .simon-btn:hover {
+                transform: scale(1.05);
+            }
+            
+            .simon-btn.active {
+                transform: scale(0.95);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.2);
+            }
+            
+            .simon-controls {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                margin-top: 2rem;
+                flex-wrap: wrap;
+            }
+            
+            .btn-play-game {
+                background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                color: white;
+                border: none;
+                padding: 0.75rem 2rem;
+                border-radius: 50px;
+                cursor: pointer;
+                font-size: 1rem;
+                font-weight: bold;
+                transition: var(--transition);
+            }
+            
+            .btn-play-game:hover {
+                transform: scale(1.05);
+                box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+            }
+        </style>
+    `;
+}
+
+function initSimonSays() {
+    const colors = ['R', 'B', 'G', 'Y'];
+    const colorMap = { R: '.red', B: '.blue', G: '.green', Y: '.yellow' };
+    let sequence = [];
+    let playerSequence = [];
+    let round = 1;
+    let gameActive = false;
+    let isPlayingSequence = false;
+    
+    const messageEl = document.getElementById('simonMessage');
+    const roundEl = document.getElementById('simonRound');
+    const lengthEl = document.getElementById('simonLength');
+    const buttons = document.querySelectorAll('.simon-btn');
+    const startBtn = document.getElementById('simonStart');
+    const resetBtn = document.getElementById('simonReset');
+    
+    function playSound(color) {
+        const btn = document.querySelector(`.simon-btn${colorMap[color]}`);
+        btn.classList.add('active');
+        setTimeout(() => btn.classList.remove('active'), 300);
+    }
+    
+    function playSequence() {
+        isPlayingSequence = true;
+        messageEl.textContent = '🔄 Watch carefully...';
+        
+        sequence.forEach((color, index) => {
+            setTimeout(() => {
+                playSound(color);
+            }, (index + 1) * 600);
+        });
+        
+        setTimeout(() => {
+            isPlayingSequence = false;
+            playerSequence = [];
+            messageEl.textContent = '🎯 Your turn! Click the buttons...';
+        }, (sequence.length + 1) * 600);
+    }
+    
+    function nextRound() {
+        const newColor = colors[Math.floor(Math.random() * colors.length)];
+        sequence.push(newColor);
+        playerSequence = [];
+        round++;
+        roundEl.textContent = round;
+        lengthEl.textContent = sequence.length;
+        
+        setTimeout(() => {
+            playSequence();
+        }, 1000);
+    }
+    
+    function checkMove(color) {
+        if (!gameActive || isPlayingSequence) return;
+        
+        playerSequence.push(color);
+        playSound(color);
+        
+        if (playerSequence[playerSequence.length - 1] !== sequence[playerSequence.length - 1]) {
+            messageEl.textContent = '❌ Wrong! Game Over!';
+            gameActive = false;
+            return;
+        }
+        
+        if (playerSequence.length === sequence.length) {
+            if (round >= 10) {
+                messageEl.textContent = '🏆 You Won! Congratulations!';
+                gameActive = false;
+            } else {
+                messageEl.textContent = '✅ Correct! Next round...';
+                setTimeout(() => nextRound(), 1500);
+            }
+        }
+    }
+    
+    startBtn.addEventListener('click', () => {
+        if (!gameActive) {
+            gameActive = true;
+            sequence = [];
+            playerSequence = [];
+            round = 1;
+            roundEl.textContent = round;
+            lengthEl.textContent = '1';
+            messageEl.textContent = 'Starting...';
+            startBtn.textContent = 'Game Running...';
+            startBtn.disabled = true;
+            setTimeout(() => nextRound(), 1000);
+        }
+    });
+    
+    resetBtn.addEventListener('click', () => {
+        gameActive = false;
+        sequence = [];
+        playerSequence = [];
+        round = 1;
+        roundEl.textContent = '1';
+        lengthEl.textContent = '1';
+        messageEl.textContent = 'Game Reset. Click Start!';
+        startBtn.textContent = 'Start Game';
+        startBtn.disabled = false;
+    });
+    
+    buttons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const color = e.target.dataset.color;
+            checkMove(color);
+        });
     });
 }
