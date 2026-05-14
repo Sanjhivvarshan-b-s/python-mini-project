@@ -47,6 +47,156 @@ updateThemeToggleAria(savedTheme === 'light');
 // Category Filtering (tabs)
 const tabs = Array.from(document.querySelectorAll('.tab[role="tab"]'));
 const projectCards = document.querySelectorAll('.project-card');
+const tabs = document.querySelectorAll('.tab');
+const searchInput = document.getElementById('projectSearch');
+const searchClear = document.getElementById('searchClear');
+const searchDropdown = document.getElementById('searchDropdown');
+const searchShortcut = document.getElementById('searchShortcut');
+const searchLoader = document.getElementById('searchLoader');
+const emptyState = document.getElementById('emptyState');
+const resultsList = document.getElementById('resultsList');
+const resultsSection = document.getElementById('resultsSection');
+const recentSearchesList = document.getElementById('recentSearchesList');
+const recentSearchesSection = document.getElementById('recentSearchesSection');
+const tipsSection = document.getElementById('tipsSection');
+
+// Debounce function for smooth search performance
+function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+    };
+}
+
+// Get all matching projects for search query
+function getMatchingProjects(query) {
+    if (!query) return [];
+    
+    const matches = [];
+    projectCards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
+        const tags = (card.getAttribute('data-tags') || '').toLowerCase();
+        
+        const categoryMatch = currentCategory === 'all' || category === currentCategory;
+        const searchMatch = title.includes(query) || 
+                           description.includes(query) || 
+                           tags.includes(query);
+        
+        if (categoryMatch && searchMatch) {
+            const project = {
+                card: card,
+                title: card.querySelector('h3').textContent,
+                tags: card.getAttribute('data-tags') || '',
+                category: category
+            };
+            matches.push(project);
+        }
+    });
+    
+    return matches;
+}
+
+// Render autocomplete suggestions
+function renderSuggestions(query) {
+    if (!query) {
+        renderRecentSearches();
+        return;
+    }
+    
+    const matches = getMatchingProjects(query);
+    
+    if (matches.length === 0) {
+        resultsSection.style.display = 'none';
+        recentSearchesSection.style.display = 'none';
+        tipsSection.style.display = 'block';
+        return;
+    }
+    
+    resultsList.innerHTML = '';
+    matches.slice(0, 8).forEach((project, index) => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item' + (index === selectedSuggestionIndex ? ' selected' : '');
+        item.innerHTML = `
+            <div class="dropdown-item-icon">
+                ${project.card.querySelector('.card-icon').textContent}
+            </div>
+            <div class="dropdown-item-text">${highlightMatch(project.title, query)}</div>
+            <span class="dropdown-item-tag">${project.category}</span>
+        `;
+        item.addEventListener('click', () => selectSuggestion(project.title));
+        item.addEventListener('mouseenter', () => {
+            selectedSuggestionIndex = index;
+            updateSuggestionHighlight();
+        });
+        resultsList.appendChild(item);
+    });
+    
+    resultsSection.style.display = 'block';
+    recentSearchesSection.style.display = 'none';
+    tipsSection.style.display = 'none';
+    selectedSuggestionIndex = -1;
+}
+
+// Highlight matching text in suggestions
+function highlightMatch(text, query) {
+    const parts = text.split(new RegExp(`(${query})`, 'gi'));
+    return parts.map(part => 
+        part.toLowerCase() === query.toLowerCase() 
+            ? `<mark style="background: rgba(99, 102, 241, 0.3); color: var(--primary-color); font-weight: 600;">${part}</mark>`
+            : part
+    ).join('');
+}
+
+// Render recent searches
+function renderRecentSearches() {
+    if (recentSearches.length === 0) {
+        recentSearchesSection.style.display = 'none';
+        tipsSection.style.display = 'block';
+        resultsSection.style.display = 'none';
+        return;
+    }
+    
+    recentSearchesList.innerHTML = '';
+    recentSearches.slice(0, 5).forEach((search) => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-recent-item';
+        item.innerHTML = `
+            <div class="dropdown-recent-text">
+                <i class="fas fa-history" style="opacity: 0.5; font-size: 0.9rem;"></i>
+                <span style="flex: 1; cursor: pointer; color: var(--text-secondary);">${search}</span>
+            </div>
+            <button class="dropdown-recent-remove" aria-label="Remove search">
+                <i class="fas fa-x"></i>
+            </button>
+        `;
+        
+        const textElement = item.querySelector('span');
+        const removeBtn = item.querySelector('.dropdown-recent-remove');
+        
+        textElement.addEventListener('click', () => {
+            searchInput.value = search;
+            currentSearchQuery = search;
+            performSearch();
+            closeDropdown();
+        });
+        
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            recentSearches = recentSearches.filter(s => s !== search);
+            localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+            renderRecentSearches();
+        });
+        
+        recentSearchesList.appendChild(item);
+    });
+    
+    recentSearchesSection.style.display = 'block';
+    resultsSection.style.display = 'none';
+    tipsSection.style.display = 'block';
+}
 
 function applyCategoryFilter(category) {
     projectCards.forEach((card) => {
@@ -107,6 +257,9 @@ tabs.forEach((tab, index) => {
         }
     });
 });
+
+// Initialize
+renderRecentSearches();
 
 // Modal Management
 const modal = document.getElementById('projectModal');

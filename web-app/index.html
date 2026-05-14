@@ -43,6 +43,12 @@
                 <button type="button" class="tab" role="tab" id="tab-math" data-category="math" aria-selected="false" aria-controls="projectsGrid" tabindex="-1">🔢 Math</button>
                 <button type="button" class="tab" role="tab" id="tab-utilities" data-category="utilities" aria-selected="false" aria-controls="projectsGrid" tabindex="-1">🔐 Utilities</button>
             </div>
+
+            <!-- Empty State Message -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <p>📭 No projects match your search.</p>
+                <p class="empty-state-hint">Try different keywords or browse all projects.</p>
+            </div>
         </div>
     </section>
 
@@ -52,42 +58,42 @@
             <div class="projects-grid" id="projectsGrid">
                 
                 <!-- Games -->
-                <div class="project-card" data-category="games" data-project="rock-paper-scissor">
+                <div class="project-card" data-category="games" data-project="rock-paper-scissor" data-tags="game,random,choice,strategy,decision">
                     <div class="card-icon">🪨</div>
                     <h3>Rock Paper Scissors</h3>
                     <p>Battle against the computer!</p>
                     <button class="btn-play">Play Now</button>
                 </div>
 
-                <div class="project-card" data-category="games" data-project="dice-rolling">
+                <div class="project-card" data-category="games" data-project="dice-rolling" data-tags="game,random,animation,probability">
                     <div class="card-icon">🎲</div>
                     <h3>Dice Rolling</h3>
                     <p>Roll the dice with 3D animation!</p>
                     <button class="btn-play">Play Now</button>
                 </div>
 
-                <div class="project-card" data-category="games" data-project="coin-flip">
+                <div class="project-card" data-category="games" data-project="coin-flip" data-tags="game,random,animation,probability,heads,tails">
                     <div class="card-icon">🪙</div>
                     <h3>Coin Flip</h3>
                     <p>Heads or tails with spinning animation!</p>
                     <button class="btn-play">Play Now</button>
                 </div>
 
-                <div class="project-card" data-category="games" data-project="number-guessing">
+                <div class="project-card" data-category="games" data-project="number-guessing" data-tags="game,logic,loops,conditional">
                     <div class="card-icon">🎯</div>
                     <h3>Number Guessing</h3>
                     <p>Guess the secret number!</p>
                     <button class="btn-play">Play Now</button>
                 </div>
 
-                <div class="project-card" data-category="games" data-project="hangman">
+                <div class="project-card" data-category="games" data-project="hangman" data-tags="game,word,letters,logic,string">
                     <div class="card-icon">🎮</div>
                     <h3>Hangman</h3>
                     <p>Classic word-guessing game!</p>
                     <button class="btn-play">Play Now</button>
                 </div>
 
-                <div class="project-card" data-category="games" data-project="flames">
+                <div class="project-card" data-category="games" data-project="flames" data-tags="game,string,fun,relationship">
                     <div class="card-icon">💖</div>
                     <h3>FLAMES Game</h3>
                     <p>Discover your relationship status!</p>
@@ -129,70 +135,70 @@
                 </div>
 
                 <!-- Math Tools -->
-                <div class="project-card" data-category="math" data-project="fibonacci">
+                <div class="project-card" data-category="math" data-project="fibonacci" data-tags="math,sequence,series,loops,recursion">
                     <div class="card-icon">✨</div>
                     <h3>Fibonacci Series</h3>
                     <p>Generate Fibonacci sequences!</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="progression-recognizer">
+                <div class="project-card" data-category="math" data-project="progression-recognizer" data-tags="math,sequence,progression,arithmetic,geometric">
                     <div class="card-icon">📐</div>
                     <h3>AP/GP/AGP/HP Recognizer</h3>
                     <p>Identify progression types from any sequence.</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="pascal-triangle">
+                <div class="project-card" data-category="math" data-project="pascal-triangle" data-tags="math,triangle,visualization,recursion">
                     <div class="card-icon">🔺</div>
                     <h3>Pascal's Triangle</h3>
                     <p>Beautiful hexagon visualization!</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="armstrong">
+                <div class="project-card" data-category="math" data-project="armstrong" data-tags="math,number,digits,power">
                     <div class="card-icon">💎</div>
                     <h3>Armstrong Numbers</h3>
                     <p>Check special number properties!</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="calculator">
+                <div class="project-card" data-category="math" data-project="calculator" data-tags="math,calculator,arithmetic,operations">
                     <div class="card-icon">🧮</div>
                     <h3>Calculator</h3>
                     <p>Your mathematical companion!</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="collatz">
+                <div class="project-card" data-category="math" data-project="collatz" data-tags="math,conjecture,algorithm,sequence">
                     <div class="card-icon">🔢</div>
                     <h3>Collatz Conjecture</h3>
                     <p>Explore the 3n+1 problem!</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="prime-analyzer">
+                <div class="project-card" data-category="math" data-project="prime-analyzer" data-tags="math,prime,factors,algorithm">
                     <div class="card-icon">🔱</div>
                     <h3>Prime Analyzer</h3>
                     <p>All-in-one prime number toolkit!</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="projectile-motion">
+                <div class="project-card" data-category="math" data-project="projectile-motion" data-tags="math,physics,motion,calculation">
                     <div class="card-icon">🚀</div>
                     <h3>Projectile Motion</h3>
                     <p>Calculate TOF, Hmax, and Range with physics!</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="coordinate-polar-transform">
+                <div class="project-card" data-category="math" data-project="coordinate-polar-transform" data-tags="math,coordinate,transformation,geometry">
                     <div class="card-icon">🧭</div>
                     <h3>Coordinate to Polar</h3>
                     <p>Transform Cartesian (x, y) into polar (r, theta).</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="math" data-project="derivative-calculator">
+                <div class="project-card" data-category="math" data-project="derivative-calculator" data-tags="math,calculus,derivative,polynomial">
                     <div class="card-icon">∂</div>
                     <h3>Derivative Calculator</h3>
                     <p>Compute 1st/nth polynomial derivatives and evaluate them.</p>
@@ -200,14 +206,14 @@
                 </div>
 
                 <!-- Utilities -->
-                <div class="project-card" data-category="utilities" data-project="morse-code">
+                <div class="project-card" data-category="utilities" data-project="morse-code" data-tags="utility,morse,translation,communication">
                     <div class="card-icon">📻</div>
                     <h3>Morse Code</h3>
                     <p>Translate with lights & sound!</p>
                     <button class="btn-play">Try It</button>
                 </div>
 
-                <div class="project-card" data-category="utilities" data-project="tower-of-hanoi">
+                <div class="project-card" data-category="utilities" data-project="tower-of-hanoi" data-tags="utility,puzzle,recursion,algorithm">
                     <div class="card-icon">🗼</div>
                     <h3>Tower of Hanoi</h3>
                     <p>Solve the classic puzzle!</p>
