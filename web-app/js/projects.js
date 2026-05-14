@@ -2635,8 +2635,7 @@ function initHangman() {
 
 // Collatz implementation is defined above.
 
-function getPrimeAnalyzerHTML() { return '<h2>🔱 Prime Analyzer - Coming Soon!</h2>'; }
-function initPrimeAnalyzer() {}
+
 
 // ============================================
 // MORSE CODE TRANSLATOR
@@ -2887,6 +2886,16 @@ function getPrimeAnalyzerHTML() {
                     </div>
                     <div class="primes-display" id="rangeDisplay"></div>
                 </div>
+
+                <div class="prime-factorization">
+                    <h3>Prime Factorization</h3>
+                    <div class="input-group">
+                        <input type="number" id="factorizeInput" placeholder="Enter a number">
+                        <button class="btn-check" id="factorizeBtn">Factorize</button>
+                    </div>
+                    <div class="factorization-display" id="factorizationDisplay"></div>
+                    <div id="factorizationDetails" class="factorization-details"></div>
+                </div>
             </div>
         </div>
         
@@ -2998,6 +3007,61 @@ function getPrimeAnalyzerHTML() {
                 background: var(--bg-color);
                 color: var(--text-color);
             }
+
+            .prime-factorization {
+                background: var(--surface-color);
+                padding: 1.5rem;
+                border-radius: 15px;
+                margin-bottom: 2rem;
+                border: 2px solid var(--border-color);
+            }
+
+            .prime-factorization h3 {
+                margin-bottom: 1rem;
+                color: var(--primary-color);
+            }
+
+            .factorization-display {
+                font-size: 1.5rem;
+                font-weight: bold;
+                padding: 1.5rem;
+                border-radius: 10px;
+                background: var(--bg-color);
+                text-align: center;
+                margin-top: 1rem;
+                color: var(--primary-color);
+                min-height: 4rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .factorization-details {
+                margin-top: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: left;
+            }
+
+            .detail-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.5rem 1rem;
+                background: rgba(99, 102, 241, 0.1);
+                border-radius: 8px;
+                font-size: 0.95rem;
+            }
+
+            .detail-label {
+                color: var(--text-secondary);
+                font-weight: 500;
+            }
+
+            .detail-value {
+                color: var(--primary-color);
+                font-weight: bold;
+            }
         </style>
     `;
 }
@@ -3013,6 +3077,10 @@ function initPrimeAnalyzer() {
     const rangeEnd = document.getElementById('rangeEnd');
     const rangeBtn = document.getElementById('rangeBtn');
     const rangeDisplay = document.getElementById('rangeDisplay');
+    const factorizeInput = document.getElementById('factorizeInput');
+    const factorizeBtn = document.getElementById('factorizeBtn');
+    const factorizationDisplay = document.getElementById('factorizationDisplay');
+    const factorizationDetails = document.getElementById('factorizationDetails');
     
     // Check if number is prime
     function isPrime(num) {
@@ -3090,6 +3158,56 @@ function initPrimeAnalyzer() {
         if (primes.length === 0) {
             rangeDisplay.innerHTML = '<p style="color: var(--text-secondary);">No primes found in range</p>';
         }
+    }
+    
+    // Prime factorization
+    function factorize() {
+        let num = parseInt(factorizeInput.value);
+        const originalNum = num;
+        
+        if (isNaN(num)) {
+            factorizationDisplay.textContent = '⚠️ Please enter a valid number!';
+            factorizationDetails.innerHTML = '';
+            return;
+        }
+        
+        if (num < 2) {
+            factorizationDisplay.textContent = `❌ ${num} cannot be factorized into primes.`;
+            factorizationDetails.innerHTML = `
+                <div class="detail-item">
+                    <span class="detail-label">Note:</span>
+                    <span class="detail-value">Prime numbers must be greater than 1</span>
+                </div>
+            `;
+            return;
+        }
+        
+        const factors = [];
+        let d = 2;
+        let tempNum = num;
+        while (d * d <= tempNum) {
+            while (tempNum % d === 0) {
+                factors.push(d);
+                tempNum /= d;
+            }
+            d++;
+        }
+        if (tempNum > 1) factors.push(tempNum);
+        
+        const uniqueFactors = [...new Set(factors)];
+        
+        factorizationDisplay.textContent = `${originalNum} = ${factors.join(' × ')}`;
+        
+        factorizationDetails.innerHTML = `
+            <div class="detail-item">
+                <span class="detail-label">Unique Prime Factors:</span>
+                <span class="detail-value">[${uniqueFactors.join(', ')}]</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Total Factors (with repetition):</span>
+                <span class="detail-value">${factors.length}</span>
+            </div>
+        `;
     }
     
     // Event listeners
