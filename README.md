@@ -6,7 +6,7 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Projects](https://img.shields.io/badge/projects-23-orange.svg)]()
+[![Projects](https://img.shields.io/badge/projects-24-orange.svg)]()
 [![Code Scanning](https://img.shields.io/badge/CodeQL-enabled-brightgreen.svg)]()
 
 **🚀 Perfect for beginners | 💡 Learn by doing | 🎨 Beautiful UI | ⚡ Zero setup required**
@@ -35,11 +35,11 @@ We built this collection to make learning Python **fun, interactive, and instant
 ## ⚡ Quick Start
 
 ### 🌐 **Try the Web App** (Recommended!)
-Experience all 21 projects in your browser with beautiful animations and visualizations!
+Experience all 24 projects in your browser with beautiful animations and visualizations!
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/python-mini-project.git
+git clone https://github.com/steam-bell-92/python-mini-project.git
 
 # Navigate to the web app
 cd python-mini-project/web-app
@@ -191,6 +191,25 @@ python games/FLAMES-Game/FLAMES-Game.py
 <tr>
 <td width="50%">
 
+
+#### 🔐 Password Forge
+Survive evolving firewall rules by continuously upgrading your password!
+- 🔓 Progressive rule unlocking
+- ❤️ Lives system
+- 🏆 Score tracking
+- 🎯 Multiple difficulty levels
+```bash
+python games/Password-Forge/Password-Forge.py
+```
+
+</td>
+
+
+#### 📐 AP/GP/AGP/HP Recognizer
+Identify progression types from a number sequence!
+- 🔍 Detects Arithmetic, Geometric, Arithmetic-Geometric, and Harmonic patterns
+- 🧠 Supports integer and decimal values
+- 📘 Great for quick sequence practice
 #### 🧩 Tic-Tac-Toe
 Classic X and O strategy game!
 - 👤 Play against another player
@@ -210,6 +229,22 @@ Test your memory with matching emojis!
 - 🧠 Brain training fun
 ```bash
 python games/Emoji-Memory-Game/emoji_memory_game.py
+```
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+#### 🗣️ Simon Says - Memory Game
+Test your memory with an ever-growing sequence!
+- 🔴🔵🟢🟡 Colorful emoji buttons
+- 🧠 Watch and repeat the sequence
+- 📈 Sequence grows each round
+- 🏆 Win by completing 10 rounds
+```bash
+python games/Simon-Says/Simon-Says.py
 ```
 
 </td>
@@ -395,7 +430,7 @@ python utilities/Productivity-Pet/Productivity-Pet.py
 ## ✨ Features
 
 ### 🌐 Interactive Web Application
-- **All 21 Projects in Your Browser** - No Python installation required!
+- **All 24 Projects in Your Browser** - No Python installation required!
 - **Beautiful Animations** - Smooth transitions and visual effects
 - **Dark/Light Theme** - Toggle between themes for comfort
 - **Category Filtering** - Browse by Games, Math, or Utilities
@@ -435,7 +470,7 @@ Working through these projects, you'll master:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/python-mini-project.git
+   git clone https://github.com/steam-bell-92/python-mini-project.git
    cd python-mini-project/web-app
    ```
 
@@ -450,7 +485,7 @@ Working through these projects, you'll master:
 
 3. **Open your browser** and visit `http://localhost:8000`
 
-4. **Enjoy all 21 projects** with beautiful animations! 🎉
+4. **Enjoy all 24 projects** with beautiful animations! 🎉
 
 ### 🐍 Python CLI Projects
 
