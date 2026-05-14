@@ -9,6 +9,7 @@ on:
 jobs:
   label_gssoc:
     runs-on: ubuntu-latest
+
     permissions:
       issues: write
       pull-requests: write
@@ -20,22 +21,25 @@ jobs:
           script: |
             let bodyText = "";
             let issueNum = null;
-            
-            if (context.payload.issue && context.payload.issue.body) {
+
+            if (context.payload.issue?.body) {
               bodyText = context.payload.issue.body;
               issueNum = context.payload.issue.number;
-            } else if (context.payload.pull_request && context.payload.pull_request.body) {
+            } 
+            else if (context.payload.pull_request?.body) {
               bodyText = context.payload.pull_request.body;
               issueNum = context.payload.pull_request.number;
             }
-            
-            if (bodyText.indexOf("[x] I am participating in GSSoC 2026") !== -1 || bodyText.indexOf("[X] I am participating in GSSoC 2026") !== -1) {
-              if (issueNum) {
-                await github.rest.issues.addLabels({
-                  issue_number: issueNum,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  labels: ['gssoc26']
-                });
-              }
+
+            const isGSSoC =
+              bodyText.includes("[x] I am participating in GSSoC 2026") ||
+              bodyText.includes("[X] I am participating in GSSoC 2026");
+
+            if (isGSSoC && issueNum) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNum,
+                labels: ["gssoc26"]
+              });
             }
