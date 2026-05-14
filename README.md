@@ -6,7 +6,7 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Projects](https://img.shields.io/badge/projects-20-orange.svg)]()
+[![Projects](https://img.shields.io/badge/projects-24-orange.svg)]()
 [![Code Scanning](https://img.shields.io/badge/CodeQL-enabled-brightgreen.svg)]()
 
 **🚀 Perfect for beginners | 💡 Learn by doing | 🎨 Beautiful UI | ⚡ Zero setup required**
@@ -35,7 +35,7 @@ We built this collection to make learning Python **fun, interactive, and instant
 ## ⚡ Quick Start
 
 ### 🌐 **Try the Web App** (Recommended!)
-Experience all 20 projects in your browser with beautiful animations and visualizations!
+Experience all 24 projects in your browser with beautiful animations and visualizations!
 
 ```bash
 # Clone the repository
@@ -191,6 +191,53 @@ python games/FLAMES-Game/FLAMES-Game.py
 <tr>
 <td width="50%">
 
+#### 🧩 Tic-Tac-Toe
+Classic X and O strategy game!
+- 👤 Play against another player
+- 🤖 Smart computer opponent
+- 🏆 Result tracking
+```bash
+python games/Tic-Tac-Toe/Tic-Tac-Toe.py
+```
+
+</td>
+<td width="50%">
+
+#### 🧠 Emoji Memory Game
+Test your memory with matching emojis!
+- 🎴 Dynamic emoji grid
+- ⏱️ Score tracking
+- 🧠 Brain training fun
+```bash
+python games/Emoji-Memory-Game/emoji_memory_game.py
+```
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+#### 🗣️ Simon Says - Memory Game
+Test your memory with an ever-growing sequence!
+- 🔴🔵🟢🟡 Colorful emoji buttons
+- 🧠 Watch and repeat the sequence
+- 📈 Sequence grows each round
+- 🏆 Win by completing 10 rounds
+```bash
+python games/Simon-Says/Simon-Says.py
+```
+
+</td>
+</tr>
+</table>
+
+### 🔢 **Mathematical Wizards** - Explore Number Magic!
+
+<table>
+<tr>
+<td width="50%">
+
 #### 📐 AP/GP/AGP/HP Recognizer
 Identify progression types from a number sequence!
 - 🔍 Detects Arithmetic, Geometric, Arithmetic-Geometric, and Harmonic patterns
@@ -201,14 +248,6 @@ python math/AP-GP-AGP-HP-Recognizer/AP-GP-AGP-HP-Recognizer.py
 ```
 
 </td>
-<td width="50%"></td>
-</tr>
-</table>
-
-### 🔢 **Mathematical Wizards** - Explore Number Magic!
-
-<table>
-<tr>
 <td width="50%">
 
 #### ✨ Fibonacci Series
@@ -221,6 +260,9 @@ python math/Fibonacci-Series/Fibonacci-Series.py
 ```
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 #### 🔺 Pascal's Triangle
@@ -233,9 +275,6 @@ python math/Pascal-Triangle/Pascal-Triangle.py
 ```
 
 </td>
-</tr>
-
-<tr>
 <td width="50%">
 
 #### 💎 Armstrong Number Checker
@@ -248,6 +287,9 @@ python math/Armstrong-Number/Armstrong-Number.py
 ```
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 #### 🧮 Simple Calculator
@@ -260,9 +302,6 @@ python math/Simple-Calculator/Simple-Calculator.py
 ```
 
 </td>
-</tr>
-
-<tr>
 <td width="50%">
 
 #### 🔢 Collatz Conjecture
@@ -275,6 +314,9 @@ python math/Collatz-Conjecture/Collatz-Conjecture.py
 ```
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 #### 🔱 Prime Number Analyzer
@@ -288,6 +330,7 @@ python math/Prime-Number-Analyzer/Prime-Number-Analyzer.py
 ```
 
 </td>
+<td width="50%"></td>
 </tr>
 </table>
 
@@ -320,12 +363,55 @@ python utilities/Tower-of-Hanoi/Tower-of-Hanoi.py
 
 </td>
 </tr>
+
+<tr>
+<td width="50%">
+
+#### 🔢 Number System Converter
+Convert between Decimal, Binary, Hex, and Octal!
+- 🔄 Seamless base conversions
+- 📚 Educational step-by-step logic
+- 🖥️ Zero-dependency built-in functions
+```bash
+python utilities/Number-System-Converter/Number-System-Converter.py
+```
+
+</td>
+<td width="50%">
+
+#### ⌨️ Typing Speed Tester
+Test your typing speed and accuracy!
+- ⏱️ Real-time timing
+- 🚀 Words Per Minute (WPM) calculation
+- 🎯 Accuracy percentage feedback
+```bash
+python utilities/Typing-Speed-Tester/Typing-Speed-Tester.py
+```
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+#### 🐾 Productivity Pet
+Keep your virtual pet happy by staying productive!
+- 🐶 Interactive pet companion
+- 📊 Task-based mood tracking
+- 📈 Productivity stats
+```bash
+python utilities/Productivity-Pet/Productivity-Pet.py
+```
+
+</td>
+<td width="50%"></td>
+</tr>
 </table>
 
 ## ✨ Features
 
 ### 🌐 Interactive Web Application
-- **All 20 Projects in Your Browser** - No Python installation required!
+- **All 24 Projects in Your Browser** - No Python installation required!
 - **Beautiful Animations** - Smooth transitions and visual effects
 - **Dark/Light Theme** - Toggle between themes for comfort
 - **Category Filtering** - Browse by Games, Math, or Utilities
@@ -380,7 +466,7 @@ Working through these projects, you'll master:
 
 3. **Open your browser** and visit `http://localhost:8000`
 
-4. **Enjoy all 20 projects** with beautiful animations! 🎉
+4. **Enjoy all 24 projects** with beautiful animations! 🎉
 
 ### 🐍 Python CLI Projects
 
