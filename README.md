@@ -260,6 +260,9 @@ python math/Fibonacci-Series/Fibonacci-Series.py
 ```
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 #### 🔺 Pascal's Triangle
@@ -272,9 +275,6 @@ python math/Pascal-Triangle/Pascal-Triangle.py
 ```
 
 </td>
-</tr>
-
-<tr>
 <td width="50%">
 
 #### 💎 Armstrong Number Checker
@@ -287,6 +287,9 @@ python math/Armstrong-Number/Armstrong-Number.py
 ```
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 #### 🧮 Simple Calculator
@@ -299,9 +302,6 @@ python math/Simple-Calculator/Simple-Calculator.py
 ```
 
 </td>
-</tr>
-
-<tr>
 <td width="50%">
 
 #### 🔢 Collatz Conjecture
@@ -314,6 +314,9 @@ python math/Collatz-Conjecture/Collatz-Conjecture.py
 ```
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 #### 🔱 Prime Number Analyzer
@@ -327,6 +330,7 @@ python math/Prime-Number-Analyzer/Prime-Number-Analyzer.py
 ```
 
 </td>
+<td width="50%"></td>
 </tr>
 </table>
 
