@@ -39,7 +39,7 @@ Experience all 24 projects in your browser with beautiful animations and visuali
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/python-mini-project.git
+git clone https://github.com/steam-bell-92/python-mini-project.git
 
 # Navigate to the web app
 cd python-mini-project/web-app
@@ -470,7 +470,7 @@ Working through these projects, you'll master:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/python-mini-project.git
+   git clone https://github.com/steam-bell-92/python-mini-project.git
    cd python-mini-project/web-app
    ```
 
