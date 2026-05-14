@@ -22,6 +22,20 @@ themeToggle.innerHTML = savedTheme === 'light'
     ? '<i class="fas fa-sun"></i>' 
     : '<i class="fas fa-moon"></i>';
 
+// Back to Top Button
+const backToTopButton = document.getElementById('backToTop');
+
+const toggleBackToTopButton = () => {
+    backToTopButton.classList.toggle('visible', window.scrollY > 300);
+};
+
+window.addEventListener('scroll', toggleBackToTopButton, { passive: true });
+toggleBackToTopButton();
+
+backToTopButton.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
 // Category Filtering
 const tabs = document.querySelectorAll('.tab');
 const projectCards = document.querySelectorAll('.project-card');
