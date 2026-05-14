@@ -20,7 +20,7 @@ function getProjectHTML(projectName) {
         'derivative-calculator': getDerivativeCalculatorHTML(),
         'morse-code': getMorseCodeHTML(),
         'tower-of-hanoi': getTowerOfHanoiHTML(),
-        'number-converter': getNumberConverterHTML()
+        'number-converter': getNumberConverterHTML(),
         'typing-speed-tester': getTypingSpeedTesterHTML()
     };
     
@@ -47,7 +47,7 @@ function initializeProject(projectName) {
         'derivative-calculator': initDerivativeCalculator,
         'morse-code': initMorseCode,
         'tower-of-hanoi': initTowerOfHanoi,
-        'number-converter': initNumberConverter
+        'number-converter': initNumberConverter,
         'typing-speed-tester': initTypingSpeedTester,
     };
     
