@@ -191,6 +191,25 @@ python games/FLAMES-Game/FLAMES-Game.py
 <tr>
 <td width="50%">
 
+
+#### 🔐 Password Forge
+Survive evolving firewall rules by continuously upgrading your password!
+- 🔓 Progressive rule unlocking
+- ❤️ Lives system
+- 🏆 Score tracking
+- 🎯 Multiple difficulty levels
+```bash
+python games/Password-Forge/Password-Forge.py
+```
+
+</td>
+
+
+#### 📐 AP/GP/AGP/HP Recognizer
+Identify progression types from a number sequence!
+- 🔍 Detects Arithmetic, Geometric, Arithmetic-Geometric, and Harmonic patterns
+- 🧠 Supports integer and decimal values
+- 📘 Great for quick sequence practice
 #### 🧩 Tic-Tac-Toe
 Classic X and O strategy game!
 - 👤 Play against another player
