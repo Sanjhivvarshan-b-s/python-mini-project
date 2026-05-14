@@ -20,9 +20,7 @@ function getProjectHTML(projectName) {
         'derivative-calculator': getDerivativeCalculatorHTML(),
         'morse-code': getMorseCodeHTML(),
         'tower-of-hanoi': getTowerOfHanoiHTML(),
-        'number-converter': getNumberConverterHTML(),
-        'typing-speed-tester': getTypingSpeedTesterHTML(),
-        'simon-says': getSimonSaysHTML()
+        'snake-game': getsnakeGameHTML(),
     };
     
     return projects[projectName] || '<h2>Project Coming Soon!</h2>';
@@ -48,9 +46,7 @@ function initializeProject(projectName) {
         'derivative-calculator': initDerivativeCalculator,
         'morse-code': initMorseCode,
         'tower-of-hanoi': initTowerOfHanoi,
-        'number-converter': initNumberConverter,
-        'typing-speed-tester': initTypingSpeedTester,
-        'simon-says': initSimonSays
+        'snake-game': initSnakeGame,
     };
     
     if (initializers[projectName]) {
@@ -4481,321 +4477,248 @@ function initDerivativeCalculator() {
         output.textContent = `f(x) = ${polynomialToString(data.coeffs)}\n\nDerivative used: ${polynomialToString(nth)}\nValue at x = ${formatNumber(data.x)} is ${formatNumber(value)}`;
     });
 }
-
 // ============================================
-// NUMBER SYSTEM CONVERTER
+// SNAKE GAME
 // ============================================
-function getNumberConverterHTML() {
+function getsnakeGameHTML() {
     return `
         <div class="project-content">
-            <h2>🔢 Number System Converter</h2>
-            <div class="converter-container">
-                <div class="input-group">
-                    <label>Convert from:</label>
-                    <select id="baseFrom">
-                        <option value="10">Decimal (Base 10)</option>
-                        <option value="2">Binary (Base 2)</option>
-                        <option value="8">Octal (Base 8)</option>
-                        <option value="16">Hexadecimal (Base 16)</option>
-                    </select>
+            <h2>🐍 Classic Snake Game</h2>
+            <div class="snake-container">
+                <div class="game-area">
+                    <div id="canvas-wrapper">
+                        <canvas id="snakeCanvas" width="600" height="400"></canvas>
+                        
+                        <div id="game-over-overlay" class="hidden">
+                            <h1>GAME OVER!!</h1>
+                            <p>Score: <span id="final-score">0</span></p>
+                            <button id="overlayRestartBtn" class="btn-primary">Restart Game</button>
+                        </div>
+                    </div>
+
+                    <div id="score-board">
+                        <div class="score-card">
+                            <span>Score</span>
+                            <div id="score">0</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <input type="text" id="numInput" placeholder="Enter number here..." />
+
+                <div class="button-group">
+                    <button id="startGameBtn" class="btn-primary">Start Game</button>
+                    <button id="restartSnakeBtn" class="btn-primary">Restart Game</button>
                 </div>
-                <button class="btn-convert" id="convertBtn">Convert</button>
-                
-                <div class="results" id="convResults" style="display:none; margin-top:20px; text-align:left;">
-                    <h3 style="margin-bottom:15px;">✨ Conversions</h3>
-                    <div id="resDec" class="res-item"><strong>Decimal:</strong> <span></span></div>
-                    <div id="resBin" class="res-item"><strong>Binary:</strong> <span></span></div>
-                    <div id="resOct" class="res-item"><strong>Octal:</strong> <span></span></div>
-                    <div id="resHex" class="res-item"><strong>Hexadecimal:</strong> <span></span></div>
+                <div class="instruction-box">
+                    <p>Use arrow keys to control the snake.</p>
+                    <p>Eat the red food to grow. Don't hit the walls or yourself!</p>
                 </div>
             </div>
         </div>
         <style>
-            .converter-container { padding: 2rem; max-width: 500px; margin: 0 auto; text-align: center; }
-            .input-group { margin-bottom: 1.5rem; text-align: left; }
-            .input-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-            .input-group select, .input-group input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--text-color); }
-            .btn-convert { background: var(--primary-color); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-size: 1.1rem; cursor: pointer; transition: var(--transition); width: 100%; margin-bottom: 1rem; }
-            .btn-convert:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
-            .res-item { background: var(--surface-color); margin-bottom: 0.5rem; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary-color); }
-            .res-item span { font-family: monospace; font-size: 1.1rem; float: right; color: var(--primary-color); font-weight: bold; }
-        </style>
-    `;
-}
-
-function initNumberConverter() {
-    const convertBtn = document.getElementById('convertBtn');
-    const baseFrom = document.getElementById('baseFrom');
-    const numInput = document.getElementById('numInput');
-    const results = document.getElementById('convResults');
-    const resDec = document.querySelector('#resDec span');
-    const resBin = document.querySelector('#resBin span');
-    const resOct = document.querySelector('#resOct span');
-    const resHex = document.querySelector('#resHex span');
-
-    convertBtn.addEventListener('click', () => {
-        const val = numInput.value.trim();
-        if (!val) {
-            results.style.display = 'none';
-            return;
-        }
-        const base = parseInt(baseFrom.value);
-        try {
-            if (base === 2 && !/^[01]+$/.test(val)) throw new Error('Invalid binary');
-            if (base === 8 && !/^[0-7]+$/.test(val)) throw new Error('Invalid octal');
-            if (base === 10 && !/^\d+$/.test(val)) throw new Error('Invalid decimal');
-            if (base === 16 && !/^[0-9a-fA-F]+$/.test(val)) throw new Error('Invalid hex');
-
-            const dec = parseInt(val, base);
-            if (isNaN(dec)) throw new Error('Invalid number');
-            
-            resDec.textContent = dec.toString(10);
-            resBin.textContent = dec.toString(2);
-            resOct.textContent = dec.toString(8);
-            resHex.textContent = dec.toString(16).toUpperCase();
-            
-            results.style.display = 'block';
-        } catch (e) {
-            alert("❌ Invalid input for the selected base system!");
-            results.style.display = 'none';
-        }
-    });
-}
-
-
-// ============================================
-// SIMON SAYS
-// ============================================
-function getSimonSaysHTML() {
-    return `
-        <div class="project-content">
-            <h2>🎮 Simon Says - Memory Game</h2>
-            <div class="simon-container">
-                <div class="simon-info">
-                    <div class="info-item">
-                        <span>Current Round:</span>
-                        <span id="simonRound">1</span>
-                    </div>
-                    <div class="info-item">
-                        <span>Sequence Length:</span>
-                        <span id="simonLength">1</span>
-                    </div>
-                </div>
-                
-                <div class="simon-display">
-                    <div class="simon-message" id="simonMessage">Watch the sequence!</div>
-                </div>
-                
-                <div class="simon-buttons">
-                    <button class="simon-btn red" data-color="R" style="background: #ef4444;">🔴</button>
-                    <button class="simon-btn blue" data-color="B" style="background: #3b82f6;">🔵</button>
-                    <button class="simon-btn green" data-color="G" style="background: #10b981;">🟢</button>
-                    <button class="simon-btn yellow" data-color="Y" style="background: #fbbf24;">🟡</button>
-                </div>
-                
-                <div class="simon-controls">
-                    <button class="btn-play-game" id="simonStart">Start Game</button>
-                    <button class="btn-reset" id="simonReset">Reset</button>
-                </div>
-            </div>
-        </div>
-        
-        <style>
-            .simon-container {
+            .snake-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .game-area {
+                display: flex;
+                align-items: flex-start;
+                gap: 20px;
+                margin-bottom: 25px;
+                width: 100%;
+                max-width: 850px;
+                justify-content: center;
+                flex-wrap: nowrap;
+            }
+            #canvas-wrapper {
+                position: relative;
+                border: 4px solid #2ecc71;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            }
+            #snakeCanvas {
+                background-color: #1b262c;
+                background-image: 
+                    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+                background-size: 20px 20px;
+                display: block;
+            }
+            #score-board {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .score-card {
+                background: linear-gradient(135deg, #2ecc71, #27ae60);
+                color: white;
+                padding: 10px 25px;
+                border-radius: 10px;
                 text-align: center;
-                padding: 2rem;
+                min-width: 120px;
+                box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
             }
-            
-            .simon-info {
-                display: flex;
-                gap: 2rem;
-                justify-content: center;
-                margin-bottom: 2rem;
+            .score-card span {
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
-            
-            .simon-info .info-item span:last-child {
-                font-size: 1.8rem;
+            .score-card div {
+                font-size: 28px;
                 font-weight: bold;
-                color: var(--primary-color);
             }
-            
-            .simon-display {
-                margin: 2rem 0;
-            }
-            
-            .simon-message {
-                font-size: 1.5rem;
-                font-weight: bold;
-                min-height: 2.5rem;
-                color: var(--primary-color);
-                margin-bottom: 2rem;
-            }
-            
-            .simon-buttons {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-                width: fit-content;
-                margin: 2rem auto;
-            }
-            
-            .simon-btn {
-                width: 100px;
-                height: 100px;
-                border: none;
-                border-radius: 15px;
-                font-size: 2.5rem;
-                cursor: pointer;
-                transition: var(--transition);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            }
-            
-            .simon-btn:hover {
-                transform: scale(1.05);
-            }
-            
-            .simon-btn.active {
-                transform: scale(0.95);
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.2);
-            }
-            
-            .simon-controls {
+            .button-group {
                 display: flex;
-                gap: 1rem;
                 justify-content: center;
-                margin-top: 2rem;
-                flex-wrap: wrap;
+                gap: 30px; /* Space between buttons fixed */
+                margin-top: 10px;
+                margin-right: 140px; /* Offset to align with canvas center */
             }
-            
-            .btn-play-game {
-                background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            .instruction-box {
+                margin-top: 20px;
+                margin-right: 140px;
+                text-align: center;
+                color: #7f8c8d;
+                font-size: 15px;
+            }
+            #game-over-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(27, 38, 44, 0.9);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 10;
+                color: #2ecc71;
+            }
+            #game-over-overlay h1 { font-size: 3rem; margin-bottom: 10px; }
+            .hidden { display: none !important; }
+            .btn-primary {
+                background-color: #2ecc71;
                 color: white;
                 border: none;
-                padding: 0.75rem 2rem;
-                border-radius: 50px;
-                cursor: pointer;
-                font-size: 1rem;
+                padding: 12px 25px;
+                border-radius: 8px;
                 font-weight: bold;
-                transition: var(--transition);
+                cursor: pointer;
+                transition: 0.3s;
             }
-            
-            .btn-play-game:hover {
-                transform: scale(1.05);
-                box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+            .btn-primary:hover {
+                background-color: #27ae60;
+                transform: translateY(-2px);
             }
         </style>
     `;
 }
 
-function initSimonSays() {
-    const colors = ['R', 'B', 'G', 'Y'];
-    const colorMap = { R: '.red', B: '.blue', G: '.green', Y: '.yellow' };
-    let sequence = [];
-    let playerSequence = [];
-    let round = 1;
-    let gameActive = false;
-    let isPlayingSequence = false;
-    
-    const messageEl = document.getElementById('simonMessage');
-    const roundEl = document.getElementById('simonRound');
-    const lengthEl = document.getElementById('simonLength');
-    const buttons = document.querySelectorAll('.simon-btn');
-    const startBtn = document.getElementById('simonStart');
-    const resetBtn = document.getElementById('simonReset');
-    
-    function playSound(color) {
-        const btn = document.querySelector(`.simon-btn${colorMap[color]}`);
-        btn.classList.add('active');
-        setTimeout(() => btn.classList.remove('active'), 300);
+// --- GAME LOGIC ---
+let direction = {x: 0, y: 0}; 
+let speed = 7; 
+let score = 0;
+let lastPaintTime = 0;
+let snakeArr = [{x: 13, y: 10}]; 
+let food = {x: 6, y: 7};
+
+function main(ctime) {
+    window.requestAnimationFrame(main);
+    if((ctime - lastPaintTime)/1000 < 1/speed){
+        return;
     }
-    
-    function playSequence() {
-        isPlayingSequence = true;
-        messageEl.textContent = '🔄 Watch carefully...';
-        
-        sequence.forEach((color, index) => {
-            setTimeout(() => {
-                playSound(color);
-            }, (index + 1) * 600);
-        });
-        
-        setTimeout(() => {
-            isPlayingSequence = false;
-            playerSequence = [];
-            messageEl.textContent = '🎯 Your turn! Click the buttons...';
-        }, (sequence.length + 1) * 600);
+    lastPaintTime = ctime;
+    gameEngine();
+}
+
+function isCollide(snake) {
+    // Hits itself
+    for (let i = 1; i < snakeArr.length; i++) {
+        if(snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
     }
+    // Hits walls
+    if(snake[0].x >= 30 || snake[0].x < 0 || snake[0].y >= 20 || snake[0].y < 0) return true;
     
-    function nextRound() {
-        const newColor = colors[Math.floor(Math.random() * colors.length)];
-        sequence.push(newColor);
-        playerSequence = [];
-        round++;
-        roundEl.textContent = round;
-        lengthEl.textContent = sequence.length;
-        
-        setTimeout(() => {
-            playSequence();
-        }, 1000);
+    return false;
+}
+
+function gameEngine() {
+    if(isCollide(snakeArr)){
+        direction = {x: 0, y: 0};
+        document.getElementById('final-score').innerHTML = score;
+        document.getElementById('game-over-overlay').classList.remove('hidden');
+        snakeArr = [{x: 13, y: 10}];
+        score = 0;
+        document.getElementById('score').innerHTML = score;
+        return;
     }
-    
-    function checkMove(color) {
-        if (!gameActive || isPlayingSequence) return;
-        
-        playerSequence.push(color);
-        playSound(color);
-        
-        if (playerSequence[playerSequence.length - 1] !== sequence[playerSequence.length - 1]) {
-            messageEl.textContent = '❌ Wrong! Game Over!';
-            gameActive = false;
-            return;
+
+    // Eating food
+    if(snakeArr[0].y === food.y && snakeArr[0].x === food.x){
+        score += 1;
+        document.getElementById('score').innerHTML = score;
+        snakeArr.unshift({x: snakeArr[0].x + direction.x, y: snakeArr[0].y + direction.y});
+        let a = 2, b = 16;
+        food = {x: Math.round(a + (b-a)* Math.random()), y: Math.round(a + (b-a)* Math.random())};
+    }
+
+    // Moving snake (only if direction is set)
+    if (direction.x !== 0 || direction.y !== 0) {
+        for (let i = snakeArr.length - 2; i>=0; i--) { 
+            snakeArr[i+1] = {...snakeArr[i]};
         }
-        
-        if (playerSequence.length === sequence.length) {
-            if (round >= 10) {
-                messageEl.textContent = '🏆 You Won! Congratulations!';
-                gameActive = false;
-            } else {
-                messageEl.textContent = '✅ Correct! Next round...';
-                setTimeout(() => nextRound(), 1500);
-            }
-        }
+        snakeArr[0].x += direction.x;
+        snakeArr[0].y += direction.y;
     }
-    
-    startBtn.addEventListener('click', () => {
-        if (!gameActive) {
-            gameActive = true;
-            sequence = [];
-            playerSequence = [];
-            round = 1;
-            roundEl.textContent = round;
-            lengthEl.textContent = '1';
-            messageEl.textContent = 'Starting...';
-            startBtn.textContent = 'Game Running...';
-            startBtn.disabled = true;
-            setTimeout(() => nextRound(), 1000);
-        }
+
+    const canvas = document.getElementById('snakeCanvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Snake
+    snakeArr.forEach((e, index)=>{
+        ctx.fillStyle = index === 0 ? "orange" : "#2ecc71";
+        ctx.fillRect(e.x * 20, e.y * 20, 18, 18);
     });
-    
-    resetBtn.addEventListener('click', () => {
-        gameActive = false;
-        sequence = [];
-        playerSequence = [];
-        round = 1;
-        roundEl.textContent = '1';
-        lengthEl.textContent = '1';
-        messageEl.textContent = 'Game Reset. Click Start!';
-        startBtn.textContent = 'Start Game';
-        startBtn.disabled = false;
+
+    // Draw Food
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x * 20, food.y * 20, 18, 18);
+}
+
+// IMPORTANT: Function to initialize listeners after HTML is loaded
+function initSnakeGame() {
+    window.requestAnimationFrame(main);
+
+    document.getElementById('startGameBtn').addEventListener('click', () => {
+        direction = {x: 1, y: 0}; // Start moving right
     });
-    
-    buttons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const color = e.target.dataset.color;
-            checkMove(color);
-        });
+
+    document.getElementById('restartSnakeBtn').addEventListener('click', () => {
+        location.reload();
+    });
+
+    document.getElementById('overlayRestartBtn').addEventListener('click', () => {
+        document.getElementById('game-over-overlay').classList.add('hidden');
+        direction = {x: 0, y: 0};
+        snakeArr = [{x: 13, y: 10}];
+        score = 0;
+        document.getElementById('score').innerHTML = score;
+    });
+
+    window.addEventListener('keydown', e =>{
+        switch (e.key) {
+            case "ArrowUp":    if(direction.y !== 1) {direction.x = 0; direction.y = -1;} break;
+            case "ArrowDown":  if(direction.y !== -1) {direction.x = 0; direction.y = 1;} break;
+            case "ArrowLeft":  if(direction.x !== 1) {direction.x = -1; direction.y = 0;} break;
+            case "ArrowRight": if(direction.x !== -1) {direction.x = 1; direction.y = 0;} break;
+        }
     });
 }
+
+// Call initSnakeGame() after you inject getsnakeGameHTML() into your page.
