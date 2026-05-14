@@ -1,7 +1,17 @@
 // Theme Toggle
 const themeToggle = document.getElementById('themeToggle');
+const themeColorMeta = document.getElementById('themeColorMeta');
 const html = document.documentElement;
 const mainContent = document.getElementById('main-content');
+
+function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function syncThemeColor(theme) {
+    if (!themeColorMeta) return;
+    themeColorMeta.setAttribute('content', theme === 'light' ? '#f8fafc' : '#0f172a');
+}
 
 function updateThemeToggleAria(isLightTheme) {
     themeToggle.setAttribute(
@@ -16,6 +26,7 @@ themeToggle.addEventListener('click', () => {
 
     html.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
+    syncThemeColor(newTheme);
 
     themeToggle.innerHTML =
         newTheme === 'light'
@@ -26,6 +37,7 @@ themeToggle.addEventListener('click', () => {
 
 const savedTheme = localStorage.getItem('theme') || 'dark';
 html.setAttribute('data-theme', savedTheme);
+syncThemeColor(savedTheme);
 themeToggle.innerHTML =
     savedTheme === 'light'
         ? '<i class="fas fa-sun" aria-hidden="true"></i>'
@@ -40,7 +52,11 @@ function applyCategoryFilter(category) {
     projectCards.forEach((card) => {
         if (category === 'all' || card.getAttribute('data-category') === category) {
             card.style.display = 'block';
-            card.style.animation = 'fadeIn 0.6s ease';
+            if (!prefersReducedMotion()) {
+                card.style.animation = 'fadeIn 0.6s ease';
+            } else {
+                card.style.animation = 'none';
+            }
         } else {
             card.style.display = 'none';
         }
@@ -240,13 +256,15 @@ function loadProjectContent(projectName) {
     initializeProject(projectName);
 }
 
-// Smooth scroll
+// Smooth scroll (respects reduced motion)
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
+            target.scrollIntoView({
+                behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+            });
         }
     });
 });
@@ -258,6 +276,7 @@ const observerOptions = {
 };
 
 const observer = new IntersectionObserver((entries) => {
+    if (prefersReducedMotion()) return;
     entries.forEach((entry) => {
         if (entry.isIntersecting) {
             entry.target.style.animation = 'fadeInUp 0.6s ease';
