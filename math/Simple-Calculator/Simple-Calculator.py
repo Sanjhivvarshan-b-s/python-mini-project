@@ -222,25 +222,21 @@ while True:
             num1 = float(input("\n📥 Enter first number: "))
             num2 = float(input("📥 Enter second number: "))
 
-            # ADDITION
             if choice == '1':
 
                 result = num1 + num2
                 calculation = f"{num1} + {num2} = {result}"
 
-            # SUBTRACTION
             elif choice == '2':
 
                 result = num1 - num2
                 calculation = f"{num1} - {num2} = {result}"
 
-            # MULTIPLICATION
             elif choice == '3':
 
                 result = num1 * num2
                 calculation = f"{num1} × {num2} = {result}"
 
-            # DIVISION
             elif choice == '4':
 
                 if num2 == 0:

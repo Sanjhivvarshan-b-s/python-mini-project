@@ -577,6 +577,37 @@
         </div>
     </div>
 </nav>
+<!-- ── Sticky Category Filter Bar ─────────────────────────────── -->
+<!-- Appears below navbar when user scrolls past the hero section  -->
+<div class="sticky-filter-bar" id="stickyFilterBar" role="tablist" aria-label="Project categories (sticky)">
+    <div class="sticky-filter-inner">
+        <button class="sticky-tab active" data-sticky-category="all"
+                role="tab" aria-selected="true" tabindex="0">
+            <i data-lucide="star" aria-hidden="true"></i>
+            <span>all</span>
+        </button>
+        <button class="sticky-tab" data-sticky-category="games"
+                role="tab" aria-selected="false" tabindex="-1">
+            <i data-lucide="gamepad-2" aria-hidden="true"></i>
+            <span>games</span>
+        </button>
+        <button class="sticky-tab" data-sticky-category="math"
+                role="tab" aria-selected="false" tabindex="-1">
+            <i data-lucide="hash" aria-hidden="true"></i>
+            <span>math</span>
+        </button>
+        <button class="sticky-tab" data-sticky-category="utilities"
+                role="tab" aria-selected="false" tabindex="-1">
+            <i data-lucide="lock" aria-hidden="true"></i>
+            <span>utilities</span>
+        </button>
+        <button class="sticky-tab" data-sticky-category="playground"
+                role="tab" aria-selected="false" tabindex="-1">
+            <i data-lucide="terminal" aria-hidden="true"></i>
+            <span>playground</span>
+        </button>
+    </div>
+</div>
 
     <main id="main-content" tabindex="-1">
         <!-- Hero Section -->

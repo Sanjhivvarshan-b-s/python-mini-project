@@ -72,7 +72,7 @@ function getFlappyGameHTML() {
                 background: var(--primary-color);
                 color: white;
                 border: none;
-                border-radius: 8px;
+                border-radius: 30px;
                 cursor: pointer;
                 transition: transform 0.2s, background 0.2s;
                 font-weight: bold;

@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var randomProjectBtn = document.getElementById('randomProjectBtn');
     var playgroundSection = document.getElementById('playgroundSection');
     var projectsSection = document.querySelector('.projects-section');
+    var stickyFilterBar = document.getElementById('stickyFilterBar');
+    var stickyTabs = document.querySelectorAll('.sticky-tab');
+    var heroSection = document.querySelector('.hero-section');
 
     var currentCategory = 'all';
     var currentSearchQuery = '';
@@ -164,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showPlaygroundSection() {
         playgroundActive = true;
+        syncStickyTabs('playground');
         if (projectsSection) projectsSection.style.display = 'none';
         if (randomProjectBtn) randomProjectBtn.style.display = 'none';
         if (window.playgroundAPI && typeof window.playgroundAPI.activate === 'function') {
@@ -171,6 +175,59 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     /* ← PLAYGROUND ADD end */
+    // ── Sticky Filter Bar: position + show/hide on scroll ────────────
+function syncStickyTabs(category) {
+    stickyTabs.forEach(function (st) {
+        var selected = st.getAttribute('data-sticky-category') === category;
+        st.classList.toggle('active', selected);
+        st.setAttribute('aria-selected', selected ? 'true' : 'false');
+        st.setAttribute('tabindex', selected ? '0' : '-1');
+    });
+}
+
+if (stickyFilterBar && heroSection) {
+    // Position the bar directly below the navbar
+    var navbar = document.querySelector('.navbar');
+    function positionStickyBar() {
+        var navHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+        stickyFilterBar.style.top = navHeight + 'px';
+    }
+    positionStickyBar();
+    window.addEventListener('resize', positionStickyBar);
+
+    var heroObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            stickyFilterBar.classList.toggle('visible', !entry.isIntersecting);
+        });
+    }, { threshold: 0 });
+    heroObserver.observe(heroSection);
+}
+
+    // Wire sticky tab clicks — mirrors main tab behaviour
+    stickyTabs.forEach(function (st) {
+        st.addEventListener('click', function () {
+            var category = st.getAttribute('data-sticky-category');
+
+            // Sync sticky tabs UI
+            syncStickyTabs(category);
+
+            // Sync hero tabs UI
+            tabs.forEach(function (t) {
+                var selected = t.getAttribute('data-category') === category;
+                t.classList.toggle('active', selected);
+                t.setAttribute('aria-selected', selected ? 'true' : 'false');
+                t.setAttribute('tabindex', selected ? '0' : '-1');
+            });
+
+            // Delegate section logic (same as hero tab click)
+            if (category === 'playground') {
+                showPlaygroundSection();
+            } else {
+                showProjectsSection();
+                applyCategoryFilter(category);
+            }
+        });
+    });
 
     // ── Category Filtering ───────────────────────────────────────────
     function applyCategoryFilter(category) {
@@ -179,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
         /* ── PLAYGROUND ADD end ── */
 
         currentCategory = category;
+        syncStickyTabs(category);
         var visibleCount = 0;
         projectCards.forEach(function (card) {
             if (category === 'all' || card.getAttribute('data-category') === category) {

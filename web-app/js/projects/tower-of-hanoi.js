@@ -71,8 +71,20 @@ function getTowerOfHanoiHTML() {
             .btn-solve:disabled {
                 opacity: 0.5;
                 cursor: not-allowed;
-            }
-            
+                }
+                .btn-reset{
+                    background: var(--success-color);
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 2rem;
+                    border-radius: 50px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: var(--transition);
+                    }
+                    .btn-reset:hover {
+                        transform: scale(1.05);
+                    }
             .stats {
                 display: flex;
                 gap: 2rem;

@@ -136,6 +136,26 @@ function getArmstrongHTML() {
                 border-color: var(--primary-color);
                 transform: translateY(-2px);
             }
+            #armstrongNumber{
+                padding:15px;
+                border-radius:30px;
+                background-color:var(--bg-color);
+                outline:none;
+                border:1px solid white;
+            }
+            .input-section{
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                gap:15px;
+            }
+            .btn-check{
+                padding:15px;
+                border-radius:30px;
+                background-color:var(--accent-color);
+                border:1px solid var(--accent-color);
+                font-weight:600;
+            }
         </style>
     `;
 }

@@ -23,6 +23,10 @@ function getWhackaMoleHTML() {
             .whack-hole.active { background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; }
             .whack-actions { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
             .whack-message { margin-top: 1rem; font-weight: 600; min-height: 1.5rem; }
+            .btn-primary{
+                padding:15px;
+                border-radius:30px;            
+            }
         </style>
     `;
 }

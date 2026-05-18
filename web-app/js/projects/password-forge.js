@@ -43,6 +43,7 @@ function getPasswordForgeHTML() {
                 border: 2px solid var(--border-color);
                 margin-top: 1rem;
                 font-size: 1rem;
+                background-color: var(--bg-color);
             }
 
             .btn-check {
