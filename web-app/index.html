@@ -23,7 +23,6 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <!--
         ╔══════════════════════════════════════════════════════════════╗
         ║  PLAYGROUND STYLES                                           ║
@@ -360,6 +359,191 @@
             box-shadow: none;
         }
 
+        /* =========================
+        NAVBAR
+        ========================= */
+
+        .navbar {
+            width: 100%;
+            background: #071227;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-wrapper {
+            height: 92px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+        }
+
+        /* =========================
+        LOGO
+        ========================= */
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .navbar-logo {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+
+            filter: drop-shadow(0 0 12px rgba(0,255,180,0.35));
+
+            transition: 0.3s ease;
+        }
+
+        .navbar-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-text {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .logo-py {
+            color: #cbd5e1;
+        }
+
+        .logo-mini {
+            color: white;
+        }
+
+        .logo-parens {
+            color: #22c55e;
+        }
+
+        .logo-tagline {
+            margin-left: 14px;
+
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 500;
+
+            white-space: nowrap;
+        }
+
+        /* =========================
+        SEARCH
+        ========================= */
+
+        .search-box {
+            flex: 1;
+            max-width: 520px;
+
+            height: 64px;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 0 22px;
+
+            border-radius: 999px;
+
+            border: 2px solid #22c55e;
+
+            background: #1e293b;
+        }
+
+        .search-box i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .search-box input {
+            flex: 1;
+
+            background: transparent;
+            border: none;
+            outline: none;
+
+            color: white;
+            font-size: 1.05rem;
+        }
+
+        .search-box input::placeholder {
+            color: #cbd5e1;
+        }
+
+        /* =========================
+        RIGHT BUTTONS
+        ========================= */
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sound-toggle,
+        .theme-toggle {
+            width: 54px;
+            height: 54px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: #22c55e;
+            color: white;
+
+            font-size: 1.2rem;
+
+            cursor: pointer;
+
+            transition: 0.25s ease;
+        }
+
+        .sound-toggle:hover,
+        .theme-toggle:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        /* =========================
+        MOBILE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .logo-tagline {
+                display: none;
+            }
+
+            .search-box {
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .nav-wrapper {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 16px 0;
+            }
+
+            .search-box {
+                order: 3;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+
         /* ── Reduced-motion overrides for playground ────────────────── */
         @media (prefers-reduced-motion: reduce) {
             .playground-section {
@@ -375,12 +559,6 @@
             }
         }
 
-        .logo h1 {
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-        }
-
         .logo-icon {
             width: 42px;
             height: 42px;
@@ -388,6 +566,38 @@
             stroke-width: 2;
             transition: all 0.3s ease;
         }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin:0;
+            line-height:1;
+        }
+
+        .navbar-logo{
+            width:58px;
+            height:58px;
+            object-fit:contain;
+            top: 4px;
+
+            position: relative;
+            top: 0;
+
+            vertical-align: middle;
+
+            filter: drop-shadow(0 0 10px rgba(0,255,180,0.4));
+        }
+
+        .navbar-logo:hover {
+                transform: scale(1.06);
+                filter: drop-shadow(0 0 12px rgba(0, 255, 180, 0.55));
+            }
 
         .card-icon {
             width: 72px;
@@ -545,36 +755,67 @@
 
     <!-- Navigation -->
     <nav class="navbar" aria-label="Primary">
-        <div class="container">
-            <div class="navbar-brand">
-                <div class="logo">
-                    <h1>
-                        <span class="logo-py">py</span><span class="logo-mini">.mini</span><span class="logo-parens">()</span>
-                    </h1>
-                </div>
-                <div class="navbar-tagline">games, math &amp; terminal toys</div>
-            </div>
+    <div class="container nav-wrapper">
 
-        <!-- Search Bar -->
+        <!-- LEFT -->
+        <div class="navbar-brand">
+            <a href="#" class="logo-wrap">
+
+                <!-- LOGO IMAGE -->
+                <img 
+                    src="/python-mini-project/images/logo.png"
+                    alt="PyMini Logo"
+                    class="navbar-logo"
+                >
+
+                <!-- TEXT -->
+                <div class="logo-text">
+                    <span class="logo-py">py</span>
+                    <span class="logo-mini">.mini</span>
+                    <span class="logo-parens">()</span>
+                </div>
+
+                <!-- SMALL TAGLINE -->
+                <span class="logo-tagline">
+                    games, math & terminal toys
+                </span>
+
+            </a>
+        </div>
+
+        <!-- CENTER SEARCH -->
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input 
-                type="text" 
-                id="searchInput" 
+
+            <input
+                type="text"
+                id="searchInput"
                 placeholder="Search projects or games..."
                 aria-label="Search projects"
             />
         </div>
 
+        <!-- RIGHT -->
         <div class="nav-controls">
-            <button type="button" class="sound-toggle" id="soundToggle" aria-label="Mute sounds">
-                <i class="fas fa-volume-up" aria-hidden="true"></i>
+
+            <button type="button"
+                class="sound-toggle"
+                id="soundToggle"
+                aria-label="Mute sounds">
+
+                <i class="fas fa-volume-up"></i>
             </button>
 
-            <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light mode">
-                <i class="fas fa-moon" aria-hidden="true"></i>
+            <button type="button"
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Switch theme">
+
+                <i class="fas fa-moon"></i>
             </button>
+
         </div>
+
     </div>
 </nav>
 <!-- ── Sticky Category Filter Bar ─────────────────────────────── -->
