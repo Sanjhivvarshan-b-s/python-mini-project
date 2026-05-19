@@ -23,6 +23,10 @@ function getMathQuizHTML() {
                         <span class="stat-label">Level</span>
                         <span class="stat-value" id="quizLevel">🟢 Easy</span>
                     </div>
+                    <div class="stat">
+                        <span class="stat-label">Timer</span>
+                        <span class="stat-value" id="quizTimer">⏳ 10</span>
+                    </div>
                 </div>
 
                 <div class="quiz-board" id="quizBoard">
@@ -329,6 +333,7 @@ function initMathQuiz() {
     const scoreEl   = document.getElementById('quizScore');
     const streakEl  = document.getElementById('quizStreak');
     const levelEl   = document.getElementById('quizLevel');
+    const timerEl   = document.getElementById('quizTimer');
     const board     = document.getElementById('quizBoard');
     const optWrap   = document.getElementById('quizOptions');
     const msgEl     = document.getElementById('quizMessage');
@@ -337,11 +342,64 @@ function initMathQuiz() {
 
     // ── state ─────────────────────────────────────────────
     let lives, score, streak, bestStreak, difficulty, total, gameRunning;
+    let timer;
+    let timeLeft;
 
     function resetState() {
         lives = 3; score = 0; streak = 0;
         bestStreak = 0; difficulty = 1;
         total = 0; gameRunning = false;
+    }
+    function getTimerDuration() {
+        if (streak >= 9) return 5;
+        if (streak >= 6) return 6;
+        if (streak >= 3) return 8;
+        return 10;
+    }
+    function updateTimerColor() {
+        if (timeLeft <= 2) {
+            timerEl.style.color = '#ff3b30';
+        } else if (timeLeft <= 5) {
+            timerEl.style.color = '#ff9500';
+        } else {
+            timerEl.style.color = '#34c759';
+        }
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+
+        timeLeft = getTimerDuration();
+        timerEl.textContent = `⏳ ${timeLeft}`;
+        updateTimerColor();
+
+        timer = setInterval(() => {
+            timeLeft--;
+
+            timerEl.textContent = `⏳ ${timeLeft}`;
+            updateTimerColor();
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                handleTimeout();
+            }
+        }, 1000);
+    }
+
+    function handleTimeout() {
+        lives--;
+        streak = 0;
+
+        msgEl.style.color = 'var(--danger-color)';
+        msgEl.textContent = '⏰ Time Up!';
+
+        updateHUD();
+
+        if (lives <= 0) {
+            setTimeout(gameOver, 900);
+        } else {
+            setTimeout(showQuestion, 1200);
+        }
     }
 
     function updateHUD() {
@@ -376,9 +434,11 @@ function initMathQuiz() {
         });
 
         updateHUD();
+        startTimer();
     }
 
     function handleAnswer(chosen, correctIdx, correct, chosenVal) {
+        clearInterval(timer);
         const btns = optWrap.querySelectorAll('.quiz-option-btn');
         btns.forEach(b => b.disabled = true);
         btns[correctIdx].classList.add('correct');
@@ -386,8 +446,8 @@ function initMathQuiz() {
         if (chosen === correctIdx) {
             streak++;
             bestStreak = Math.max(bestStreak, streak);
-            score += 10;
-            let msg = `✅ Correct! +10`;
+            score += 10 + timeLeft;
+            let msg = `✅ Correct! +${10 + timeLeft}`;
 
             if ([3, 6, 9].includes(streak)) {
                 score += 5;
@@ -415,6 +475,9 @@ function initMathQuiz() {
     }
 
     function gameOver() {
+        clearInterval(timer);
+        timerEl.textContent = '⏳ 0';
+        timerEl.style.color = '#ff3b30';
         gameRunning = false;
         optWrap.innerHTML = '';
         board.innerHTML = `
@@ -441,6 +504,11 @@ function initMathQuiz() {
 
     startBtn.addEventListener('click', startGame);
     resetBtn.addEventListener('click', () => {
+        clearInterval(timer);
+        gameRunning = false;
+        timeLeft = 10;
+        timerEl.textContent = '⏳ 10';
+        timerEl.style.color = '#34c759';
         resetState();
         updateHUD();
         board.innerHTML = '<p class="quiz-start-msg">Press Start to Play! 🎮</p>';
