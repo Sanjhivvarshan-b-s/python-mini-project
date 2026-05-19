@@ -860,5 +860,4 @@ function showToast(message) {
         }, 300); // small delay so the page fully loads first
     }
 })();
-
 });
