@@ -1523,6 +1523,11 @@ searchInput.addEventListener("input", () => {
         }
     });
 });
+document.querySelectorAll('.tab, .sticky-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+        searchInput.value = '';
+    });
+});
 </script>
 
 </body>
