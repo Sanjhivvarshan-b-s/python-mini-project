@@ -136,87 +136,173 @@ function initProjectileMotion() {
     const heightEl = document.getElementById('projHeight');
     const resultEl = document.getElementById('projectileResult');
 
-    function drawScene(points, xMax, yMax) {
+    function projectileStats(speed, angle) {
+        const angleRad = angle * Math.PI / 180;
+        const flightTime = (2 * speed * Math.sin(angleRad)) / g;
+        const maxHeight = (speed * speed * Math.sin(angleRad) ** 2) / (2 * g);
+        const range = (speed * speed * Math.sin(2 * angleRad)) / g;
+        return { flightTime, maxHeight, range };
+    }
+
+    function trajectoryPoints(speed, angle, steps = 120) {
+        const angleRad = angle * Math.PI / 180;
+        const { flightTime } = projectileStats(speed, angle);
+
+        const x = [];
+        const y = [];
+
+        for (let i = 0; i <= steps; i++) {
+            const t = (flightTime * i) / steps;
+            x.push(speed * Math.cos(angleRad) * t);
+            y.push(speed * Math.sin(angleRad) * t - 0.5 * g * t * t);
+        }
+
+        return { x, y, flightTime };
+    }
+
+    function drawTrajectory(x, y) {
         const width = canvas.width;
         const height = canvas.height;
+
         const marginLeft = 50;
         const marginBottom = 35;
         const marginTop = 20;
+
+        const xMax = Math.max(...x, 10) * 1.1;
+        const yMax = Math.max(...y, 10) * 1.1;
+
         const usableWidth = width - marginLeft - 20;
         const usableHeight = height - marginTop - marginBottom;
 
-        const mapX = (x) => marginLeft + (x / xMax) * usableWidth;
-        const mapY = (y) => height - marginBottom - (y / yMax) * usableHeight;
+        // Compute a uniform scale (pixels per meter) so vertical and horizontal scaling is identical
+        const scale = Math.min(usableWidth / xMax, usableHeight / yMax);
+
+        const mapX = v => marginLeft + v * scale;
+        const mapY = v => height - marginBottom - v * scale;
 
         ctx.clearRect(0, 0, width, height);
 
         ctx.fillStyle = '#0f172a10';
         ctx.fillRect(0, 0, width, height);
 
-        ctx.strokeStyle = '#64748b';
+        ctx.strokeStyle = "#64748b";
         ctx.lineWidth = 2;
+
         ctx.beginPath();
         ctx.moveTo(marginLeft, marginTop);
         ctx.lineTo(marginLeft, height - marginBottom);
         ctx.lineTo(width - 20, height - marginBottom);
         ctx.stroke();
 
-        ctx.fillStyle = '#64748b';
-        ctx.font = '12px Arial';
-        ctx.fillText('Height (m)', 8, marginTop + 12);
-        ctx.fillText('Distance (m)', width - 95, height - 10);
+        ctx.fillStyle = "#64748b";
+        ctx.font = "12px Arial";
+        ctx.fillText("Height (m)", 8, marginTop + 12);
+        ctx.fillText("Distance (m)", width - 95, height - 10);
 
-        if (points.length > 1) {
-            ctx.strokeStyle = '#2563eb';
+        if (x.length > 1) {
+            ctx.strokeStyle = "#2563eb";
             ctx.lineWidth = 3;
+
             ctx.beginPath();
-            ctx.moveTo(mapX(points[0].x), mapY(points[0].y));
-            for (let i = 1; i < points.length; i++) {
-                ctx.lineTo(mapX(points[i].x), mapY(points[i].y));
+            ctx.moveTo(mapX(x[0]), mapY(y[0]));
+
+            for (let i = 1; i < x.length; i++) {
+                ctx.lineTo(mapX(x[i]), mapY(y[i]));
             }
+
             ctx.stroke();
 
-            const landing = points[points.length - 1];
-            ctx.fillStyle = '#ef4444';
+            const last = x.length - 1;
+            ctx.fillStyle = "#ef4444";
             ctx.beginPath();
-            ctx.arc(mapX(landing.x), mapY(landing.y), 6, 0, Math.PI * 2);
+            ctx.arc(mapX(x[last]), mapY(y[last]), 6, 0, Math.PI * 2);
             ctx.fill();
         }
     }
 
     function simulate() {
         const speed = Math.max(1, Number(speedInput.value) || 1);
-        const angleDeg = Math.min(89, Math.max(1, Number(angleInput.value) || 45));
+        const angle = Math.min(89, Math.max(1, Number(angleInput.value) || 45));
 
-        const angleRad = angleDeg * Math.PI / 180;
-        const totalTime = (2 * speed * Math.sin(angleRad)) / g;
-        const range = (speed * speed * Math.sin(2 * angleRad)) / g;
-        const maxHeight = (speed * speed * Math.sin(angleRad) * Math.sin(angleRad)) / (2 * g);
+        const stats = projectileStats(speed, angle);
+        const points = trajectoryPoints(speed, angle);
 
-        const points = [];
-        const steps = 180;
-        for (let i = 0; i <= steps; i++) {
-            const t = (totalTime * i) / steps;
-            const x = speed * Math.cos(angleRad) * t;
-            const y = speed * Math.sin(angleRad) * t - 0.5 * g * t * t;
-            points.push({ x, y: Math.max(0, y) });
+        const xMax = Math.max(...points.x, 10) * 1.1;
+        const yMax = Math.max(...points.y, 10) * 1.1;
+
+        const marginLeft = 50;
+        const marginBottom = 35;
+        const marginTop = 20;
+
+        const width = canvas.width;
+        const height = canvas.height;
+
+        const usableWidth = width - marginLeft - 20;
+        const usableHeight = height - marginTop - marginBottom;
+
+        
+        const scale = Math.min(usableWidth / xMax, usableHeight / yMax);
+
+        const mapX = v => marginLeft + v * scale;
+        const mapY = v => height - marginBottom - v * scale;
+
+        drawTrajectory(points.x, points.y);
+
+        timeEl.textContent = `${stats.flightTime.toFixed(2)} s`;
+        heightEl.textContent = `${stats.maxHeight.toFixed(2)} m`;
+        rangeEl.textContent = `${stats.range.toFixed(2)} m`;
+
+        resultEl.textContent = "Launched...";
+
+        let i = 0;
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            ctx.fillStyle = '#0f172a10';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.strokeStyle = "#64748b";
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(marginLeft, marginTop);
+            ctx.lineTo(marginLeft, height - marginBottom);
+            ctx.lineTo(width - 20, height - marginBottom);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#2563eb";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let j = 0; j < i; j++) {
+                const x = mapX(points.x[j]);
+                const y = mapY(points.y[j]);
+
+                if (j === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+
+            ctx.stroke();
+
+            if (i > 0) {
+                const last = i - 1;
+
+                ctx.fillStyle = "#ef4444";
+                ctx.beginPath();
+                ctx.arc(mapX(points.x[last]), mapY(points.y[last]), 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            i++;
+
+            if (i <= points.x.length) {
+                requestAnimationFrame(animate);
+            }
         }
 
-        const xMax = Math.max(range, 10) * 1.2;
-        const yMax = Math.max(maxHeight, 10) * 1.25;
-        drawScene(points, xMax, yMax);
-
-        timeEl.textContent = `${totalTime.toFixed(2)} s`;
-        rangeEl.textContent = `${range.toFixed(2)} m`;
-        heightEl.textContent = `${maxHeight.toFixed(2)} m`;
-        resultEl.textContent = '✅ Calculated TOF, Hmax, and Range.';
+        animate();
     }
 
     launchBtn.addEventListener('click', simulate);
-
-    [speedInput, angleInput].forEach((input) => {
-        input.addEventListener('change', simulate);
-    });
-
-    simulate();
 }

@@ -4,14 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Explore beginner-friendly Python utility projects in your browser—converters, translators, and more.">
+    <meta name="description" content="Run handy Python utilities directly in your browser: typing speed tests, Morse code translator, number base converter, and Tower of Hanoi solver.">
     <meta name="color-scheme" content="dark light">
     <meta id="themeColorMeta" name="theme-color" content="#0f172a">
-    <meta property="og:title" content="Utilities — Python Mini Projects">
-    <meta property="og:description" content="Interactive utility tools—no install required.">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <title>Utilities - Python Mini Projects</title>
+    <meta property="og:url" content="https://steam-bell-92.github.io/python-mini-project/utilities.html">
+    <meta property="og:title" content="Python Web Utilities & Tools - Interactive Web Edition">
+    <meta property="og:description" content="Run handy Python utilities directly in your browser: typing speed tests, Morse code translator, number base converter, and Tower of Hanoi solver.">
+    <meta property="og:image" content="https://steam-bell-92.github.io/python-mini-project/assets/logo.png">
+    <meta property="og:site_name" content="py.mini() lab">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://steam-bell-92.github.io/python-mini-project/utilities.html">
+    <meta name="twitter:title" content="Python Web Utilities & Tools - Interactive Web Edition">
+    <meta name="twitter:description" content="Run handy Python utilities directly in your browser: typing speed tests, Morse code translator, number base converter, and Tower of Hanoi solver.">
+    <meta name="twitter:image" content="https://steam-bell-92.github.io/python-mini-project/assets/logo.png">
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://steam-bell-92.github.io/python-mini-project/utilities.html">
+
+    <title>Python Web Utilities & Tools - Interactive Web Edition</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemPage",
+      "name": "Interactive Python Utilities & Tools",
+      "description": "Run handy Python utilities directly in your browser: typing speed tests, Morse code translator, number base converter, and Tower of Hanoi solver.",
+      "url": "https://steam-bell-92.github.io/python-mini-project/utilities.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "py.mini() lab",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://steam-bell-92.github.io/python-mini-project/assets/logo.png"
+        }
+      }
+    }
+    </script>
+
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -61,7 +97,9 @@
     <nav class="navbar" aria-label="Primary">
         <div class="container">
             <div class="logo">
-                <h1>🎮 Python Mini Projects</h1>
+                <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">🎮 Python Mini Projects</span>
+                </a>
             </div>
             <div class="nav-controls">
                 <button type="button" class="sound-toggle" id="soundToggle" aria-label="Mute sounds">
@@ -90,6 +128,14 @@
             </div>
         </section>
 
+        <!-- Page Title Section -->
+        <section class="page-title-section" style="text-align: center; padding: 2rem 0 1rem 0;">
+            <div class="container">
+                <h1 style="font-size: 2.5rem; font-family: 'Space Grotesk', sans-serif; background: linear-gradient(135deg, #10b981, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0;">Interactive Python Web Utilities</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 1.1rem; opacity: 0.85;">Explore beginner-friendly Python utility projects in your browser—converters, translators, and more.</p>
+            </div>
+        </section>
+
         <!-- Projects Grid — Utilities only -->
         <section class="projects-section" aria-label="Utility Projects">
             <div class="container">
@@ -102,17 +148,17 @@
                         <button class="btn-play">Try It</button>
                     </div>
 
-                    <div class="project-card" data-category="utilities" data-project="tower-of-hanoi">
-                        <div class="card-icon">🗼</div>
-                        <h3>Tower of Hanoi</h3>
-                        <p>Solve the classic puzzle!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
                     <div class="project-card" data-category="utilities" data-project="number-converter">
                         <div class="card-icon">🔢</div>
                         <h3>Number Converter</h3>
                         <p>Convert Dec, Bin, Oct, and Hex!</p>
+                        <button class="btn-play">Try It</button>
+                    </div>
+
+                    <div class="project-card" data-category="utilities" data-project="tower-of-hanoi">
+                        <div class="card-icon">🗼</div>
+                        <h3>Tower of Hanoi</h3>
+                        <p>Solve the classic puzzle!</p>
                         <button class="btn-play">Try It</button>
                     </div>
 

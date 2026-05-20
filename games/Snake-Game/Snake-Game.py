@@ -53,6 +53,12 @@ instruction.write(
     font=("Arial", 14, "normal")
 )
 
+# ================= GAME CONSTANTS =================
+
+GRID_SIZE = 15
+GRID_RANGE = 18 # Number of steps from center to border
+BORDER_LIMIT = 280
+
 # ================= SNAKE HEAD =================
 
 head = turtle.Turtle()
@@ -155,10 +161,34 @@ def generate_food():
     food.color(current_food["color"])
     food.shapesize(current_food["size"])
 
-    x = random.randint(-18, 18) * 15
-    y = random.randint(-18, 18) * 15
+    max_attempts = 100
+    attempt = 0
+    
+    while attempt < max_attempts:
+        x = random.randint(-GRID_RANGE, GRID_RANGE) * GRID_SIZE
+        y = random.randint(-GRID_RANGE, GRID_RANGE) * GRID_SIZE
+        
+        # Check if the coordinate is occupied by the snake's head
+        if head.distance(x, y) < GRID_SIZE:
+            attempt += 1
+            continue
+            
+        # Check if the coordinate is occupied by any body part
+        occupied = False
+        for part in parts:
+            if part.distance(x, y) < GRID_SIZE:
+                occupied = True
+                break
+        
+        if not occupied:
+            food.goto(x, y)
+            return
+        
+        attempt += 1
 
-    food.goto(x, y)
+    # Fallback: If no space found after max attempts, game is likely won or grid is full
+    # Reset game or show win message (for now, we'll reset to avoid freeze)
+    reset_game()
 
 generate_food()
 
@@ -209,21 +239,19 @@ screen.onkeypress(move_right, "Right")
 
 # ================= MOVE FUNCTION =================
 
-STEP = 15
-
 def move():
 
     if head.direction == "up":
-        head.sety(head.ycor() + STEP)
+        head.sety(head.ycor() + GRID_SIZE)
 
     if head.direction == "down":
-        head.sety(head.ycor() - STEP)
+        head.sety(head.ycor() - GRID_SIZE)
 
     if head.direction == "left":
-        head.setx(head.xcor() - STEP)
+        head.setx(head.xcor() - GRID_SIZE)
 
     if head.direction == "right":
-        head.setx(head.xcor() + STEP)
+        head.setx(head.xcor() + GRID_SIZE)
 
 # ================= UPDATE EYES =================
 
@@ -313,16 +341,16 @@ while True:
     # BORDER COLLISION
 
     if (
-        head.xcor() > 280 or
-        head.xcor() < -280 or
-        head.ycor() > 280 or
-        head.ycor() < -280
+        head.xcor() > BORDER_LIMIT or
+        head.xcor() < -BORDER_LIMIT or
+        head.ycor() > BORDER_LIMIT or
+        head.ycor() < -BORDER_LIMIT
     ):
         reset_game()
 
     # FOOD COLLISION
 
-    if head.distance(food) < 15:
+    if head.distance(food) < GRID_SIZE:
 
         food_effect(
             food.xcor(),

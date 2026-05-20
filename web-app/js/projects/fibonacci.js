@@ -48,6 +48,19 @@ function getFibonacciHTML() {
                 max-width: 100%;
                 height: auto;
             }
+            #fibTerms{
+                padding:13px;
+                background-color:var(--bg-color);
+                border:1px solid white;
+                outline:none;
+                border-radius:30px;
+            }
+            .controls{
+                display:flex;
+                gap:15px;
+                align-items:center;
+                justify-content:center;
+            }
         </style>
     `;
 }

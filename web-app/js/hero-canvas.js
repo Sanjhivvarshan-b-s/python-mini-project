@@ -3,9 +3,11 @@
    Fixed: canvas now fills 100% of hero section
 ═══════════════════════════════════════════ */
 const canvas = document.getElementById('boardCanvas');
-const ctx = canvas.getContext('2d');
 
-/* Force canvas to fill the hero section absolutely */
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+
+    /* Force canvas to fill the hero section absolutely */
 (function positionCanvas() {
     const hero = canvas.closest('.hero-section') || canvas.parentElement;
     if (hero && getComputedStyle(hero).position === 'static') {
@@ -289,6 +291,7 @@ function loop() {
     tokens.forEach(t => { t.update(); t.draw(); });
     drawDice();
     requestAnimationFrame(loop);
-}
+    }
 
-loop();
+    loop();
+}

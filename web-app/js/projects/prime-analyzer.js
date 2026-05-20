@@ -158,13 +158,31 @@ function initPrimeAnalyzer() {
     const rangeEnd = document.getElementById('rangeEnd');
     const rangeBtn = document.getElementById('rangeBtn');
     const rangeDisplay = document.getElementById('rangeDisplay');
-    
+
+    let prime = [];
+    let currentLimit = 0;
+    function buildSieve(limit) {
+        if (limit <= currentLimit) return;
+        let newPrime = new Array(limit + 1).fill(true);
+        newPrime[0] = newPrime[1] = false;
+
+        for (let p = 2; p * p <= limit; p++) {
+            if (newPrime[p]) {
+                for (let m = p * p; m <= limit; m += p) {
+                    newPrime[m] = false;
+                }
+            }
+        }
+        prime = newPrime;
+        currentLimit = limit;
+    }
+
     function isPrime(num) {
         if (num < 2) return false;
         if (num === 2) return true;
         if (num % 2 === 0) return false;
         
-        for (let i = 3; i <= Math.sqrt(num); i += 2) {
+        for (let i = 3; i * i <= num; i += 2) {
             if (num % i === 0) return false;
         }
         return true;
@@ -190,6 +208,7 @@ function initPrimeAnalyzer() {
     
     function generatePrimes() {
         const limit = parseInt(generateLimit.value) || 100;
+        buildSieve(limit);
         primesDisplay.innerHTML = '';
         
         const primes = [];
@@ -213,6 +232,7 @@ function initPrimeAnalyzer() {
     function findPrimesInRange() {
         const start = parseInt(rangeStart.value) || 1;
         const end = parseInt(rangeEnd.value) || 50;
+        buildSieve(end);
         rangeDisplay.innerHTML = '';
         
         const primes = [];

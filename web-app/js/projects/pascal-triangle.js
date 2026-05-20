@@ -100,31 +100,37 @@ function initPascalTriangle() {
     const generateBtn = document.getElementById('generatePascal');
     const display = document.getElementById('pascalDisplay');
     
-    function generatePascal() {
-        const rows = parseInt(rowsInput.value) || 7;
+function generatePascal() {
+        const rawValue = rowsInput.value;
+        const rows = Number(rawValue);
+
+        if (rawValue === '' || !Number.isInteger(rows) || rows <= 0) {
+            alert("Invalid input! Please enter a positive whole number.");
+            rowsInput.value = 7; 
+            return; 
+        }
+
         display.innerHTML = '';
-        
         const triangle = [];
-        
+
         for (let i = 0; i < rows; i++) {
             triangle[i] = [];
             const row = document.createElement('div');
             row.className = 'pascal-row';
-            
+
             for (let j = 0; j <= i; j++) {
                 if (j === 0 || j === i) {
                     triangle[i][j] = 1;
                 } else {
                     triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j];
                 }
-                
+
                 const hexagon = document.createElement('div');
                 hexagon.className = 'hexagon';
                 hexagon.innerHTML = `<div class="hexagon-inner">${triangle[i][j]}</div>`;
                 hexagon.style.animationDelay = `${(i + j) * 0.05}s`;
                 row.appendChild(hexagon);
             }
-            
             display.appendChild(row);
         }
     }

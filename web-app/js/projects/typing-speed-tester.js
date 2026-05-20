@@ -7,6 +7,7 @@ function getTypingSpeedTesterHTML() {
             <p style="margin-bottom: 10px;">
                 Type the exact sentence shown below 👇
             </p>
+            
 
             <div 
                 id="typingSentence"
@@ -17,34 +18,69 @@ function getTypingSpeedTesterHTML() {
                     border-radius: 10px;
                     margin-bottom: 20px;
                     font-size: 18px;
+                    line-height: 1.8;
+                    min-height: 80px;
                 "
             >
                 Click Start Test 🚀
             </div>
 
-            <textarea
-                id="typingInput"
-                placeholder="Start typing here..."
-                rows="5"
-                disabled
-                style="
-                    width: 100%;
-                    padding: 15px;
-                    border-radius: 10px;
-                    font-size: 16px;
-                    margin-bottom: 20px;
-                    background: var(--surface-color);
-                    color: var(--text-color);
-                    border: 1px solid var(--border-color);
-                "
-            ></textarea>
-
             <button
                 id="startTypingBtn"
                 class="btn-play"
+                style="
+                    margin-bottom: 20px;
+                    font-weight: 700;
+                    font-size: 16px;
+                    width:auto;   
+                    min-height: 44px;
+                    padding: 12px 24px;               
+                    border-radius: 30px;
+                    background-color:var(--accent-color);
+                    color:white;
+                "
             >
                 Start Test 🚀
             </button>
+
+            <button
+                id="newSentenceBtn"
+                class="btn-play"
+                style="
+                    margin-bottom: 20px;
+                    margin-left: 10px;
+                    font-weight: 700;
+                    font-size: 16px;
+                    width:auto;
+                    min-height: 44px;
+                    padding: 12px 24px;
+                    border-radius: 30px;
+                    background-color:#9333ea;
+                    color:white;
+                "
+            >
+                🔄 New Sentence
+            </button>
+
+            <div>
+            <textarea
+            id="typingInput"
+            placeholder="Start typing here..."
+            rows="5"
+            disabled
+            style="
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            background: var(--surface-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            "
+            ></textarea>
+            </div>
+        
 
             <div
                 id="typingResult"
@@ -78,6 +114,9 @@ function initTypingSpeedTester() {
     const button =
         document.getElementById("startTypingBtn");
 
+    const newSentenceBtn =
+        document.getElementById("newSentenceBtn");
+
     const result =
         document.getElementById("typingResult");
 
@@ -87,30 +126,43 @@ function initTypingSpeedTester() {
     // Disable typing initially
     inputElement.disabled = true;
 
+    function generateSentence() {
+
+        currentSentence =
+            sentences[
+                Math.floor(
+                    Math.random() * sentences.length
+                )
+            ];
+
+        sentenceElement.innerHTML =
+            currentSentence
+                .split("")
+                .map(char =>
+                    `<span>${char}</span>`
+                )
+                .join("");
+
+        inputElement.value = "";
+
+        inputElement.disabled = false;
+
+        inputElement.focus();
+
+        result.innerHTML = "";
+
+        startTime = new Date().getTime();
+    }   
+
     // Start Test
     button.onclick = function () {
 
-        // Random sentence
-        currentSentence =
-            sentences[Math.floor(Math.random() * sentences.length)];
+        generateSentence();
+    };
 
-        // Show sentence
-        sentenceElement.innerText = currentSentence;
+    newSentenceBtn.onclick = function () {
 
-        // Enable typing
-        inputElement.disabled = false;
-
-        // Clear textarea
-        inputElement.value = "";
-
-        // Focus cursor
-        inputElement.focus();
-
-        // Clear previous result
-        result.innerHTML = "";
-
-        // Start timer
-        startTime = new Date().getTime();
+        generateSentence();
     };
 
     // Typing Event
@@ -132,21 +184,36 @@ function initTypingSpeedTester() {
         // Correct characters
         let correctChars = 0;
 
+        //Incorrect characters
+        let incorrectChars = 0;
+
+
+        const spans = sentenceElement.querySelectorAll("span");
+
         for (let i = 0; i < typedText.length; i++) {
 
             if (
                 typedText[i]?.toLowerCase() ===
                 currentSentence[i]?.toLowerCase()
             ) {
+
                 correctChars++;
+
+                spans[i].style.color = "#22c55e";
+
+            } else {
+                incorrectChars++;
+                spans[i].style.color = "#ef4444";
             }
         }
-
+        
         // Accuracy
         const accuracy =
             Math.round(
                 (correctChars / currentSentence.length) * 100
             );
+
+        const mistakes = incorrectChars;
 
         // Words typed
         const wordsTyped =
@@ -156,46 +223,52 @@ function initTypingSpeedTester() {
         const wpm =
             Math.round((wordsTyped / totalTime) * 60);
 
-        // If typing is wrong
-        if (
-            !currentSentence
-                .toLowerCase()
-                .startsWith(typedText.toLowerCase())
-        ) {
-
-            result.innerHTML = `
-                ❌ Wrong typing detected! <br><br>
-                🎯 Accuracy: ${accuracy}% 
-            `;
-
-            return;
-        }
 
         // Show live stats
         result.innerHTML = `
             ⏱️ Time: ${totalTime.toFixed(1)} sec <br><br>
+
             🚀 Speed: ${wpm} WPM <br><br>
-            🎯 Accuracy: ${accuracy}% 
+
+            🎯 Accuracy: ${accuracy}% <br><br>
+
+            ✅ Correct Characters: ${correctChars} <br><br>
+
+            ❌ Incorrect Characters: ${incorrectChars} <br><br>
+
+            ⚠️ Mistakes: ${mistakes} 
         `;
 
         // Completed
-        if (
-            typedText.trim().toLowerCase() ===
-            currentSentence.trim().toLowerCase()
+       if (
+            typedText.length === currentSentence.length
         ) {
 
             result.innerHTML = `
-                🎉 Test Completed Successfully! <br><br>
 
-                ⏱️ Total Time: ${totalTime.toFixed(1)} sec <br><br>
+            🎉 Test Completed Successfully! <br><br>
 
-                🚀 Typing Speed: ${wpm} WPM <br><br>
+            ⏱️ Total Time: ${totalTime.toFixed(1)} sec <br><br>
 
-                🎯 Accuracy: ${accuracy}% 
-            `;
+            🚀 Typing Speed: ${wpm} WPM <br><br>
 
-            // Disable typing after completion
-            inputElement.disabled = true;
+            🎯 Accuracy: ${accuracy}% <br><br>
+
+            ✅ Correct Characters: ${correctChars} <br><br>
+
+            ❌ Incorrect Characters: ${incorrectChars} <br><br>
+
+            ⚠️ Mistakes: ${mistakes}
+
+        `;
+
+        // LOCK TEST
+        inputElement.disabled = true;
+
+        // REMOVE CURSOR
+        inputElement.blur();
+
+        return;
         }
     });
 }

@@ -71,6 +71,10 @@ function getProgressionRecognizerHTML() {
                 white-space: pre-line;
                 min-height: 90px;
             }
+            .btn-primary{
+                padding:15px;
+                border-radius:30px;
+            }
         </style>
     `;
 }

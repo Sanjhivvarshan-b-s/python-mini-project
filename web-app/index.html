@@ -5,29 +5,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Play 18+ beginner-friendly Python mini projects in your browser—games, math tools, and utilities with a modern dark/light UI.">
+        content="Play and run 25+ interactive Python mini projects directly in your browser. Features browser games, mathematical visualizations, and utilities with a modern dark/light editor.">
     <meta name="color-scheme" content="dark light">
     <meta id="themeColorMeta" name="theme-color" content="#0f172a">
-    <meta property="og:title" content="Python Mini Projects — Web Edition">
-    <meta property="og:description"
-        content="Interactive games, math visualizations, and utilities—no install required.">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://github.com/steam-bell-92/python-mini-project">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Python Mini Projects — Web Edition">
-    <meta name="twitter:description" content="Interactive games, math visualizations, and utilities in the browser.">
-    <title>Python Mini Projects - Interactive Web Edition</title>
+    <meta property="og:url" content="https://steam-bell-92.github.io/python-mini-project/">
+    <meta property="og:title" content="Python Mini Projects - Interactive Web Lab">
+    <meta property="og:description" content="Play and run 25+ interactive Python mini projects directly in your browser. Features browser games, mathematical visualizations, and utilities with a modern dark/light editor.">
+    <meta property="og:image" content="https://steam-bell-92.github.io/python-mini-project/assets/logo.png">
+    <meta property="og:site_name" content="py.mini() lab">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://steam-bell-92.github.io/python-mini-project/">
+    <meta name="twitter:title" content="Python Mini Projects - Interactive Web Lab">
+    <meta name="twitter:description" content="Play and run 25+ interactive Python mini projects directly in your browser. Features browser games, mathematical visualizations, and utilities with a modern dark/light editor.">
+    <meta name="twitter:image" content="https://steam-bell-92.github.io/python-mini-project/assets/logo.png">
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://steam-bell-92.github.io/python-mini-project/">
+
+    <title>Python Mini Projects - Interactive Web Lab</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "py.mini() lab",
+      "alternateName": "Python Mini Projects Web Edition",
+      "url": "https://steam-bell-92.github.io/python-mini-project/",
+      "description": "Play and run 25+ interactive Python mini projects directly in your browser. Features browser games, mathematical visualizations, and utilities with a modern dark/light editor.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "py.mini() lab",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://steam-bell-92.github.io/python-mini-project/assets/logo.png"
+        }
+      }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!--
-        ╔══════════════════════════════════════════════════════════════╗
-        ║  PLAYGROUND STYLES                                           ║
-        ║  Scoped entirely to .playground-* selectors.                 ║
-        ║  Add these to css/styles.css if you prefer a single file.    ║
-        ╚══════════════════════════════════════════════════════════════╝
-    -->
     <style>
         /* ── Section wrapper ───────────────────────────────────────── */
         .playground-section {
@@ -325,26 +352,331 @@
             font-weight: 700;
             color: var(--text-color);
         }
+        .btn-stop {
+            background: linear-gradient(135deg, #d22b44, #dc1331);
+            color: #fff;
+            border: none;
+            padding: 0.85rem 2.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+
+        }
+
+        .btn-stop:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px #e74c3c;
+        }
+
+        .btn-stop:active {
+            transform: translateY(0);
+        }
+
+        .btn-stop:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ==========================================================================
+           REACTIVE FLOATING ISLAND NAVBAR DESIGN
+           ========================================================================== */
+
+        .navbar {
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 14px 0;
+            background: transparent;
+        }
+        [data-theme="light"] .navbar {
+    background: rgba(165, 255, 234, 0.92);
+}
+
+        .nav-island {
+            max-width: 1240px;
+            margin: 0 auto;
+            background: rgba(10, 19, 34, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 24px;
+            padding: 0 24px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Light Mode Token Architecture for the Floating Component */
+        [data-theme="light"] .nav-island {
+        background: rgba(165, 255, 234, 0.92);
+        border: 1px solid rgba(179, 191, 217, 0.08);
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+        /* Subtle squeeze effect when scrolling down */
+        .navbar.scrolled .nav-island {
+            max-width: 1140px;
+            border-radius: 16px;
+            height: 68px;
+            background: rgba(6, 11, 19, 0.95);
+        }
+        [data-theme="light"] .navbar.scrolled .nav-island {
+            background: rgba(248, 250, 252, 0.95);
+        }
+
+        /* =========================
+        LOGO & BRANDING BLOCK
+        ========================= */
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 10px;
+        }
+
+        /* Tech Terminal Prompt Character */
+        .logo-prompt {
+            font-family: 'IBM Plex Mono', monospace;
+            color: #22c55e;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            display: flex;
+            align-items: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-py { color: #94a3b8; transition: color 0.3s ease; }
+        .logo-mini { color: var(--text-color); transition: color 0.3s ease; }
+        .logo-parens { color: #22c55e; }
+
+        [data-theme="light"] .logo-py { color: #64748b; }
+        [data-theme="light"] .logo-mini { color: #0f172a; }
+
+        .logo-tagline {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: rgba(255,255,255,0.04);
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        [data-theme="light"] .logo-tagline {
+            color: #64748b;
+            background: rgba(0,0,0,0.03);
+            border-color: rgba(0,0,0,0.02);
+        }
+
+        /* ==========================================================================
+           MODERN INSET SEARCH BAR WITH CAPSULE GLOW INTERACTION
+           ========================================================================== */
+
+        .search-box {
+            flex: 1;
+            max-width: 440px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 18px;
+            border-radius: 14px; /* Matches modern geometric patterns over pill shape */
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(15, 23, 42, 0.4);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .search-box i {
+            color: #64748b;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 0.95rem;
+        }
+        [data-theme="light"] .search-box input { color: #0f172a; }
+
+        .search-box input::placeholder { color: #475569; }
+
+        /* Dynamic Neon Accent Glow on Input Focus */
+        .search-box:focus-within {
+            border-color: #22c55e;
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+        }
+        .search-box:focus-within i {
+            color: #22c55e;
+        }
+
+        [data-theme="light"] .search-box {
+            background: rgba(241, 245, 249, 0.9);
+            border-color: rgba(15, 23, 42, 0.06);
+        }
+        [data-theme="light"] .search-box:focus-within {
+            background: #ffffff;
+            border-color: #16a34a;
+            box-shadow: 0 0 20px rgba(22, 163, 74, 0.12);
+        }
+
+        /* =========================
+        UTILITY ICON SYSTEM CONTROLS
+        ========================= */
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sound-toggle,
+        .theme-toggle {
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            color: #94a3b8;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        [data-theme="light"] .sound-toggle,
+        [data-theme="light"] .theme-toggle {
+            background: rgba(15, 23, 42, 0.03);
+            color: #475569;
+            border-color: rgba(15, 23, 42, 0.05);
+        }
+
+        .sound-toggle:hover,
+        .theme-toggle:hover {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.25);
+            transform: translateY(-2px);
+        }
+
+        [data-theme="light"] .sound-toggle:hover,
+        [data-theme="light"] .theme-toggle:hover {
+            background: rgba(22, 163, 74, 0.08);
+            color: #16a34a;
+            border-color: rgba(22, 163, 74, 0.2);
+        }
+
+        /* Hamburger Drawer System Trigger */
+        .mobile-menu-toggle {
+            display: none;
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            color: #ffffff;
+            font-size: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        [data-theme="light"] .mobile-menu-toggle {
+            color: #0f172a;
+            border-color: rgba(0,0,0,0.06);
+            background: transparent;
+        }
+
+        .mobile-menu-toggle:hover {
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        /* ==========================================================================
+           RESPONSIVE STRUCTURAL OVERRIDES (MOBILE DRAWER CONFIG)
+           ========================================================================== */
+
+        @media (max-width: 950px) {
+            .logo-tagline { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 10px 8px; }
+            .nav-island { height: 64px; padding: 0 16px; border-radius: 16px; }
+            .mobile-menu-toggle { display: flex; z-index: 1100; }
+
+            .search-box {
+                position: absolute;
+                top: 80px;
+                left: 8px;
+                right: 8px;
+                max-width: calc(100% - 16px);
+                height: 44px;
+                background: #071227;
+                border-color: rgba(255,255,255,0.08);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            }
+            [data-theme="light"] .search-box {
+                background: #ffffff;
+                border-color: rgba(0,0,0,0.08);
+            }
+
+            .nav-controls {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 260px;
+                height: 100vh;
+                background: #071227;
+                border-left: 1px solid rgba(255, 255, 255, 0.08);
+                flex-direction: column;
+                justify-content: center;
+                gap: 20px;
+                padding: 2rem;
+                z-index: 1050;
+                transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            [data-theme="light"] .nav-controls {
+                background: #ffffff;
+                border-left: 1px solid rgba(0,0,0,0.06);
+            }
+
+            .nav-controls.mobile-active { right: 0; }
+            .sound-toggle, .theme-toggle { width: 50px; height: 50px; border-radius: 14px; }
+        }
 
         /* ── Reduced-motion overrides for playground ────────────────── */
         @media (prefers-reduced-motion: reduce) {
-            .playground-section {
-                animation: none;
+            .playground-section, .status-dot.loading, .navbar, .nav-island, .search-box {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
             }
-
-            .status-dot.loading {
-                animation: none;
-            }
-
-            .btn-run:hover:not(:disabled) {
-                transform: none;
-            }
-        }
-
-        .logo h1 {
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
+            .btn-run:hover:not(:disabled) { transform: none; }
         }
 
         .logo-icon {
@@ -355,391 +687,271 @@
             transition: all 0.3s ease;
         }
 
+        .logo { display: flex; align-items: center; }
+        .logo h1 { display:flex; align-items:center; gap:10px; margin:0; line-height:1; }
+
+        .navbar-logo {
+            width:58px; height:58px; object-fit:contain; top: 4px;
+            position: relative; top: 0; vertical-align: middle;
+            filter: drop-shadow(0 0 10px rgba(0,255,180,0.4));
+        }
+        .navbar-logo:hover {
+            transform: scale(1.06);
+            filter: drop-shadow(0 0 12px rgba(0, 255, 180, 0.55));
+        }
+
         .card-icon {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 20px;
-            background: linear-gradient(
-            135deg,
-            rgba(139, 92, 246, 0.15),
-            rgba(40, 115, 236, 0.15)
-            );
+            width: 72px; height: 72px; margin: 0 auto 1rem;
+            display: flex; align-items: center; justify-content: center; border-radius: 20px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(40, 115, 236, 0.15));
             transition: all 0.3s ease;
         }
+        .card-icon svg { width: 34px; height: 34px; stroke-width: 2.2; }
+        .project-card:hover .card-icon { transform: translateY(-4px) scale(1.08); }
 
-        .card-icon svg {
-            width: 34px;
-            height: 34px;
-            stroke-width: 2.2;
-        }
-
-        .project-card:hover .card-icon {
-            transform: translateY(-4px) scale(1.08);
-        }
-
-        .game-icon-rps {
-            color: #999fee;
-        }
-
-        .game-icon-dice {
-            color: #e04f4f;
-        }
-
-        .game-icon-coin {
-            color: #eab308;
-        }
-
-        .game-icon-target {
-            color: #5bc085;
-        }
-
-        .game-icon-hangman {
-            color: #b99b48;
-        }
-
-        .game-icon-word {
-            color: #8a99ee;
-        }
-
-        .game-icon-love {
-            color: #ec4899;
-        }
-
-        .game-icon-grid {
-            color: #5cf6a1;
-        }
-
-        .game-icon-lock {
-            color: #06b6d4;
-        }
-
-        .game-icon-brain {
-            color: #f59e0b;
-        }
-
-        .game-icon-snake {
-            color: #22c55e;
-        }
-
-        .game-icon-memory {
-            color: rgb(199, 199, 0);
-        }
-
-        .game-icon-hammer {
-            color: #8a5834;
-        }
-
-        .game-icon-puzzle {
-            color: #3b82f6;
-        }
-
-        .game-icon-bird {
-            color: #38bdf8;
-        }
+        .game-icon-rps { color: #999fee; }
+        .game-icon-dice { color: #e04f4f; }
+        .game-icon-coin { color: #eab308; }
+        .game-icon-target { color: #5bc085; }
+        .game-icon-hangman { color: #b99b48; }
+        .game-icon-word { color: #8a99ee; }
+        .game-icon-love { color: #ec4899; }
+        .game-icon-grid { color: #5cf6a1; }
+        .game-icon-lock { color: #06b6d4; }
+        .game-icon-brain { color: #f59e0b; }
+        .game-icon-snake { color: #22c55e; }
+        .game-icon-memory { color: rgb(199, 199, 0); }
+        .game-icon-hammer { color: #8a5834; }
+        .game-icon-puzzle { color: #3b82f6; }
+        .game-icon-bird { color: #38bdf8; }
 
         /* Math Icons */
-
-        .math-icon-fibonacci {
-            color: #10b981;
-        }
-
-        .math-icon-progress {
-            color: #06b6d4;
-        }
-
-        .math-icon-triangle {
-            color: #f59e0b;
-        }
-
-        .math-icon-gem {
-            color: #f65c71;
-        }
-
-        .math-icon-calc {
-            color: #06b6d4;
-        }
-
-        .math-icon-number {
-            color: #84cc16;
-        }
-
-        .math-icon-prime {
-            color: rgb(247, 79, 107);
-        }
-
-        .math-icon-rocket {
-            color: #f97316;
-        }
-
-        .math-icon-compass {
-            color: #14b8a6;
-        }
-
-        .math-icon-derivative {
-            color: #ec4899;
-        }  
+        .math-icon-fibonacci { color: #10b981; }
+        .math-icon-progress { color: #06b6d4; }
+        .math-icon-triangle { color: #f59e0b; }
+        .math-icon-gem { color: #f65c71; }
+        .math-icon-calc { color: #06b6d4; }
+        .math-icon-number { color: #84cc16; }
+        .math-icon-prime { color: rgb(247, 79, 107); }
+        .math-icon-rocket { color: #f97316; }
+        .math-icon-compass { color: #14b8a6; }
+        .math-icon-derivative { color: #ec4899; }  
 
         /* Utility Icons */
+        .utility-icon-radio { color: #3b82f6; }
+        .utility-icon-tower { color: #f97316; }
+        .utility-icon-convert { color: #22c55e; }
+        .utility-icon-typing { color: #5cdff6; }
 
-        .utility-icon-radio {
-            color: #3b82f6;
+        .btn-favorite {
+            position: absolute; top: 15px; right: 15px; background: transparent; border: none;
+            color: #94a3b8; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+            z-index: 10; font-size: 1.5rem; outline: none;
         }
+        .btn-favorite:hover { transform: scale(1.15); color: #ffffff; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4)); }
+        .btn-favorite.active { color: #22c55e; filter: drop-shadow(0 0 8px #22c55e) drop-shadow(0 0 16px #22c55e); }
 
-        .utility-icon-tower {
-            color: #f97316;
-        }
-
-        .utility-icon-convert {
-            color: #22c55e;
-        }
-
-        .utility-icon-typing {
-            color: #5cdff6;
-        }
+        [data-theme="light"] .btn-favorite:hover { color: #0f172a; filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.3)); }
+        [data-theme="light"] .btn-favorite.active { color: #16a34a; filter: drop-shadow(0 0 8px #16a34a) drop-shadow(0 0 15px #16a34a); }
     </style>
 </head>
 
 <body>
-    <!-- <script src="js/hero-canvas.js"></script> -->
-    <a href="#main-content" class="skip-link">
-        🚀 Skip to main content
-    </a>
+    <a href="#main-content" class="skip-link">🚀 Skip to main content</a>
 
-    <!-- Navigation -->
-    <nav class="navbar" aria-label="Primary">
-        <div class="container">
-            <div class="logo">
-                <h1>
-                    <i data-lucide="gamepad-2" class="logo-icon"></i>
-                    Python Mini Projects
-                </h1>
+    <nav class="navbar" id="mainNavbar" aria-label="Primary">
+        <div class="nav-island">
+
+            <div class="navbar-brand">
+                <a href="./index.html" class="logo-wrap">
+                    <span class="logo-prompt">~</span>
+                    <div class="logo-text">
+                        <span class="logo-py">py</span>
+                        <span class="logo-mini">.mini</span>
+                        <span class="logo-parens">()</span>
+                    </div>
+                    <span class="logo-tagline">lab</span>
+                </a>
             </div>
 
-        <!-- Search Bar -->
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input 
-                type="text" 
-                id="searchInput" 
-                placeholder="Search projects or games..."
-                aria-label="Search projects"
-            />
-        </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search labs or games..."
+                    aria-label="Search labs"
+                />
+            </div>
 
-        <div class="nav-controls">
-            <button type="button" class="sound-toggle" id="soundToggle" aria-label="Mute sounds">
-                <i class="fas fa-volume-up" aria-hidden="true"></i>
+            <div class="nav-controls" id="navControls">
+                <button type="button" class="sound-toggle" id="soundToggle" aria-label="Mute sounds">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+
+            <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+                <i class="fas fa-bars"></i>
             </button>
 
-            <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light mode">
-                <i class="fas fa-moon" aria-hidden="true"></i>
-            </button>
         </div>
+    </nav>
+
+<div class="sticky-filter-bar" id="stickyFilterBar" role="tablist" aria-label="Project categories (sticky)">
+    <div class="sticky-filter-inner">
+        <button class="sticky-tab active" data-sticky-category="all" role="tab" aria-selected="true" tabindex="0">
+            <i data-lucide="star" aria-hidden="true"></i><span>all</span>
+        </button>
+        <button class="sticky-tab" data-sticky-category="games" role="tab" aria-selected="false" tabindex="-1">
+            <i data-lucide="gamepad-2" aria-hidden="true"></i><span>games</span>
+        </button>
+        <button class="sticky-tab" data-sticky-category="math" role="tab" aria-selected="false" tabindex="-1">
+            <i data-lucide="hash" aria-hidden="true"></i><span>math</span>
+        </button>
+        <button class="sticky-tab" data-sticky-category="utilities" role="tab" aria-selected="false" tabindex="-1">
+            <i data-lucide="lock" aria-hidden="true"></i><span>utilities</span>
+        </button>
+        <button class="sticky-tab" data-sticky-category="playground" role="tab" aria-selected="false" tabindex="-1">
+            <i data-lucide="terminal" aria-hidden="true"></i><span>playground</span>
+        </button>
     </div>
-</nav>
+</div>
 
     <main id="main-content" tabindex="-1">
-        <!-- Hero Section -->
-        <section class="hero-section" aria-label="Welcome">
-            <div class="hero-background"></div>
-            <canvas id="boardCanvas"></canvas>
+            <div class="hero-background color-bends-container" aria-hidden="true"></div>
+            <div class="hero-code-snippets" aria-hidden="true">
+                <span class="code-snippet snippet-one">score += 1</span>
+                <span class="code-snippet snippet-two">if guess == word:</span>
+                <span class="code-snippet snippet-three">print("You win!")</span>
+                <span class="code-snippet snippet-four">while lives &gt; 0:</span>
+                <span class="code-snippet snippet-five">roll = randint(1, 6)</span>
+                <span class="code-snippet snippet-six">moves.append(player)</span>
+                <span class="code-snippet snippet-seven">return is_prime(n)</span>
+            </div>
             <div class="container">
                 <div class="hero-content">
-                    <h2 class="hero-title">Learn Python the Fun Way!</h2>
-                    <p class="hero-subtitle">25+ Mini Projects • Beautiful UI • Beginner Friendly • Zero Dependencies</p>
-
-                    <div class="hero-features" role="tablist" aria-label="Project categories">
-                        <button class="feature-badge tab active" data-category="all"
-                                role="tab" aria-selected="true" tabindex="0">
-                            <span class="feature-icon"><i data-lucide="star"></i></span>
-                            <span class="feature-label">All Projects</span>
-                        </button>
-                        <button class="feature-badge tab" data-category="games"
-                                role="tab" aria-selected="false" tabindex="-1">
-                            <span class="feature-icon"><i data-lucide="gamepad-2"></i></span>
-                            <span class="feature-label">Games</span>
-                        </button>
-                        <button class="feature-badge tab" data-category="math"
-                                role="tab" aria-selected="false" tabindex="-1">
-                            <span class="feature-icon"><i data-lucide="hash"></i></span>
-                            <span class="feature-label">Math</span>
-                        </button>
-                        <button class="feature-badge tab" data-category="utilities"
-                                role="tab" aria-selected="false" tabindex="-1">
-                            <span class="feature-icon"><i data-lucide="lock"></i></span>
-                            <span class="feature-label">Utilities</span>
-                        </button>
-                        <!--
-                            PLAYGROUND TAB
-                            data-category="playground" is detected by main.js
-                            and delegates to window.playgroundAPI instead of
-                            running applyCategoryFilter().
-                        -->
-                        <button class="feature-badge tab" data-category="playground" id="playgroundTab"
-                                role="tab" aria-selected="false" tabindex="-1">
-                            <span class="feature-icon"><i data-lucide="terminal"></i></span>
-                            <span class="feature-label">Playground</span>
-                        </button>
+                    <p class="hero-kicker">interactive python lab</p>
+                    <h1 class="hero-title">Learn Python the Fun Way!</h1>
+                    <p class="hero-subtitle">Small browser experiments for games, math, utilities, and terminal-style practice.</p>
+                    <div class="hero-meta" aria-label="Project summary">
+                        <span id="projectCountBadge">25+ projects</span>
+                        <span>zero setup</span>
+                        <span>beginner friendly</span>
                     </div>
 
-                    <button class="btn-random-project" id="randomProjectBtn"
-                            title="Discover a random project!">
-                        <i data-lucide="dice-5"></i> Random Project
+                    <div class="hero-features" role="tablist" aria-label="Project categories">
+                        <button class="feature-badge tab active" data-category="all" role="tab" aria-selected="true" tabindex="0">
+                            <span class="feature-icon"><i data-lucide="star"></i></span><span class="feature-label">all</span>
+                        </button>
+                        <button class="feature-badge tab" data-category="games" role="tab" aria-selected="false" tabindex="-1">
+                            <span class="feature-icon"><i data-lucide="gamepad-2"></i></span><span class="feature-label">games</span>
+                        </button>
+                        <button class="feature-badge tab" data-category="math" role="tab" aria-selected="false" tabindex="-1">
+                            <span class="feature-icon"><i data-lucide="hash"></i></span><span class="feature-label">math</span>
+                        </button>
+                        <button class="feature-badge tab" data-category="utilities" role="tab" aria-selected="false" tabindex="-1">
+                            <span class="feature-icon"><i data-lucide="lock"></i></span><span class="feature-label">utilities</span>
+                        </button>
+                        <button class="feature-badge tab" data-category="playground" id="playgroundTab" role="tab" aria-selected="false" tabindex="-1">
+                            <span class="feature-icon"><i data-lucide="terminal"></i></span><span class="feature-label">playground</span>
+                        </button>
+                    </div>
+                    <button class="feature-badge tab" data-category="favorites" role="tab" aria-selected="false" tabindex="-1">
+                        <span class="feature-icon"><i class="fas fa-star"></i></span><span class="feature-label">Favorites</span>
                     </button>
+                    <button class="btn-random-project" id="randomProjectBtn" title="Discover a random project!">launch random →</button>
                 </div>
             </div>
-        </section>
 
-        <!-- ── Projects Grid ──────────────────────────────────────── -->
         <section class="projects-section" aria-label="Projects">
             <div class="container">
                 <div class="projects-grid" id="projectsGrid">
-
-                    <!-- GAMES -->
-                    <div class="project-card" data-category="games" data-project="rock-paper-scissor"
-                        data-tags="game,random,choice,strategy,decision">
-                        <div class="card-icon game-icon-rps">
-                            <i data-lucide="scissors"></i>
-                        </div>
-                        <h3>Rock Paper Scissors</h3>
-                        <p>Battle against the computer!</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="games" data-project="2048-game" data-tags="game,puzzle,2048,logic,tiles">
+                        <div class="card-icon game-icon-puzzle"><i data-lucide="blocks"></i></div>
+                        <h3>2048 Game</h3><p>Combine tiles and reach 2048!</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="games" data-project="dice-rolling"
-                         data-tags="game,random,animation,probability">
-                        <div class="card-icon game-icon-dice">
-                            <i data-lucide="dice-5"></i>
-                        </div>
-                        <h3>Dice Rolling</h3>
-                        <p>Roll the dice with 3D animation!</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="math" data-project="progression-recognizer" data-tags="math,sequence,progression,arithmetic,geometric">
+                        <div class="card-icon math-icon-progress"><i data-lucide="sigma"></i></div>
+                        <h3>AP/GP/AGP/HP Recognizer</h3><p>Identify progression types from any sequence.</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="games" data-project="coin-flip"
-                         data-tags="game,random,animation,probability,heads,tails">
-                        <div class="card-icon game-icon-coin">
-                            <i data-lucide="coins"></i>
-                        </div>
-                        <h3>Coin Flip</h3>
-                        <p>Heads or tails with spinning animation!</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="math" data-project="armstrong" data-tags="math,number,digits,power">
+                        <div class="card-icon math-icon-gem"><i data-lucide="gem"></i></div>
+                        <h3>Armstrong Numbers</h3><p>Check special number properties!</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="games" data-project="number-guessing"
-                         data-tags="game,logic,loops,conditional">
-                        <div     class="card-icon game-icon-target">
-                            <i data-lucide="target"></i>
-                        </div>
-                        <h3>Number Guessing</h3>
-                        <p>Guess the secret number!</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="math" data-project="calculator" data-tags="math,calculator,arithmetic,operations">
+                        <div class="card-icon math-icon-calc"><i data-lucide="calculator"></i></div>
+                        <h3>Calculator</h3><p>Your mathematical companion!</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="games" data-project="hangman"
-                         data-tags="game,word,letters,logic,string">
-                        <div class="card-icon game-icon-hangman">
-                            <i data-lucide="person-standing"></i>
-                        </div>
-                        <h3>Hangman</h3>
-                        <p>Classic word-guessing game!</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="games" data-project="coin-flip" data-tags="game,random,animation,probability,heads,tails">
+                        <div class="card-icon game-icon-coin"><i data-lucide="coins"></i></div>
+                        <h3>Coin Flip</h3><p>Heads or tails with spinning animation!</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="games" data-project="word-scramble">
-                        <div class="card-icon game-icon-word">
-                            <i data-lucide="shuffle"></i>
-                        </div>
-                        <h3>Word Scramble</h3>
-                        <p>Unscramble words before attempts run out!</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="math" data-project="collatz" data-tags="math,conjecture,algorithm,sequence">
+                        <div class="card-icon math-icon-number"><i data-lucide="hash"></i></div>
+                        <h3>Collatz Conjecture</h3><p>Explore the 3n+1 problem!</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="games" data-project="flames">
-                        <div class="card-icon game-icon-love">
-                            <i data-lucide="heart"></i>
-                        </div>
-                        <h3>FLAMES Game</h3>
-                        <p>Discover your relationship status!</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="utilities" data-project="color-palette" data-tags="utility,color,palette,css,design,theme,website">
+                        <div class="card-icon utility-icon-typing"><i data-lucide="palette"></i></div>
+                        <h3>Color Palette Suggestor</h3><p>Generate palettes + CSS snippets for any website type and mood!</p><button class="btn-play">Try It</button>
                     </div>
-
+                    <div class="project-card" data-category="math" data-project="coordinate-polar-transform" data-tags="math,coordinate,transformation,geometry">
+                        <div class="card-icon math-icon-compass"><i data-lucide="compass"></i></div>
+                        <h3>Coordinate to Polar</h3><p>Transform Cartesian (x, y) into polar (r, theta).</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="math" data-project="derivative-calculator" data-tags="math,calculus,derivative,polynomial">
+                        <div class="card-icon math-icon-derivative"><i data-lucide="function-square"></i></div>
+                        <h3>Derivative Calculator</h3><p>Compute 1st/nth polynomial derivatives and evaluate them.</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="dice-rolling" data-tags="game,random,animation,probability">
+                        <div class="card-icon game-icon-dice"><i data-lucide="dice-5"></i></div>
+                        <h3>Dice Rolling</h3><p>Roll the dice with 3D animation!</p><button class="btn-play">Try It</button>
+                    </div>
                     <div class="project-card" data-category="games" data-project="dots-boxes">
-                        <div class="card-icon game-icon-grid">
-                            <i data-lucide="grid-3x3"></i>
-                        </div>
-                       <h3>Dots & Boxes AI</h3> 
-                        <p>Challenge friends or AI in this strategy game!</p>
-                        <button class="btn-play">Try It</button>
+                        <div class="card-icon game-icon-grid"><i data-lucide="grid-3x3"></i></div>
+                        <h3>Dots & Boxes AI</h3><p>Challenge friends or AI in this strategy game!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="emoji-memory">
+                        <div class="card-icon game-icon-memory"><i data-lucide="smile"></i></div>
+                        <h3>Emoji Memory Game</h3><p>Test your memory with matching emojis!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="math" data-project="fibonacci" data-tags="math,sequence,series,loops,recursion">
+                        <div class="card-icon math-icon-fibonacci"><i data-lucide="sparkles"></i></div>
+                        <h3>Fibonacci Series</h3><p>Generate Fibonacci sequences!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="flames">
+                        <div class="card-icon game-icon-love"><i data-lucide="heart"></i></div>
+                        <h3>FLAMES Game</h3><p>Discover your relationship status!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="flappy-game">
+                        <div class="card-icon game-icon-bird"><i data-lucide="bird"></i></div>
+                        <h3>Flappy Game</h3><p>Dodge the incoming balls and survive!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="hangman" data-tags="game,word,letters,logic,string">
+                        <div class="card-icon game-icon-hangman"><i data-lucide="person-standing"></i></div>
+                        <h3>Hangman</h3><p>Classic word-guessing game!</p><button class="btn-play">Try It</button>
                     </div>
 
-                    <div class="project-card" data-category="games" data-project="password-forge">
-                        <div class="card-icon game-icon-lock">
-                            <i data-lucide="shield-check"></i>
-                        </div>
-                        <h3>Password Forge</h3>
-                        <p>Survive evolving firewall password rules!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
+                    <div class="project-card" data-category="games" data-project="simon-says"
+                        data-tags="game,memory,reflex,pattern,sequence">
 
-                    <div class="project-card" data-category="games" data-project="math-quiz"
-                        data-tags="game,math,quiz,mcq,lives,streak">
-                        <div class="card-icon game-icon-brain">
+                        <div class="card-icon game-icon-memory">
                             <i data-lucide="brain"></i>
                         </div>
-                        <h3>Math Quiz</h3>
-                        <p>MCQ quiz with lives, streaks & difficulty levels!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
 
-                    <div class="project-card" data-category="games" data-project="snake-game">
-                        <div class="card-icon game-icon-snake">
-                            <i data-lucide="bug"></i>
-                        </div>
-                        <h3>Snake Game</h3>
-                        <p>Classic snake game!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
+                        <h3>Simon Says</h3>
 
-                    <div class="project-card" data-category="games" data-project="emoji-memory">
-                        <div class="card-icon game-icon-memory">
-                            <i data-lucide="smile"></i>
-                        </div>
-                        <h3>Emoji Memory Game</h3>
-                        <p>Test your memory with matching emojis!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
+                        <p>
+                            Repeat the pattern and test your memory skills!
+                        </p>
 
-                    <div class="project-card" data-category="games" data-project="whack-a-mole">
-                        <div class="card-icon game-icon-hammer">
-                            <i data-lucide="hammer"></i>
-                        </div>                        
-                        <h3>Whack-a-Mole</h3>
-                        <p>Hit the moles before they disappear!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
+                        <button class="btn-play">
+                            Try It
+                        </button>
 
-                    <div class="project-card" data-category="games" data-project="flappy-game">
-                        <div class="card-icon game-icon-bird">
-                            <i data-lucide="bird"></i>
-                        </div>
-                        <h3>Flappy Game</h3>
-                        <p>Dodge the incoming balls and survive!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="games" data-project="2048-game"
-                         data-tags="game,puzzle,2048,logic,tiles">
-                        <div class="card-icon game-icon-puzzle">
-                            <i data-lucide="blocks"></i>
-                        </div>
-                        <h3>2048 Game</h3>
-                        <p>Combine tiles and reach 2048!</p>
-                        <button class="btn-play">Try It</button>
                     </div>
 
                     <!-- MATH -->
@@ -751,137 +963,63 @@
                         <h3>Fibonacci Series</h3>
                         <p>Generate Fibonacci sequences!</p>
                         <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="games" data-project="math-quiz" data-tags="game,math,quiz,mcq,lives,streak">
+                        <div class="card-icon game-icon-brain"><i data-lucide="brain"></i></div>
+                        <h3>Math Quiz</h3><p>MCQ quiz with lives, streaks & difficulty levels!</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="math" data-project="progression-recognizer"
-                         data-tags="math,sequence,progression,arithmetic,geometric">
-                        <div class="card-icon math-icon-progress">
-                            <i data-lucide="sigma"></i>
-                        </div>
-                        <h3>AP/GP/AGP/HP Recognizer</h3>
-                        <p>Identify progression types from any sequence.</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="utilities" data-project="morse-code" data-tags="utility,morse,translation,communication">
+                        <div class="card-icon utility-icon-radio"><i data-lucide="radio"></i></div>
+                        <h3>Morse Code</h3><p>Translate with lights &amp; sound!</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="math" data-project="pascal-triangle"
-                         data-tags="math,triangle,visualization,recursion">
-                        <div class="card-icon math-icon-triangle">
-                            <i data-lucide="triangle"></i>
-                        </div>  
-                        <h3>Pascal's Triangle</h3>
-                        <p>Beautiful hexagon visualization!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="armstrong"
-                         data-tags="math,number,digits,power">
-                        <div class="card-icon math-icon-gem">
-                            <i data-lucide="gem"></i>
-                        </div>
-                        <h3>Armstrong Numbers</h3>
-                        <p>Check special number properties!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="calculator"
-                         data-tags="math,calculator,arithmetic,operations">
-                       <div class="card-icon math-icon-calc">
-                            <i data-lucide="calculator"></i>
-                        </div>
-                        <h3>Calculator</h3>
-                        <p>Your mathematical companion!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="collatz"
-                         data-tags="math,conjecture,algorithm,sequence">
-                        <div class="card-icon math-icon-number">
-                            <i data-lucide="hash"></i>
-                        </div>
-                        <h3>Collatz Conjecture</h3>
-                        <p>Explore the 3n+1 problem!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="prime-analyzer"
-                         data-tags="math,prime,factors,algorithm">
-                        <div class="card-icon math-icon-prime">
-                            <i data-lucide="sparkles"></i>
-                        </div>
-                        <h3>Prime Analyzer</h3>
-                        <p>All-in-one prime number toolkit!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="projectile-motion"
-                         data-tags="math,physics,motion,calculation">
-                        <div class="card-icon math-icon-rocket">
-                            <i data-lucide="rocket"></i>
-                        </div>
-                        <h3>Projectile Motion</h3>
-                        <p>Calculate TOF, Hmax, and Range with physics!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="coordinate-polar-transform"
-                         data-tags="math,coordinate,transformation,geometry">
-                        <div class="card-icon math-icon-compass">
-                            <i data-lucide="compass"></i>
-                        </div>
-                        <h3>Coordinate to Polar</h3>
-                        <p>Transform Cartesian (x, y) into polar (r, theta).</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="derivative-calculator"
-                         data-tags="math,calculus,derivative,polynomial">
-                        <div class="card-icon math-icon-derivative">
-                            <i data-lucide="function-square"></i>
-                        </div>
-                        <h3>Derivative Calculator</h3>
-                        <p>Compute 1st/nth polynomial derivatives and evaluate them.</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="utilities" data-project="morse-code"
-                         data-tags="utility,morse,translation,communication">
-                        <div class="card-icon utility-icon-radio">
-                            <i data-lucide="radio"></i>
-                        </div>
-                        <h3>Morse Code</h3>
-                        <p>Translate with lights &amp; sound!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="utilities" data-project="tower-of-hanoi"
-                         data-tags="utility,puzzle,recursion,algorithm">
-                        <div class="card-icon utility-icon-tower">
-                            <i data-lucide="tower-control"></i>
-                        </div>
-                        <h3>Tower of Hanoi</h3>
-                        <p>Solve the classic puzzle!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
                     <div class="project-card" data-category="utilities" data-project="number-converter">
-                        <div class="card-icon utility-icon-convert">
-                            <i data-lucide="refresh-cw"></i>
-                        </div>
-                        <h3>Number Converter</h3>
-                        <p>Convert Dec, Bin, Oct, and Hex!</p>
-                        <button class="btn-play">Try It</button>
+                        <div class="card-icon utility-icon-convert"><i data-lucide="refresh-cw"></i></div>
+                        <h3>Number Converter</h3><p>Convert Dec, Bin, Oct, and Hex!</p><button class="btn-play">Try It</button>
                     </div>
-
-                    <div class="project-card" data-category="utilities" data-project="typing-speed-tester">
-                        <div class="card-icon utility-icon-typing">
-                            <i data-lucide="keyboard"></i>
-                        </div>
-                        <h3>Typing Speed Tester</h3>
-                        <p>Test your typing skills!</p>
-                        <button class="btn-play">Try It</button>
+                    <div class="project-card" data-category="games" data-project="number-guessing" data-tags="game,logic,loops,conditional">
+                        <div class="card-icon game-icon-target"><i data-lucide="target"></i></div>
+                        <h3>Number Guessing</h3><p>Guess the secret number!</p><button class="btn-play">Try It</button>
                     </div>
-
-                </div><!-- /projects-grid -->
+                    <div class="project-card" data-category="math" data-project="pascal-triangle" data-tags="math,triangle,visualization,recursion">
+                        <div class="card-icon math-icon-triangle"><i data-lucide="triangle"></i></div>
+                        <h3>Pascal's Triangle</h3><p>Beautiful hexagon visualization!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="password-forge">
+                        <div class="card-icon game-icon-lock"><i data-lucide="shield-check"></i></div>
+                        <h3>Password Forge</h3><p>Survive evolving firewall password rules!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="math" data-project="prime-analyzer" data-tags="math,prime,factors,algorithm">
+                        <div class="card-icon math-icon-prime"><i data-lucide="sparkles"></i></div>
+                        <h3>Prime Analyzer</h3><p>All-in-one prime number toolkit!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="math" data-project="projectile-motion" data-tags="math,physics,motion,calculation">
+                        <div class="card-icon math-icon-rocket"><i data-lucide="rocket"></i></div>
+                        <h3>Projectile Motion</h3><p>Calculate TOF, Hmax, and Range with physics!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="rock-paper-scissor" data-tags="game,random,choice,strategy,decision">
+                        <div class="card-icon game-icon-rps"><i data-lucide="scissors"></i></div>
+                        <h3>Rock Paper Scissors</h3><p>Battle against the computer!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="snake-game">
+                        <div class="card-icon game-icon-snake"><i data-lucide="bug"></i></div>
+                        <h3>Snake Game</h3><p>Classic snake game!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="utilities" data-project="tower-of-hanoi" data-tags="utility,puzzle,recursion,algorithm">
+                        <div class="card-icon utility-icon-tower"><i data-lucide="tower-control"></i></div>
+                        <h3>Tower of Hanoi</h3><p>Solve the classic puzzle!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="utilities" data-project="typing-speed-tester" data-tags="utility,typing,speed,tester">
+                        <div class="card-icon utility-icon-typing"><i data-lucide="keyboard"></i></div>
+                        <h3>Typing Speed Tester</h3><p>Test your typing skills!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="whack-a-mole">
+                        <div class="card-icon game-icon-hammer"><i data-lucide="hammer"></i></div>
+                        <h3>Whack-a-Mole</h3><p>Hit the moles before they disappear!</p><button class="btn-play">Try It</button>
+                    </div>
+                    <div class="project-card" data-category="games" data-project="word-scramble" data-tags="game,word,scramble,letters">
+                        <div class="card-icon game-icon-word"><i data-lucide="shuffle"></i></div>
+                        <h3>Word Scramble</h3><p>Unscramble words before attempts run out!</p><button class="btn-play">Try It</button>
+                    </div>
+                </div>
                 
                 <div id="emptyState" class="empty-state" style="display: none;">
                     <p>No Projects right now :)</p>
@@ -890,191 +1028,107 @@
             </div>
         </section>
 
-        <!-- ── Python Playground Section ──────────────────────────── -->
-        <!--
-            Hidden by default (display:none set in playground.js).
-            Shown only when the 🐍 Playground tab is clicked.
-            Completely separate from the modal system – no conflicts.
-        -->
         <section class="playground-section" id="playgroundSection" aria-label="Python Playground">
             <div class="container">
-
-                <!-- Header -->
                 <div class="playground-header">
                     <div class="playground-title-row">
                         <h2 class="playground-title">🐍 Python Playground</h2>
-                        <div class="playground-status" id="playgroundStatus" aria-live="polite"
-                            aria-label="Pyodide status">
-                            <span class="status-dot" id="statusDot"></span>
-                            <span id="statusText">Open tab to load Python</span>
+                        <div class="playground-status" id="playgroundStatus" aria-live="polite">
+                            <span class="status-dot" id="statusDot"></span><span id="statusText">Open tab to load Python</span>
                         </div>
                     </div>
-                    <p class="playground-subtitle">
-                        Write and run real Python code in your browser — powered by
-                        <a href="https://pyodide.org" target="_blank" rel="noopener noreferrer">Pyodide</a>.
-                        No install, no backend.
-                    </p>
-                    <p class="playground-hint">
-                        <kbd>Ctrl</kbd>+<kbd>Enter</kbd> runs code &nbsp;·&nbsp;
-                        <kbd>Tab</kbd> inserts 4 spaces
-                    </p>
+                    <p class="playground-subtitle">Write and run real Python code in your browser — powered by <a href="https://pyodide.org" target="_blank" rel="noopener noreferrer">Pyodide</a>.</p>
                 </div>
 
-                <!-- Editor + Console side-by-side -->
                 <div class="playground-body">
-
-                    <!-- Code Editor panel -->
                     <div class="editor-panel">
                         <div class="panel-header">
-                            <span>
-                                <i class="fas fa-code" aria-hidden="true"></i>
-                                Code Editor
-                            </span>
+                            <span><i class="fas fa-code"></i> Code Editor</span>
                             <div class="editor-actions">
-                                <button type="button" class="btn-panel-action" id="loadExample"
-                                    title="Load a sample snippet">
-                                    <i class="fas fa-lightbulb" aria-hidden="true"></i> Example
-                                </button>
-                                <button type="button" class="btn-panel-action" id="clearEditor"
-                                    title="Clear the editor">
-                                    <i class="fas fa-trash-alt" aria-hidden="true"></i> Clear
-                                </button>
+                                <button type="button" class="btn-panel-action" id="loadExample"><i class="fas fa-lightbulb"></i> Example</button>
+                                <button type="button" class="btn-panel-action" id="clearEditor"><i class="fas fa-trash-alt"></i> Clear</button>
                             </div>
                         </div>
-                        <textarea id="pythonEditor" spellcheck="false" autocorrect="off" autocapitalize="off"
-                            aria-label="Python code editor"
-                            placeholder="# Write your Python code here…&#10;print('Hello, World!')"></textarea>
+                        <textarea id="pythonEditor" spellcheck="false" placeholder="# Write your Python code here…&#10;print('Hello, World!')"></textarea>
                     </div>
 
-                    <!-- Console output panel -->
                     <div class="console-panel">
                         <div class="panel-header">
-                            <span>
-                                <i class="fas fa-terminal" aria-hidden="true"></i>
-                                Output Console
-                            </span>
-                            <button type="button" class="btn-panel-action" id="clearConsole" title="Clear the console">
-                                <i class="fas fa-times-circle" aria-hidden="true"></i> Clear
-                            </button>
+                            <span><i class="fas fa-terminal"></i> Output Console</span>
+                            <button type="button" class="btn-panel-action" id="clearConsole"><i class="fas fa-times-circle"></i> Clear</button>
                         </div>
-                        <pre id="consoleOutput" class="console-output" aria-live="polite"
-                            aria-label="Console output"></pre>
+                        <pre id="consoleOutput" class="console-output"></pre>
                     </div>
-
-                </div><!-- /playground-body -->
-
-                <!-- Run button row -->
-                <div class="playground-controls">
-                    <button type="button" class="btn-run" id="runCode" disabled aria-label="Run Python code">
-                        <i class="fas fa-play" aria-hidden="true"></i>
-                        Run Code
-                    </button>
-                    <span class="run-hint">
-                        or press <kbd>Ctrl</kbd>+<kbd>Enter</kbd>
-                    </span>
                 </div>
 
+                <div class="playground-controls">
+                    <button type="button" class="btn-run" id="runCode" disabled><i class="fas fa-play"></i> Run Code</button>
+                    <button type="button" class="btn-stop" id="stopCode" disabled><i class="fas fa-stop"></i> Stop Execution</button>
+                </div>
             </div>
         </section>
+    </main>
 
-    </main><!-- /main -->
-
-    <!-- Project Modal (unchanged) -->
-    <div class="modal" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="modalDialogTitle"
-        aria-hidden="true">
+    <div class="modal" id="projectModal" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="modal-content">
-            <h2 id="modalDialogTitle" class="modal-dialog-title visually-hidden" tabindex="-1">Interactive project</h2>
-            <button type="button" class="modal-close" id="modalClose" aria-label="Close project dialog">&times;</button>
+            <button type="button" class="modal-close" id="modalClose">&times;</button>
             <div id="modalBody"></div>
         </div>
     </div>
 
-    <!-- Back to Top Button (unchanged) -->
-    <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
-        <i class="fas fa-arrow-up" aria-hidden="true"></i>
-    </button>
+    <button type="button" class="back-to-top" id="backToTop" title="Back to top"><i class="fas fa-arrow-up"></i></button>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
                     <h2>🎮 Python Mini Projects</h2>
-                    <p>Learn Python the Fun Way! Interactive games, math visualizations, and utilities built directly in
-                        your browser.</p>
+                    <p>Learn Python the Fun Way! Interactive games, math visualizations, and utilities built directly in your browser.</p>
                     <div class="footer-social-icons">
-                        <a href="https://github.com/steam-bell-92/python-mini-project" target="_blank"
-                            rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="https://x.com/AnujKulkarni040" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.linkedin.com/in/anuj-chandrakant-kulkarni" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.instagram.com/obscura.nuj" aria-label="YouTube"><i class="fab fa-instagram"></i></a>
+                        <a href="https://github.com/steam-bell-92/python-mini-project" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                        <a href="https://x.com/AnujKulkarni040"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.linkedin.com/in/anuj-chandrakant-kulkarni"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/obscura.nuj"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
                 <div class="footer-links">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#main-content"
-                                onclick="document.querySelector('[data-category=\'games\']').click()">Games</a></li>
-                        <li><a href="#main-content"
-                                onclick="document.querySelector('[data-category=\'math\']').click()">Math</a></li>
-                        <li><a href="#main-content"
-                                onclick="document.querySelector('[data-category=\'utilities\']').click()">Utilities</a></li>
-                        <li><a href="#main-content"
-                                onclick="document.querySelector('[data-category=\'playground\']').click()">Playground</a></li>
+                        <li><a href="./games.html">Games</a></li>
+                        <li><a href="./math.html">Math</a></li>
+                        <li><a href="./utilities.html">Utilities</a></li>
+                        <li><a href="#main-content" onclick="document.querySelector('[data-category=\'favorites\']').click()">Favorites</a></li>
+                        <li><a href="#main-content" onclick="document.querySelector('[data-category=\'playground\']').click()">Playground</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h3>Resources</h3>
                     <ul>
-                        <li><a href="https://github.com/steam-bell-92/python-mini-project/blob/main/README.md"><i
-                                    class="fas fa-book" aria-hidden="true"></i> Documentation</a></li>
-                        <li><a
-                                href="https://github.com/steam-bell-92/python-mini-project/blob/a54ac8251fd79a6b7f4e43b54720c7f45225ac7e/CONTRIBUTING.md"><i
-                                    class="fas fa-code-branch" aria-hidden="true"></i>
-                                Contribute</a></li>
-                        <li><a href="https://github.com/steam-bell-92/python-mini-project/issues/new"><i
-                                    class="fas fa-bug" aria-hidden="true"></i> Report a Bug</a></li>
-                        <li><a href="https://github.com/steam-bell-92/python-mini-project/blob/main/README.md"><i
-                                    class="fas fa-question-circle" aria-hidden="true"></i> FAQ</a></li>
+                        <li><a href="https://github.com/steam-bell-92/python-mini-project/blob/main/README.md"><i class="fas fa-book"></i> Documentation</a></li>
+                        <li><a href="https://github.com/steam-bell-92/python-mini-project/blob/main/CONTRIBUTING.md"><i class="fas fa-code-branch"></i> Contribute</a></li>
+                        <li><a href="https://github.com/steam-bell-92/python-mini-project/issues/new"><i class="fas fa-bug"></i> Report a Bug</a></li>
+                        <li><a href="https://github.com/steam-bell-92/python-mini-project/blob/main/README.md"><i class="fas fa-question-circle"></i> FAQ</a></li>
                     </ul>
                 </div>
                 <div class="footer-newsletter">
                     <h3>Stay Updated</h3>
-                    <p>Get notified about new projects and features!</p>
                     <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thanks for subscribing!');">
-                        <input type="email" placeholder="Enter your email" required aria-label="Email for newsletter">
-                        <button type="submit" aria-label="Subscribe">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                        <input type="email" placeholder="Enter your email" required>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
                     </form>
                 </div>
             </div>
             <div class="footer-bottom">
                 <div class="footer-bottom-links">
-                    <a href="#">Privacy Policy</a>
-                    <span class="separator">•</span>
-                    <a href="#">Terms of Service</a>
+                    <a href="./privacy-policy.html">Privacy Policy</a><span class="separator">•</span><a href="#">Terms of Service</a>
                 </div>
                 <p>Made with ❤️ for Python learners everywhere &copy; 2026</p>
             </div>
         </div>
     </footer>
 
-    <!-- ─────────────────────────────────────────────────────────────
-         SCRIPTS  –  load order matters:
-           1. audio.js          (no deps)
-           2. project modules   (no deps)
-           3. projects.js       (registry, depends on project modules)
-           4. playground.js     (NEW – sets window.PYODIDE + window.playgroundAPI)
-           5. main.js           (depends on projects.js + window.playgroundAPI)
-
-         Pyodide itself is loaded lazily inside playground.js when the
-         user clicks the 🐍 Playground tab. It is NEVER loaded eagerly
-         and therefore NEVER blocks the modal system or any other UI.
-    ──────────────────────────────────────────────────────────────── -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="js/audio.js"></script>
-    
     <script src="js/projects/rock-paper-scissor.js"></script>
     <script src="js/projects/dice-rolling.js"></script>
     <script src="js/projects/coin-flip.js"></script>
@@ -1103,57 +1157,70 @@
     <script src="js/projects/number-converter.js"></script>
     <script src="js/projects/password-forge.js"></script>
     <script src="js/projects/typing-speed-tester.js"></script>
+    <script src="js/projects/productive-pet.js"></script>
     <script src="js/projects/whack-a-mole.js"></script>
     <script src="js/projects/word-scramble.js"></script>
     <script src="js/projects/snake.js"></script>
     <script src="js/projects/spot-the-difference.js"></script>
+    <script src="js/projects/color-palette.js"></script>
 
-    <!-- Registry: maps project names to their module functions -->
     <script src="js/projects.js"></script>
-
-    <!--
-        playground.js MUST come before main.js so that
-        window.playgroundAPI is defined when main.js runs.
-        No Pyodide CDN tag here — Pyodide is injected lazily.
-    -->
     <script src="js/playground.js"></script>
-
-    <!-- Main app logic -->
     <script src="js/main.js"></script>
-    <script>
-        lucide.createIcons();
-    </script>
+    <script>lucide.createIcons();</script>
     <script src="js/hero-canvas.js"></script>
 
     <script>
-        lucide.createIcons();
-    </script>
-    <!-- Search Functionality -->
-<script>
-const searchInput = document.getElementById("searchInput");
+    const searchInput = document.getElementById("searchInput");
+    const projectCards = document.querySelectorAll(".project-card");
 
-// Select all project cards
-const projectCards = document.querySelectorAll(".project-card");
+    searchInput.addEventListener("input", () => {
+        const searchValue = searchInput.value.toLowerCase();
+        projectCards.forEach(card => {
+            const title = card.querySelector("h3").textContent.toLowerCase();
+            const description = card.querySelector("p").textContent.toLowerCase();
+            if (title.includes(searchValue) || description.includes(searchValue)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
 
-searchInput.addEventListener("input", () => {
-    const searchValue = searchInput.value.toLowerCase();
-
-    projectCards.forEach(card => {
-        const title = card.querySelector("h3").textContent.toLowerCase();
-        const description = card.querySelector("p").textContent.toLowerCase();
-
-        if (
-            title.includes(searchValue) ||
-            description.includes(searchValue)
-        ) {
-            card.style.display = "block";
+    // Handle Scroll Transitions to resize the floating layout dynamically
+    const mainNavbar = document.getElementById("mainNavbar");
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 40) {
+            mainNavbar.classList.add("scrolled");
         } else {
-            card.style.display = "none";
+            mainNavbar.classList.remove("scrolled");
         }
+    });
+
+    // Mobile Navigation Controls Open/Close interface handlers
+    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+    const navControls = document.getElementById("navControls");
+
+    mobileMenuToggle.addEventListener("click", () => {
+        const isActive = navControls.classList.toggle("mobile-active");
+        mobileMenuToggle.setAttribute("aria-expanded", isActive);
+        mobileMenuToggle.querySelector("i").className = isActive ? "fas fa-times" : "fas fa-bars";
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!navControls.contains(e.target) && !mobileMenuToggle.contains(e.target) && navControls.classList.contains("mobile-active")) {
+            navControls.classList.remove("mobile-active");
+            mobileMenuToggle.setAttribute("aria-expanded", "false");
+            mobileMenuToggle.querySelector("i").className = "fas fa-bars";
+        }
+    });
+
+document.querySelectorAll('.tab, .sticky-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+        searchInput.value = '';
     });
 });
 </script>
 
 </body>
-
 </html>

@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var randomProjectBtn = document.getElementById('randomProjectBtn');
     var playgroundSection = document.getElementById('playgroundSection');
     var projectsSection = document.querySelector('.projects-section');
+    var stickyFilterBar = document.getElementById('stickyFilterBar');
+    var stickyTabs = document.querySelectorAll('.sticky-tab');
+    var heroSection = document.querySelector('.hero-section');
 
     var currentCategory = 'all';
     var currentSearchQuery = '';
@@ -80,7 +83,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var removeTrap = null;
     var lastFocusedElement = null;
     var recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    //-----------------------project count badge------------------------------------
+    const projectCountBadge = document.getElementById("projectCountBadge");
+    const projectCount = document.querySelectorAll(".project-card").length;
 
+    if (projectCountBadge) {
+        projectCountBadge.textContent = `${projectCount} projects`;
+    }
     // ── Theme Toggle ────────────────────────────────────────────────
     function updateThemeToggleAria(isLightTheme) {
         if (!themeToggle) return;
@@ -164,6 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showPlaygroundSection() {
         playgroundActive = true;
+        syncStickyTabs('playground');
         if (projectsSection) projectsSection.style.display = 'none';
         if (randomProjectBtn) randomProjectBtn.style.display = 'none';
         if (window.playgroundAPI && typeof window.playgroundAPI.activate === 'function') {
@@ -171,6 +181,59 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     /* ← PLAYGROUND ADD end */
+    // ── Sticky Filter Bar: position + show/hide on scroll ────────────
+function syncStickyTabs(category) {
+    stickyTabs.forEach(function (st) {
+        var selected = st.getAttribute('data-sticky-category') === category;
+        st.classList.toggle('active', selected);
+        st.setAttribute('aria-selected', selected ? 'true' : 'false');
+        st.setAttribute('tabindex', selected ? '0' : '-1');
+    });
+}
+
+if (stickyFilterBar && heroSection) {
+    // Position the bar directly below the navbar
+    var navbar = document.querySelector('.navbar');
+    function positionStickyBar() {
+        var navHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+        stickyFilterBar.style.top = navHeight + 'px';
+    }
+    positionStickyBar();
+    window.addEventListener('resize', positionStickyBar);
+
+    var heroObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            stickyFilterBar.classList.toggle('visible', !entry.isIntersecting);
+        });
+    }, { threshold: 0 });
+    heroObserver.observe(heroSection);
+}
+
+    // Wire sticky tab clicks — mirrors main tab behaviour
+    stickyTabs.forEach(function (st) {
+        st.addEventListener('click', function () {
+            var category = st.getAttribute('data-sticky-category');
+
+            // Sync sticky tabs UI
+            syncStickyTabs(category);
+
+            // Sync hero tabs UI
+            tabs.forEach(function (t) {
+                var selected = t.getAttribute('data-category') === category;
+                t.classList.toggle('active', selected);
+                t.setAttribute('aria-selected', selected ? 'true' : 'false');
+                t.setAttribute('tabindex', selected ? '0' : '-1');
+            });
+
+            // Delegate section logic (same as hero tab click)
+            if (category === 'playground') {
+                showPlaygroundSection();
+            } else {
+                showProjectsSection();
+                applyCategoryFilter(category);
+            }
+        });
+    });
 
     // ── Category Filtering ───────────────────────────────────────────
     function applyCategoryFilter(category) {
@@ -179,9 +242,17 @@ document.addEventListener('DOMContentLoaded', function () {
         /* ── PLAYGROUND ADD end ── */
 
         currentCategory = category;
+        syncStickyTabs(category);
         var visibleCount = 0;
+        var favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         projectCards.forEach(function (card) {
-            if (category === 'all' || card.getAttribute('data-category') === category) {
+            var cardCategory = card.getAttribute('data-category');
+            var projectName = card.getAttribute('data-project');
+            var isFavorite = favorites.includes(projectName);
+
+            if (category === 'all' || 
+                (category === 'favorites' && isFavorite) || 
+                (category !== 'favorites' && cardCategory === category)) {
                 card.style.display = '';
                 card.style.animation = prefersReducedMotion() ? 'none' : 'fadeIn 0.6s ease';
                 visibleCount++;
@@ -332,13 +403,18 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
 
         var visibleCount = 0;
+        var favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         projectCards.forEach(function (card) {
             var category    = card.getAttribute('data-category');
             var title       = card.querySelector('h3').textContent.toLowerCase();
             var description = card.querySelector('p').textContent.toLowerCase();
             var tags        = (card.getAttribute('data-tags') || '').toLowerCase();
+            var projectName = card.getAttribute('data-project');
+            var isFavorite  = favorites.includes(projectName);
 
-            var categoryMatch = currentCategory === 'all' || category === currentCategory;
+            var categoryMatch = currentCategory === 'all' || 
+                                (currentCategory === 'favorites' && isFavorite) ||
+                                (currentCategory !== 'favorites' && category === currentCategory);
             var searchMatch   = title.includes(query) ||
                                 description.includes(query) ||
                                 tags.includes(query);
@@ -622,6 +698,38 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Wire Cards and Play Buttons ───────────────────────────────────
     projectCards.forEach(function (card) {
         var name = card.getAttribute('data-project');
+
+        var favBtn = document.createElement('button');
+        favBtn.className = 'btn-favorite';
+        favBtn.setAttribute('aria-label', 'Toggle favorite');
+        favBtn.innerHTML = '<i class="far fa-star"></i>';
+
+        var favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        if (favorites.includes(name)) {
+            favBtn.classList.add('active');
+            favBtn.innerHTML = '<i class="fas fa-star"></i>';
+        }
+
+        favBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var favs = JSON.parse(localStorage.getItem('favorites') || '[]');
+            var idx = favs.indexOf(name);
+            if (idx === -1) {
+                favs.push(name);
+                favBtn.classList.add('active');
+                favBtn.innerHTML = '<i class="fas fa-star"></i>';
+            } else {
+                favs.splice(idx, 1);
+                favBtn.classList.remove('active');
+                favBtn.innerHTML = '<i class="far fa-star"></i>';
+                if (currentCategory === 'favorites') {
+                    card.style.display = 'none';
+                }
+            }
+            localStorage.setItem('favorites', JSON.stringify(favs));
+        });
+        card.appendChild(favBtn);
+
         var play = card.querySelector('.btn-play');
         if (play) {
             play.setAttribute('aria-label', 'Open ' + name);
@@ -699,5 +807,70 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+    // ── Share Button Feature ──────────────────────────────────────────
+
+// 1. Inject share button into every card dynamically
+projectCards.forEach(function (card) {
+    var projectName = card.getAttribute('data-project');
+    var shareBtn = document.createElement('button');
+    shareBtn.className = 'btn-share';
+    shareBtn.setAttribute('aria-label', 'Share ' + projectName);
+    shareBtn.innerHTML = '🔗';
+    shareBtn.title = 'Copy shareable link';
+
+    shareBtn.addEventListener('click', function (e) {
+        e.stopPropagation(); // prevent card click opening modal
+        var url = window.location.origin + window.location.pathname + '?project=' + encodeURIComponent(projectName);
+        navigator.clipboard.writeText(url).then(function () {
+            showToast('Link copied!');
+        }).catch(function () {
+            // Fallback for browsers that block clipboard
+            showToast('Copy this: ' + url);
+        });
+    });
+
+    card.appendChild(shareBtn);
+});
+
+// 2. Toast notification helper
+function showToast(message) {
+    var existing = document.getElementById('shareToast');
+    if (existing) existing.remove();
+
+    var toast = document.createElement('div');
+    toast.id = 'shareToast';
+    toast.className = 'share-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Trigger animation
+    requestAnimationFrame(function () {
+        toast.classList.add('share-toast--visible');
+    });
+
+    setTimeout(function () {
+        toast.classList.remove('share-toast--visible');
+        setTimeout(function () { toast.remove(); }, 300);
+    }, 2500);
+}
+
+// 3. On page load, check for ?project= param and auto-open it
+(function () {
+    var params = new URLSearchParams(window.location.search);
+    var projectParam = params.get('project');
+    if (!projectParam) return;
+
+    var matchingCard = projectCards.find(function (card) {
+        return card.getAttribute('data-project') === projectParam;
+    });
+
+    if (matchingCard) {
+        setTimeout(function () {
+            var projectName = matchingCard.getAttribute('data-project');
+            openProjectSafe(projectName, matchingCard);
+            matchingCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300); // small delay so the page fully loads first
+    }
+})();
 
 });

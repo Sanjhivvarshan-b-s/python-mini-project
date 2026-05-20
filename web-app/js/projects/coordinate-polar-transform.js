@@ -79,6 +79,24 @@ function getCoordinatePolarTransformHTML() {
                 color: var(--primary-color);
                 min-height: 1.3rem;
             }
+            #cartesianX{
+                padding:15px;
+                border-radius:30px;
+                outline:none;
+                background-color:var(--bg-color);
+                border:1px solid white;
+            }
+            #cartesianY{
+                padding:15px;
+                border-radius:30px;
+                outline:none;
+                background-color:var(--bg-color);
+                border:1px solid white;
+            }
+            .btn-primary{
+                padding:15px;
+                border-radius:30px;
+            }
         </style>
     `;
 }

@@ -70,6 +70,17 @@ function getDerivativeCalculatorHTML() {
                 min-height: 110px;
                 line-height: 1.7;
             }
+            input{
+                padding:15px;
+                border-radius:30px;
+                background-color:var(--bg-color);
+                outline:none;
+                border:1px solid white;
+            }
+            button{
+                padding:15px;
+                border-radius:30px;
+            }
         </style>
     `;
 }

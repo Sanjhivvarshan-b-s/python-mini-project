@@ -136,6 +136,26 @@ function getArmstrongHTML() {
                 border-color: var(--primary-color);
                 transform: translateY(-2px);
             }
+            #armstrongNumber{
+                padding:15px;
+                border-radius:30px;
+                background-color:var(--bg-color);
+                outline:none;
+                border:1px solid white;
+            }
+            .input-section{
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                gap:15px;
+            }
+            .btn-check{
+                padding:15px;
+                border-radius:30px;
+                background-color:var(--accent-color);
+                border:1px solid var(--accent-color);
+                font-weight:600;
+            }
         </style>
     `;
 }
@@ -145,89 +165,98 @@ function initArmstrong() {
     const checkBtn = document.getElementById('checkArmstrong');
     const resultDiv = document.getElementById('armstrongResult');
     const exampleBtns = document.querySelectorAll('.example-btn');
-    
-    function checkArmstrong(num) {
-        if (num === null || num === undefined || num < 0) {
-            resultDiv.innerHTML = '<p style="color: var(--danger-color);">⚠️ Please enter a valid positive number!</p>';
+
+    function showError(msg) {
+        resultDiv.innerHTML = `
+            <p style="color: var(--danger-color); font-weight: 600;">
+                ⚠️ ${msg}
+            </p>
+        `;
+    }
+
+    function checkArmstrong() {
+        const raw = numberInput.value.trim();
+
+        // ❌ Empty input check
+        if (raw === '') {
+            showError("Please enter a number!");
             return;
         }
-        
-        const numStr = num.toString();
-        const numDigits = numStr.length;
+
+        const num = Number(raw);
+
+        // ❌ Invalid number check (NaN, decimals, negatives)
+        if (!Number.isFinite(num) || num < 0 || !Number.isInteger(num)) {
+            showError("Please enter a valid positive integer!");
+            return;
+        }
+
+        const numStr = String(num);
         const digits = numStr.split('').map(Number);
-        
+        const power = digits.length;
+
         let sum = 0;
         const calculations = [];
-        
-        digits.forEach(digit => {
-            const power = Math.pow(digit, numDigits);
-            sum += power;
-            calculations.push({ digit, power });
+
+        digits.forEach(d => {
+            const p = Math.pow(d, power);
+            sum += p;
+            calculations.push({ digit: d, power: p });
         });
-        
+
         const isArmstrong = sum === num;
-        
-        let html = `
+
+        resultDiv.innerHTML = `
             <div class="armstrong-result">
                 <div class="result-header ${isArmstrong ? 'is-armstrong' : 'not-armstrong'}">
                     ${isArmstrong ? '✅ Armstrong Number!' : '❌ Not an Armstrong Number'}
                 </div>
-                
+
                 <div class="calculation-steps">
                     <div class="step"><strong>Number:</strong> ${num}</div>
-                    <div class="step"><strong>Number of digits:</strong> ${numDigits}</div>
-                    <div class="step"><strong>Calculation:</strong> Each digit raised to power ${numDigits}</div>
+                    <div class="step"><strong>Digits:</strong> ${power}</div>
+                    <div class="step"><strong>Formula:</strong> Sum of digit^${power}</div>
                 </div>
-                
+
                 <div class="digit-breakdown">
-        `;
-        
-        calculations.forEach(calc => {
-            html += `
-                <div class="digit-card">
-                    <div class="digit-value">${calc.digit}</div>
-                    <div class="digit-power">${calc.digit}^${numDigits} = ${calc.power}</div>
+                    ${calculations.map(c => `
+                        <div class="digit-card">
+                            <div class="digit-value">${c.digit}</div>
+                            <div class="digit-power">${c.digit}^${power} = ${c.power}</div>
+                        </div>
+                    `).join('')}
                 </div>
-            `;
-        });
-        
-        html += `
-                </div>
-                
+
                 <div class="calculation-steps">
                     <div class="step">
                         <strong>Sum:</strong> ${calculations.map(c => c.power).join(' + ')} = ${sum}
                     </div>
                     <div class="step">
-                        ${isArmstrong 
-                            ? `<span style="color: var(--success-color);">✓ ${sum} = ${num} (Armstrong Number!)</span>`
-                            : `<span style="color: var(--danger-color);">✗ ${sum} ≠ ${num} (Not Armstrong)</span>`
+                        ${isArmstrong
+                            ? `<span style="color: var(--success-color);">✓ ${sum} = ${num}</span>`
+                            : `<span style="color: var(--danger-color);">✗ ${sum} ≠ ${num}</span>`
                         }
                     </div>
                 </div>
             </div>
         `;
-        
-        resultDiv.innerHTML = html;
     }
-    
-    checkBtn.addEventListener('click', () => {
-        const num = parseInt(numberInput.value);
-        checkArmstrong(num);
-    });
-    
+
+    // Click event
+    checkBtn.addEventListener('click', checkArmstrong);
+
+    // Enter key support
     numberInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            const num = parseInt(numberInput.value);
-            checkArmstrong(num);
+            checkArmstrong();
         }
     });
-    
+
+    // Example buttons
     exampleBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const num = parseInt(btn.getAttribute('data-num'));
-            numberInput.value = num;
-            checkArmstrong(num);
+            numberInput.value = btn.dataset.num;
+            checkArmstrong();
         });
     });
 }

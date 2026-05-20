@@ -69,7 +69,15 @@ function getNumberGuessingHTML() {
                 cursor: pointer;
                 font-size: 1.2rem;
             }
-            
+            .btn-reset{
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 1rem 2rem;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 1.2rem;  
+            }
             .feedback {
                 font-size: 1.5rem;
                 font-weight: bold;

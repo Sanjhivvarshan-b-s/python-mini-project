@@ -1,118 +1,174 @@
-import time
 import turtle
+import math
 
 
-def build_fibonacci_series(term_count):
-    if term_count <= 0:
+def print_banner():
+    print("=" * 58)
+    print("FIBONACCI SERIES GENERATOR")
+    print("=" * 58)
+    print("Generate Fibonacci numbers and draw a spiral.\n")
+
+
+def fibonacci(n):
+    if n <= 0:
         return []
-
-    series = [0]
-
-    if term_count == 1:
-        return series
-
-    series.append(1)
-
-    while len(series) < term_count:
-        series.append(series[-1] + series[-2])
-
-    return series
+    if n == 1:
+        return [1]
+    fib = [1, 1]
+    while len(fib) < n:
+        fib.append(fib[-1] + fib[-2])
+    return fib
 
 
-def draw_dotted_arc(pen, screen, radius, extent, dot_color, dot_size=7, step_degrees=3, join_delay=0.008):
-    steps = max(1, int(abs(extent) / step_degrees))
-    arc_step = extent / steps
+def get_term_count():
+    while True:
+        raw_value = input("Enter Fibonacci terms (5-12 recommended): ").strip()
+        try:
+            term_count = int(raw_value)
+            if term_count <= 0:
+                print("Please enter a positive number.")
+                continue
+            return term_count
+        except ValueError:
+            print("Invalid input. Please enter a whole number.")
 
-    for _ in range(steps):
-        pen.dot(dot_size, dot_color)
-        pen.circle(radius, arc_step)
-        screen.update()
-        time.sleep(join_delay)
+def build_layout(fib):
+    squares = []
 
+    min_x, max_x = 0, 0
+    min_y, max_y = 0, 0
 
-def show_fibonacci_curve(series):
-   
-    curve_terms = series[1:13] if len(series) > 13 else series[1:]
-    if not curve_terms:
-        curve_terms = [0]
+    cx, cy = 0, 0
 
-    positive_values = [value for value in curve_terms if value > 0]
-    max_value = max(positive_values, default=1)
-    
-    scale = max(6, min(20, 200 // max_value if max_value else 6))
+    for i in range(len(fib)):
+        size = fib[i]
+        direction = i % 4
 
-    screen_height = 720
+        if i == 0:
+            x, y = cx, cy
+            max_x = max(max_x, x + size)
+            max_y = max(max_y, y + size)
+        else:
+            if direction == 0:
+                x = prev_max_x
+                y = prev_y + prev_size - size
+                max_x = max(max_x, x + size)
+            elif direction == 1:
+                x = prev_x
+                y = prev_max_y
+                max_y = max(max_y, y + size)
+            elif direction == 2:
+                x = prev_x - size
+                y = prev_y
+                min_x = min(min_x, x)
+            else:
+                x = prev_x + prev_size - size
+                y = prev_y - size
+                min_y = min(min_y, y)
+
+        squares.append((x, y, size, direction))
+
+        prev_x, prev_y, prev_size = x, y, size
+        prev_max_x, prev_max_y = x + size, y + size
+
+    return squares, min_x, min_y, max_x, max_y
+
+def draw_grid(t, x, y, size):
+    t.penup()
+    t.goto(x, y)
+    t.setheading(0)
+    t.pencolor("#374151")
+    t.pensize(1)
+
+    t.pendown()
+    for _ in range(4):
+        total_drawn = 0
+        while total_drawn < size:
+            t.forward(min(3, size - total_drawn))
+            t.penup()
+            t.forward(min(2, size - (total_drawn + 3)))
+            t.pendown()
+            total_drawn += 5
+        t.left(90)
+    t.penup()
+
+def draw_smooth_spiral(t, squares, to_screen, scale):
+    t.pencolor("#2563eb")
+    t.pensize(3)
+    t.penup()
+
+    for i, square in enumerate(squares):
+        x, y, size, direction = square
+        scaled_size = size * scale
+
+        if direction == 0:
+            start_x, start_y = x, y
+            start_heading = 0
+        elif direction == 1:
+            start_x, start_y = x + size, y
+            start_heading = 90
+        elif direction == 2:
+            start_x, start_y = x + size, y + size
+            start_heading = 180
+        else:
+            start_x, start_y = x, y + size
+            start_heading = 270
+
+        sx, sy = to_screen(start_x, start_y)
+
+        if i == 0:
+            t.goto(sx, sy)
+
+        t.setheading(start_heading)
+        t.pendown()
+        t.circle(scaled_size, 90)
+    t.penup()
+
+def fibonacci_spiral(n):
     screen = turtle.Screen()
-    screen.title("Fibonacci Curve")
-    screen.bgcolor("white")
-    screen.setup(width=900, height=screen_height)
+    screen.setup(1400, 900)
+    screen.bgcolor("black")
+    screen.title("Perfect Fibonacci Spiral")
     screen.tracer(0)
 
-    pen = turtle.Turtle()
-    pen.hideturtle()
-    pen.speed(0)
-    pen.penup()
-    pen.pensize(1)
+    grid = turtle.Turtle()
+    grid.speed(0)
+    grid.hideturtle()
 
-    title_y = screen_height // 2 - 40
-    pen.goto(0, title_y)
-    pen.color("#111827")
-    pen.write("Fibonacci Curve", align="center", font=("Arial", 18, "bold"))
+    spiral = turtle.Turtle()
+    spiral.speed(0)
+    spiral.hideturtle()
 
-    pen.goto(0, title_y - 28)
-    pen.color("#374151")
-    pen.write("Drawing... (click to close when finished)", align="center", font=("Arial", 10, "normal"))
+    fib = fibonacci(n)
+    squares, min_x, min_y, max_x, max_y = build_layout(fib)
 
-    start_x = -120
-    start_y = -120
-    colors = ["#0ea5e9", "#10b981", "#f59e0b", "#f97316", "#8b5cf6"]
+    total_w = max_x - min_x
+    total_h = max_y - min_y
+    padding = 60
 
-    pen.goto(start_x, start_y)
-    pen.setheading(0)
+    scale = min((1300 - padding * 2) / total_w, (850 - padding * 2) / total_h)
 
-    for index, value in enumerate(curve_terms):
-        radius = max(10, value * scale) if value > 0 else 10
-        color = colors[index % len(colors)]
-        pen.pencolor(color)
-        draw_dotted_arc(pen, screen, radius, 90, color, dot_size=6, step_degrees=4, join_delay=0.004)
-        pen.left(90)
+    offset_x = -(min_x + total_w / 2) * scale
+    offset_y = -(min_y + total_h / 2) * scale
 
-    pen.penup()
-    pen.goto(0, start_y - 30)
-    pen.color("#111827")
-    pen.write("Done — click anywhere to close", align="center", font=("Arial", 10, "normal"))
+    def to_screen(x, y):
+        return (x * scale + offset_x, y * scale + offset_y)
+
+    for sq in squares:
+        x, y, size, _ = sq
+        sx, sy = to_screen(x, y)
+        draw_grid(grid, sx, sy, size * scale)
+
+    draw_smooth_spiral(spiral, squares, to_screen, scale)
 
     screen.update()
     screen.exitonclick()
 
 
 def main():
-    print("🔢 Fibonacci Series Generator 🔢")
-    print("📐 Pattern: 0, 1, 1, 2, 3, 5, 8, 13...\n")
-
-    while True:
-        try:
-            term_count = int(input("➡️  Enter number of terms: "))
-            if term_count <= 0:
-                print("❌ Please enter a positive whole number.\n")
-                continue
-            break
-        except ValueError:
-            print("❌ Invalid input! Please enter a whole number.\n")
-
-    series = build_fibonacci_series(term_count)
-
-    print("\n✨ Fibonacci Series:")
-    print(" → ".join(map(str, series)))
-    print(f"\n📊 Sum of {len(series)} terms: {sum(series)}")
-
-    try:
-        show_fibonacci_curve(series)
-    except turtle.Terminator:
-        print("\n⚠️ Turtle window was closed before drawing finished.")
-    except Exception as error:
-        print(f"\n⚠️ Graphical view could not be displayed: {error}")
-
+    print_banner()
+    terms = get_term_count()
+    fibonacci_spiral(terms)
 
 if __name__ == "__main__":
     main()

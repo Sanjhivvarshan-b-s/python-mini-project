@@ -2,7 +2,7 @@ function getSimonSaysHTML() {
 
     return `
 
-    <div class="game-container">
+    <div class="game-container ui-panel">
 
         <h1>🧠 Simon Says</h1>
 
@@ -111,11 +111,7 @@ function getSimonSaysHTML() {
 
         margin:auto;
 
-        background:linear-gradient(
-            135deg,
-            #0f172a,
-            #1e293b
-        );
+        background:var(--surface-color);
 
         border-radius:24px;
 
@@ -123,9 +119,9 @@ function getSimonSaysHTML() {
 
         text-align:center;
 
-        color:white;
+        color:var(--text-color);
 
-        box-shadow:0 0 25px rgba(0,0,0,0.4);
+        box-shadow:var(--shadow);
     }
 
     .game-container h1{
@@ -137,7 +133,7 @@ function getSimonSaysHTML() {
 
     .subtitle{
 
-        opacity:0.85;
+        color:var(--text-secondary);
 
         margin-bottom:25px;
     }
@@ -157,7 +153,9 @@ function getSimonSaysHTML() {
 
     .score-card{
 
-        background:rgba(255,255,255,0.08);
+        background:var(--accent-soft);
+
+        border:1px solid var(--accent-border);
 
         padding:12px 20px;
 
@@ -168,9 +166,9 @@ function getSimonSaysHTML() {
 
     .command-box{
 
-        background:rgba(255,255,255,0.08);
+        background:var(--panel-color);
 
-        border:2px solid rgba(255,255,255,0.1);
+        border:2px solid var(--border-color);
 
         border-radius:18px;
 
@@ -218,7 +216,7 @@ function getSimonSaysHTML() {
 
         transition:0.2s ease;
 
-        color:white;
+        color:var(--on-accent);
     }
 
     .action-btn:hover{
@@ -227,20 +225,20 @@ function getSimonSaysHTML() {
     }
 
     .jump{
-        background:#ef4444;
+        background:var(--danger-color);
     }
 
     .duck{
-        background:#22c55e;
+        background:var(--success-color);
     }
 
     .clap{
-        background:#facc15;
-        color:black;
+        background:var(--warning-color);
+        color:#111827;
     }
 
     .spin{
-        background:#3b82f6;
+        background:var(--secondary-color);
     }
 
     .controls{
@@ -255,29 +253,9 @@ function getSimonSaysHTML() {
     }
 
     .control-btn{
-
-        background:#6366f1;
-
-        color:white;
-
-        border:none;
-
         padding:14px 24px;
 
-        border-radius:12px;
-
-        cursor:pointer;
-
         font-size:1rem;
-
-        transition:0.2s;
-    }
-
-    .control-btn:hover{
-
-        background:#7c3aed;
-
-        transform:translateY(-2px);
     }
 
     #message{
@@ -293,7 +271,9 @@ function getSimonSaysHTML() {
 
         height:12px;
 
-        background:rgba(255,255,255,0.1);
+        background:var(--panel-color);
+
+        border:1px solid var(--border-color);
 
         border-radius:999px;
 
@@ -308,7 +288,7 @@ function getSimonSaysHTML() {
 
         width:100%;
 
-        background:#22c55e;
+        background:var(--success-color);
     }
 
     @media(max-width:600px){

@@ -4,14 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Explore beginner-friendly Python math projects in your browser—visualizations, calculators, and more.">
+    <meta name="description" content="Explore interactive Python math projects: Pascal's triangle, Fibonacci spirals, projectile motion, calculus derivative solver, and number theory analyzers in the browser.">
     <meta name="color-scheme" content="dark light">
     <meta id="themeColorMeta" name="theme-color" content="#0f172a">
-    <meta property="og:title" content="Math — Python Mini Projects">
-    <meta property="og:description" content="Interactive math visualizations—no install required.">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <title>Math - Python Mini Projects</title>
+    <meta property="og:url" content="https://steam-bell-92.github.io/python-mini-project/math.html">
+    <meta property="og:title" content="Python Math Visualizations & Calculators - Interactive Web Edition">
+    <meta property="og:description" content="Explore interactive Python math projects: Pascal's triangle, Fibonacci spirals, projectile motion, calculus derivative solver, and number theory analyzers in the browser.">
+    <meta property="og:image" content="https://steam-bell-92.github.io/python-mini-project/assets/logo.png">
+    <meta property="og:site_name" content="py.mini() lab">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://steam-bell-92.github.io/python-mini-project/math.html">
+    <meta name="twitter:title" content="Python Math Visualizations & Calculators - Interactive Web Edition">
+    <meta name="twitter:description" content="Explore interactive Python math projects: Pascal's triangle, Fibonacci spirals, projectile motion, calculus derivative solver, and number theory analyzers in the browser.">
+    <meta name="twitter:image" content="https://steam-bell-92.github.io/python-mini-project/assets/logo.png">
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://steam-bell-92.github.io/python-mini-project/math.html">
+
+    <title>Python Math Visualizations & Calculators - Interactive Web Edition</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemPage",
+      "name": "Interactive Python Math Visualizations & Calculators",
+      "description": "Explore interactive Python math projects: Pascal's triangle, Fibonacci spirals, projectile motion, calculus derivative solver, and number theory analyzers in the browser.",
+      "url": "https://steam-bell-92.github.io/python-mini-project/math.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "py.mini() lab",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://steam-bell-92.github.io/python-mini-project/assets/logo.png"
+        }
+      }
+    }
+    </script>
+
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -62,7 +98,9 @@
     <nav class="navbar" aria-label="Primary">
         <div class="container">
             <div class="logo">
-                <h1>🎮 Python Mini Projects</h1>
+                <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">🎮 Python Mini Projects</span>
+                </a>
             </div>
             <div class="nav-controls">
                 <button type="button" class="sound-toggle" id="soundToggle" aria-label="Mute sounds">
@@ -91,29 +129,23 @@
             </div>
         </section>
 
+        <!-- Page Title Section -->
+        <section class="page-title-section" style="text-align: center; padding: 2rem 0 1rem 0;">
+            <div class="container">
+                <h1 style="font-size: 2.5rem; font-family: 'Space Grotesk', sans-serif; background: linear-gradient(135deg, #10b981, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0;">Interactive Python Math Visualizations</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 1.1rem; opacity: 0.85;">Explore beginner-friendly Python math projects in your browser—visualizations, calculators, and more.</p>
+            </div>
+        </section>
+
         <!-- Projects Grid — Math only -->
         <section class="projects-section" aria-label="Math Projects">
             <div class="container">
                 <div class="projects-grid" id="projectsGrid">
 
-                    <div class="project-card" data-category="math" data-project="fibonacci">
-                        <div class="card-icon">✨</div>
-                        <h3>Fibonacci Series</h3>
-                        <p>Generate Fibonacci sequences!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
                     <div class="project-card" data-category="math" data-project="progression-recognizer">
                         <div class="card-icon">📐</div>
                         <h3>AP/GP/AGP/HP Recognizer</h3>
                         <p>Identify progression types from any sequence.</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="pascal-triangle">
-                        <div class="card-icon">🔺</div>
-                        <h3>Pascal's Triangle</h3>
-                        <p>Beautiful hexagon visualization!</p>
                         <button class="btn-play">Try It</button>
                     </div>
 
@@ -138,20 +170,6 @@
                         <button class="btn-play">Try It</button>
                     </div>
 
-                    <div class="project-card" data-category="math" data-project="prime-analyzer">
-                        <div class="card-icon">🔱</div>
-                        <h3>Prime Analyzer</h3>
-                        <p>All-in-one prime number toolkit!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
-                    <div class="project-card" data-category="math" data-project="projectile-motion">
-                        <div class="card-icon">🚀</div>
-                        <h3>Projectile Motion</h3>
-                        <p>Calculate TOF, Hmax, and Range with physics!</p>
-                        <button class="btn-play">Try It</button>
-                    </div>
-
                     <div class="project-card" data-category="math" data-project="coordinate-polar-transform">
                         <div class="card-icon">🧭</div>
                         <h3>Coordinate to Polar</h3>
@@ -163,6 +181,34 @@
                         <div class="card-icon">∂</div>
                         <h3>Derivative Calculator</h3>
                         <p>Compute 1st/nth polynomial derivatives and evaluate them.</p>
+                        <button class="btn-play">Try It</button>
+                    </div>
+
+                    <div class="project-card" data-category="math" data-project="fibonacci">
+                        <div class="card-icon">✨</div>
+                        <h3>Fibonacci Series</h3>
+                        <p>Generate Fibonacci sequences!</p>
+                        <button class="btn-play">Try It</button>
+                    </div>
+
+                    <div class="project-card" data-category="math" data-project="pascal-triangle">
+                        <div class="card-icon">🔺</div>
+                        <h3>Pascal's Triangle</h3>
+                        <p>Beautiful hexagon visualization!</p>
+                        <button class="btn-play">Try It</button>
+                    </div>
+
+                    <div class="project-card" data-category="math" data-project="prime-analyzer">
+                        <div class="card-icon">🔱</div>
+                        <h3>Prime Analyzer</h3>
+                        <p>All-in-one prime number toolkit!</p>
+                        <button class="btn-play">Try It</button>
+                    </div>
+
+                    <div class="project-card" data-category="math" data-project="projectile-motion">
+                        <div class="card-icon">🚀</div>
+                        <h3>Projectile Motion</h3>
+                        <p>Calculate TOF, Hmax, and Range with physics!</p>
                         <button class="btn-play">Try It</button>
                     </div>
 

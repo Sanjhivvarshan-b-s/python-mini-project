@@ -3,10 +3,16 @@
  *
  * Architecture
  * ─────────────────────────────────────────────────────────────────
- *  • window.PYODIDE          – global singleton (instance/ready/loading)
- *  • window.playgroundAPI    – consumed by main.js for tab show/hide
- *  • initPyodide()           – idempotent; never called more than once
- *  • runCode()               – always async; waits without freezing UI
+ *  • Pyodide runs inside a Web Worker (playground-worker.js)
+ *    so the main thread / UI is NEVER blocked.
+ *
+ *  • Stop works by calling worker.terminate(), which kills the
+ *    worker thread instantly — even during an infinite loop.
+ *    A fresh worker is then spawned automatically so the user
+ *    can run again without a page reload. Pyodide reloads (~8 MB).
+ *
+ *  • window.PYODIDE      – lightweight status object (ready / loading)
+ *  • window.playgroundAPI – consumed by main.js for tab show/hide
  *
  * Zero conflicts with the modal system or existing project scripts.
  */
@@ -14,21 +20,19 @@
     'use strict';
 
     /* ================================================================
-       1.  GLOBAL PYODIDE SINGLETON
-       Exposed on window so any external script can read readiness.
+       1.  LIGHTWEIGHT STATUS OBJECT
+       Kept on window so external scripts can check readiness.
+       The actual Pyodide instance now lives in the worker thread.
     ================================================================ */
     window.PYODIDE = {
-        instance : null,   // the loaded Pyodide runtime object
-        ready    : false,  // true once stdlib buffers are wired up
-        loading  : false   // true while boot sequence is in progress
+        ready  : false,   // true once the worker signals 'ready'
+        loading: false    // true while the worker is booting
     };
 
     /* ================================================================
        2.  CONSTANTS
     ================================================================ */
-    var PYODIDE_VERSION = '0.26.2';
-    var PYODIDE_CDN     = 'https://cdn.jsdelivr.net/pyodide/v' + PYODIDE_VERSION + '/full/';
-    var PYODIDE_SCRIPT  = PYODIDE_CDN + 'pyodide.js';
+    var WORKER_SCRIPT = 'js/playground-worker.js';
 
     /* ================================================================
        3.  EXAMPLE CODE SNIPPETS
@@ -109,6 +113,7 @@
 
     var playgroundSection = $id('playgroundSection');
     var runBtn            = $id('runCode');
+    var stopBtn           = $id('stopCode');        // ← NEW
     var editor            = $id('pythonEditor');
     var consoleEl         = $id('consoleOutput');
     var statusDot         = $id('statusDot');
@@ -118,7 +123,7 @@
     var loadExampleBtn    = $id('loadExample');
 
     /* Guard – abort gracefully if playground HTML is absent */
-    if (!playgroundSection || !runBtn || !editor || !consoleEl) {
+    if (!playgroundSection || !runBtn || !stopBtn || !editor || !consoleEl) {
         console.warn('[playground.js] Required DOM elements not found — playground disabled.');
         return;
     }
@@ -146,19 +151,18 @@
     }
 
     /**
-     * Append a single output line to the console.
+     * Append a line to the console.
      * @param {string} text
      * @param {'out'|'err'|'info'} type
      */
     function printLine(text, type) {
-        /* Remove placeholder on first real output */
         var ph = consoleEl.querySelector('.pg-placeholder');
         if (ph) ph.remove();
 
         var colorMap = {
-            out  : '#c9d1d9',   /* near-white  – normal stdout   */
-            err  : '#ff7b72',   /* red         – exceptions/stderr */
-            info : '#79c0ff'    /* blue        – meta messages    */
+            out  : '#c9d1d9',
+            err  : '#ff7b72',
+            info : '#79c0ff'
         };
         var span          = document.createElement('span');
         span.style.color      = colorMap[type] || colorMap.out;
@@ -172,59 +176,45 @@
     }
 
     /**
-     * Update the Run button visual state.
-     * @param {boolean} busy – true while Python is executing
+     * Switch the toolbar between Run-mode and Running-mode.
+     * Run mode  : Run button enabled, Stop button disabled.
+     * Running   : Stop button enabled, Run button disabled.
+     * @param {boolean} running
      */
-    function setRunBtnState(busy) {
-        /*
-         * When not busy: disabled only if Pyodide is not ready yet.
-         * Once Pyodide is ready the button stays enabled between runs.
-         */
-        runBtn.disabled = busy;
-        runBtn.innerHTML = busy
-            ? '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Running\u2026'
-            : '<i class="fas fa-play" aria-hidden="true"></i> Run Code';
-    }
+    function setRunning(running) {
+        runBtn.disabled = running;
+
+        
+        stopBtn.disabled = !running;
+        stopBtn.style.opacity = running ? '1' : '0.5';
+        stopBtn.style.cursor = running ? 'pointer' : 'not-allowed';
+        
+}
 
     /* ================================================================
-       6.  PYODIDE SCRIPT INJECTION  (one-time, non-blocking)
+       6.  WEB WORKER MANAGEMENT
+       A new worker is created lazily on the first playground visit,
+       and re-created automatically after a stop.
     ================================================================ */
+
+    var worker = null;   // the current live worker (null if not yet started)
 
     /**
-     * Dynamically inject the Pyodide CDN script.
-     * Resolves immediately if window.loadPyodide already exists.
+     * Spawn a fresh Pyodide worker.
+     * Safe to call multiple times — always replaces the old worker reference.
      */
-    function injectPyodideScript() {
-        return new Promise(function (resolve, reject) {
-            if (typeof window.loadPyodide === 'function') { resolve(); return; }
-            var script    = document.createElement('script');
-            script.src    = PYODIDE_SCRIPT;
-            script.async  = true;
-            script.onload = resolve;
-            script.onerror = function () {
-                reject(new Error(
-                    'Failed to download the Pyodide script. ' +
-                    'Please check your internet connection and reload.'
-                ));
-            };
-            document.head.appendChild(script);
-        });
-    }
+    function spawnWorker() {
+        /* Tear down any existing worker before creating a replacement */
+        if (worker) {
+            worker.onmessage = null;
+            worker.onerror   = null;
+            /* Don't call terminate() here — spawnWorker() after a stop
+               is called AFTER terminate() already ran in stopExecution(). */
+        }
 
-    /* ================================================================
-       7.  PYODIDE INITIALISATION  (idempotent singleton)
-
-       • Safe to call multiple times – only the first call does work.
-       • Runs entirely in async microtasks; never blocks the event loop.
-       • Sets window.PYODIDE.loading = true BEFORE any await so a second
-         call sees the flag and returns immediately.
-    ================================================================ */
-
-    async function initPyodide() {
-        /* Already done or already in progress → no-op */
-        if (window.PYODIDE.ready || window.PYODIDE.loading) return;
-
+        window.PYODIDE.ready   = false;
         window.PYODIDE.loading = true;
+
         setStatus('loading', 'Downloading Pyodide\u2026');
         printLine(
             '\u23F3 Loading Python runtime (first load ~8 MB). ' +
@@ -232,174 +222,118 @@
             'info'
         );
 
-        try {
-            /* ── Step 1: inject the CDN <script> ── */
-            await injectPyodideScript();
-            setStatus('loading', 'Initialising Python\u2026');
+        runBtn.disabled = true;   /* re-enabled once worker signals 'ready' */
 
-            /* ── Step 2: boot the WASM runtime ── */
-            window.PYODIDE.instance = await window.loadPyodide({ indexURL: PYODIDE_CDN });
+        worker = new Worker(WORKER_SCRIPT);
 
-            /* ── Step 3: wire stdout / stderr to StringIO buffers ── */
-            window.PYODIDE.instance.runPython(
-                'import sys, io\n' +
-                'sys.stdout = io.StringIO()\n' +
-                'sys.stderr = io.StringIO()\n'
-            );
+        worker.onmessage = function (e) {
+            switch (e.data.type) {
 
-            /* ── Mark ready ── */
-            window.PYODIDE.ready   = true;
+                /* ── Pyodide finished loading in the worker ── */
+                case 'ready':
+                    window.PYODIDE.ready   = true;
+                    window.PYODIDE.loading = false;
+                    setStatus('ready', 'Pyodide Ready \u2713');
+                    printLine(
+                        '\u2705 Python is ready \u2014 write some code and press Run Code!',
+                        'info'
+                    );
+                    runBtn.disabled = false;
+                    break;
+
+                /* ── Pyodide failed to load ── */
+                case 'load-error':
+                    window.PYODIDE.loading = false;
+                    setStatus('error', 'Load failed \u2717');
+                    printLine('\u274C Pyodide failed to load: ' + e.data.message, 'err');
+                    break;
+
+                /* ── Python ran and finished cleanly ── */
+                case 'done':
+                    if (e.data.stdout) printLine(e.data.stdout.trimEnd(), 'out');
+                    if (e.data.stderr) printLine(e.data.stderr.trimEnd(), 'err');
+                    if (!e.data.stdout && !e.data.stderr) printLine('(no output)', 'info');
+                    setRunning(false);
+                    break;
+
+                /* ── Python raised an exception ── */
+                case 'error':
+                    printLine(e.data.message, 'err');
+                    setRunning(false);
+                    break;
+            }
+        };
+
+        worker.onerror = function (err) {
+            /* Catches worker-level JS errors (not Python exceptions) */
             window.PYODIDE.loading = false;
+            setStatus('error', 'Worker error \u2717');
+            printLine('\u274C Worker error: ' + (err.message || String(err)), 'err');
+            setRunning(false);
+        };
+    }
 
-            setStatus('ready', 'Pyodide Ready \u2713');
-            printLine('\u2705 Python is ready \u2014 write some code and press Run Code!', 'info');
-
-            /* Enable the Run button only after Pyodide is confirmed ready */
-            runBtn.disabled = false;
-
-        } catch (err) {
-            window.PYODIDE.loading = false;
-            setStatus('error', 'Load failed \u2717');
-            printLine(
-                '\u274C Pyodide failed to load: ' + (err.message || String(err)),
-                'err'
-            );
+    /**
+     * Terminate the running worker and spin up a fresh one.
+     * Called by the Stop button.
+     */
+    function stopExecution() {
+        if (worker) {
+            worker.onmessage = null;   // silence any in-flight messages
+            worker.onerror   = null;
+            worker.terminate();
+            worker = null;
         }
+
+        setRunning(false);
+        setStatus('loading', 'Reloading Python\u2026');
+        printLine(
+            '\u26D4 Execution stopped. Reloading Python runtime\u2026',
+            'info'
+        );
+
+        /*
+         * Small delay before spawning the replacement worker.
+         * Gives the browser time to fully clean up the terminated worker
+         * before we allocate a new one, avoiding occasional stalls.
+         */
+        setTimeout(spawnWorker, 150);
     }
 
     /* ================================================================
-       8.  NON-BLOCKING WAIT FOR PYODIDE
-
-       Polls window.PYODIDE.ready every 250 ms.
-       Rejects after timeoutMs (default 120 s).
-       Uses setTimeout so the event loop remains free.
+       7.  RUN CODE
     ================================================================ */
 
-    function waitForPyodide(timeoutMs) {
-        timeoutMs = timeoutMs || 120000;
-        return new Promise(function (resolve, reject) {
-            if (window.PYODIDE.ready) { resolve(); return; }
-            var deadline = Date.now() + timeoutMs;
-            (function poll() {
-                if (window.PYODIDE.ready) { resolve(); return; }
-                if (Date.now() > deadline) {
-                    reject(new Error(
-                        'Timed out waiting for Pyodide (' +
-                        Math.round(timeoutMs / 1000) + ' s). ' +
-                        'Reload the page and try again.'
-                    ));
-                    return;
-                }
-                setTimeout(poll, 250);
-            }());
-        });
-    }
-
-    /* ================================================================
-       9.  SAFE BUFFER RESET
-
-       Truncates stdout/stderr before each run.
-       Falls back to fresh StringIO objects if the buffers were replaced
-       by user code (e.g., someone did sys.stdout = something_else).
-    ================================================================ */
-
-    function resetBuffers() {
-        if (!window.PYODIDE || !window.PYODIDE.instance) return;
-        try {
-            window.PYODIDE.instance.runPython(
-                'try:\n' +
-                '    sys.stdout.seek(0); sys.stdout.truncate(0)\n' +
-                '    sys.stderr.seek(0); sys.stderr.truncate(0)\n' +
-                'except Exception:\n' +
-                '    import io\n' +
-                '    sys.stdout = io.StringIO()\n' +
-                '    sys.stderr = io.StringIO()\n'
-            );
-        } catch (_) {
-            /* Swallow: even if this fails the output will still be captured */
-        }
-    }
-
-    /* ================================================================
-       10.  RUN CODE
-
-       CONTRACT:
-       • Never freezes the UI.
-       • If Pyodide is still loading, waits asynchronously and then runs.
-       • If Pyodide failed to load, reports the error without crashing.
-       • Captures stdout, stderr, and Python runtime exceptions.
-    ================================================================ */
-
-    async function runCode() {
+    function runCode() {
         var code = editor.value;
         if (!code.trim()) {
             printLine('\u2139 Nothing to run \u2014 write some Python first!', 'info');
             return;
         }
 
-        /* Lock UI immediately so the user has visual feedback */
-        setRunBtnState(true);
-
-        try {
-            /* ── If not ready: ensure init is running, then wait ── */
-            if (!window.PYODIDE.ready) {
-                printLine('\u23F3 Python runtime is loading \u2014 please wait\u2026', 'info');
-                /*
-                 * Kick off initialisation if nothing has started yet.
-                 * (playgroundAPI.activate() should already have done this,
-                 *  but we guard here too for direct "Run" clicks.)
-                 */
-                if (!window.PYODIDE.loading) initPyodide();
-                await waitForPyodide();
-            }
-
-            var py = window.PYODIDE.instance;
-
-            /* ── Clear output buffers before this run ── */
-            resetBuffers();
-            printLine('&gt;&gt;&gt; Running\u2026', 'info');
-
-            /* ── Execute (async: yields control; modal / UI stays responsive) ── */
-            await py.runPythonAsync(code);
-
-            /* ── Harvest captured output ── */
-            var stdout = py.runPython('sys.stdout.getvalue()');
-            var stderr = py.runPython('sys.stderr.getvalue()');
-
-            if (stdout) printLine(stdout.trimEnd(), 'out');
-            if (stderr) printLine(stderr.trimEnd(), 'err');
-            if (!stdout && !stderr) printLine('(no output)', 'info');
-
-        } catch (err) {
-            /*
-             * Pyodide wraps Python tracebacks inside the JS Error message.
-             * Print the raw message so the user sees the full traceback.
-             */
-            printLine(err.message || String(err), 'err');
-        } finally {
-            /* Always re-enable the Run button after execution ends */
-            setRunBtnState(false);
-            /* Keep button disabled only if Pyodide never loaded */
-            if (!window.PYODIDE.ready) runBtn.disabled = true;
+        if (!window.PYODIDE.ready) {
+            printLine('\u23F3 Python runtime is still loading \u2014 please wait\u2026', 'info');
+            return;
         }
+
+        setRunning(true);
+        printLine('>>> Running\u2026', 'info');
+        worker.postMessage({ type: 'run', code: code });
     }
 
     /* ================================================================
-       11.  PUBLIC API
+       8.  PUBLIC API
        Called by main.js when the user switches tabs.
-       Keeps tab logic centralised in main.js; playground.js owns Pyodide.
     ================================================================ */
 
     window.playgroundAPI = {
         /**
-         * Show the playground section.
-         * Triggers Pyodide initialisation the first time.
+         * Show the playground and boot the worker on the first visit.
          */
         activate: function () {
             playgroundSection.style.display = 'block';
-            /* Start loading Pyodide lazily on first visit */
             if (!window.PYODIDE.ready && !window.PYODIDE.loading) {
-                initPyodide();
+                spawnWorker();
             }
         },
 
@@ -410,21 +344,48 @@
     };
 
     /* ================================================================
-       12.  EVENT WIRING
+       9.  EVENT WIRING
     ================================================================ */
 
-    /* Run button click */
+    /* Run button */
     runBtn.addEventListener('click', runCode);
+
+    /* Stop button */
+    stopBtn.addEventListener('click', stopExecution);
+    
 
     /* Editor keyboard shortcuts */
     editor.addEventListener('keydown', function (e) {
+
         /* Ctrl/Cmd + Enter → run */
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
             e.preventDefault();
             runCode();
             return;
         }
-        /* Tab key → insert 4 spaces (no focus change) */
+
+        /* Enter → new line preserving indent, extra indent after colon */
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            var start       = editor.selectionStart;
+            var value       = editor.value;
+            var lineStart   = value.lastIndexOf('\n', start - 1) + 1;
+            var currentLine = value.substring(lineStart, start);
+            var indentMatch = currentLine.match(/^\s*/);
+            var indent      = indentMatch ? indentMatch[0] : '';
+            if (currentLine.trimEnd().endsWith(':')) {
+                indent += '    ';
+            }
+            var insertion = '\n' + indent;
+            editor.value =
+                value.substring(0, start) +
+                insertion +
+                value.substring(editor.selectionEnd);
+            editor.selectionStart = editor.selectionEnd = start + insertion.length;
+            return;
+        }
+
+        /* Tab → insert 4 spaces (no focus change) */
         if (e.key === 'Tab') {
             e.preventDefault();
             var start  = editor.selectionStart;
@@ -461,19 +422,13 @@
     }
 
     /* ================================================================
-       13.  BOOT  –  set initial state
+       10.  BOOT  –  set initial state
     ================================================================ */
 
-    playgroundSection.style.display = 'none';   /* hidden until tab click  */
-    runBtn.disabled                 = true;       /* enabled after Pyodide   */
+    playgroundSection.style.display = 'none';   /* hidden until tab click */
+    runBtn.disabled                 = true;       /* enabled after worker ready */
+    setRunning(false);
     resetConsole();
     setStatus('idle', 'Open the tab to load Python');
 
 }());
-
-
-
-
-
-
-

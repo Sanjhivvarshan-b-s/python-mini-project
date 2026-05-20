@@ -35,6 +35,10 @@ function getNumberConverterHTML() {
             .converter-row label { font-weight: 600; }
             .converter-row input, .converter-row select { padding: 0.9rem; border-radius: 10px; border: 2px solid var(--border-color); background: var(--surface-color); color: var(--text-color); }
             .converter-result { min-height: 2rem; padding: 0.9rem 1rem; border-radius: 10px; background: var(--surface-color); border: 1px solid var(--border-color); font-weight: 700; }
+            .btn-primary{
+                padding:15px;
+                border-radius:30px;
+            }
         </style>
     `;
 }

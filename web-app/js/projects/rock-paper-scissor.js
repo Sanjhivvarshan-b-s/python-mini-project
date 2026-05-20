@@ -23,7 +23,20 @@ function getRockPaperScissorHTML() {
                         <div class="vs">VS</div>
                         <div class="computer-choice">
                             <p>Computer</p>
-                            <div class="choice-emoji" id="computerChoice">❓</div>
+                            <div class="computer-cards">
+                                <div class="comp-card" id="comp-rock">
+                                    <span class="choice-icon">🪨</span>
+                                    <span>Rock</span>
+                                </div>
+                                <div class="comp-card" id="comp-paper">
+                                    <span class="choice-icon">📄</span>
+                                    <span>Paper</span>
+                                </div>
+                                <div class="comp-card" id="comp-scissors">
+                                    <span class="choice-icon">✂️</span>
+                                    <span>Scissors</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="result-message" id="resultMessage">Make your choice!</div>
@@ -162,6 +175,38 @@ function getRockPaperScissorHTML() {
                 font-size: 1.5rem;
                 color: var(--primary-color);
             }
+
+            .computer-cards {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: center;
+                margin-top: 0.5rem;
+            }
+
+            .comp-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.3rem;
+                padding: 0.75rem;
+                background: var(--surface-color);
+                border: 2px solid var(--border-color);
+                border-radius: 15px;
+                min-width: 70px;
+                opacity: 0.35;
+                pointer-events: none;
+                transition: var(--transition);
+            }
+
+            .comp-card .choice-icon {
+                font-size: 1.8rem;
+            }
+
+            .comp-card.selected {
+                opacity: 1;
+                border-color: var(--primary-color);
+                box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+            }
             
             .choices {
                 display: flex;
@@ -274,10 +319,18 @@ function initRockPaperScissor() {
     resetBtn.addEventListener('click', () => {
         playerScore = 0;
         computerScore = 0;
+        stats.gamesPlayed = 0;
+        stats.wins = 0;
+        stats.losses = 0;
+        stats.currentStreak = 0;
         updateScore();
+        updateStatsDisplay();
+        saveRpsStats();
         document.getElementById('resultMessage').textContent = 'Make your choice!';
         document.getElementById('playerChoice').textContent = '❓';
-        document.getElementById('computerChoice').textContent = '❓';
+        document.querySelectorAll('.comp-card').forEach(card => {
+            card.classList.remove('selected');
+        });
     });
 
     function updateStatsDisplay() {
@@ -298,12 +351,14 @@ function initRockPaperScissor() {
 
     function playRound(playerChoice) {
         const computerChoice = choices[Math.floor(Math.random() * 3)];
-        
+
+        document.querySelectorAll('.comp-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        document.getElementById(`comp-${computerChoice}`).classList.add('selected');
         document.getElementById('playerChoice').textContent = emojis[playerChoice];
-        document.getElementById('computerChoice').textContent = emojis[computerChoice];
-        
+
         let result = '';
-        
         if (playerChoice === computerChoice) {
             result = "It's a tie! 🤝";
             stats.gamesPlayed++;
@@ -331,7 +386,7 @@ function initRockPaperScissor() {
             stats.losses++;
             stats.currentStreak = 0;
         }
-        
+
         document.getElementById('resultMessage').textContent = result;
         updateScore();
         saveRpsStats();

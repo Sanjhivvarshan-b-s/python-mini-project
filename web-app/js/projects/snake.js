@@ -4,7 +4,7 @@ function getsnakeGameHTML() {
             <h2>🐍 Classic Snake Game</h2>
             <div class="snake-container">
                 <div class="game-area">
-                    <div id="canvas-wrapper">
+                    <div id="canvas-wrapper" class="ui-canvas-frame">
                         <canvas id="snakeCanvas" width="600" height="400"></canvas>
                         
                         <div id="game-over-overlay" class="hidden">
@@ -52,16 +52,16 @@ function getsnakeGameHTML() {
             }
             #canvas-wrapper {
                 position: relative;
-                border: 4px solid #2ecc71;
+                border: 4px solid var(--success-color);
                 border-radius: 12px;
                 overflow: hidden;
                 box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             }
             #snakeCanvas {
-                background-color: #1b262c;
+                background-color: var(--panel-color);
                 background-image: 
-                    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+                    linear-gradient(var(--border-color) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
                 background-size: 20px 20px;
                 display: block;
             }
@@ -71,13 +71,14 @@ function getsnakeGameHTML() {
                 gap: 15px;
             }
             .score-card {
-                background: linear-gradient(135deg, #2ecc71, #27ae60);
-                color: white;
+                background: var(--accent-soft);
+                border: 1px solid var(--accent-border);
+                color: var(--text-color);
                 padding: 10px 25px;
                 border-radius: 10px;
                 text-align: center;
                 min-width: 120px;
-                box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+                box-shadow: var(--shadow);
             }
             .score-card span {
                 font-size: 12px;
@@ -99,7 +100,7 @@ function getsnakeGameHTML() {
                 margin-top: 20px;
                 margin-right: 140px;
                 text-align: center;
-                color: #7f8c8d;
+                color: var(--text-secondary);
                 font-size: 15px;
             }
             #game-over-overlay {
@@ -108,29 +109,18 @@ function getsnakeGameHTML() {
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(27, 38, 44, 0.9);
+                background: var(--overlay-color);
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 z-index: 10;
-                color: #2ecc71;
+                color: var(--success-color);
             }
             #game-over-overlay h1 { font-size: 3rem; margin-bottom: 10px; }
             .hidden { display: none !important; }
             .btn-primary {
-                background-color: #2ecc71;
-                color: white;
-                border: none;
                 padding: 12px 25px;
-                border-radius: 8px;
-                font-weight: bold;
-                cursor: pointer;
-                transition: 0.3s;
-            }
-            .btn-primary:hover {
-                background-color: #27ae60;
-                transform: translateY(-2px);
             }
         </style>
     `;

@@ -9,12 +9,12 @@ function getPasswordForgeHTML() {
                 </p>
 
                 <input 
-                    type="text" 
+                    type="password"
                     id="passwordInput" 
                     placeholder="Enter password..."
                     class="password-input"
                 >
-
+                <button id="togglePasswordBtn" class="toggle-btn">Show</button>
                 <button id="checkPasswordBtn" class="btn-check">
                     Check Password
                 </button>
@@ -43,6 +43,8 @@ function getPasswordForgeHTML() {
                 border: 2px solid var(--border-color);
                 margin-top: 1rem;
                 font-size: 1rem;
+                background-color: var(--bg-color);
+                color: #000;
             }
 
             .btn-check {
@@ -54,6 +56,16 @@ function getPasswordForgeHTML() {
                 color: white;
                 cursor: pointer;
                 font-size: 1rem;
+            }
+            .toggle-btn {
+                margin-top: 1rem;
+                margin-left: 0.5rem;
+                padding: 0.7rem 1rem;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                background: #555;
+                color: white;
             }
 
             .btn-check:hover {
@@ -77,6 +89,17 @@ function getPasswordForgeHTML() {
 
 function initPasswordForge() {
     const checkBtn = document.getElementById('checkPasswordBtn');
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    toggleBtn.addEventListener('click', () => {
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = 'Hide';
+    } else {
+        passwordInput.type = 'password';
+        toggleBtn.textContent = 'Show';
+    }
+});
 
     checkBtn.addEventListener('click', () => {
         const password = document.getElementById('passwordInput').value;
