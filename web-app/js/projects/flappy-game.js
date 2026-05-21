@@ -91,17 +91,23 @@ function getFlappyGameHTML() {
             }
 
             #flappy-canvas-wrapper {
-                border: 3px solid var(--border-color, #ffffff);
-                background: #87ceeb;
-                width: 400px;
-                height: 600px;
-                border-radius: 8px;
+                position: relative;
+                border: 3px solid var(--border-color);
+                background: #0f172a; /* Sleek dark slate background */
                 overflow: hidden;
+                width: 100%;
+                max-width: 400px;
+                aspect-ratio: 1 / 1;
+                border-radius: 8px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+                touch-action: none;
             }
 
             #flappyCanvas {
                 display: block;
                 cursor: pointer;
+                width: 100%;
+                height: 100%;
             }
         </style>
     `;
@@ -307,11 +313,10 @@ function initFlappyGame() {
         gameLoop();
     }
 
-    function jump() {
-        if (gameScreen.style.display === "none") return;
-
-        if (gameRunning) {
-            bird.velocity = bird.jumpStrength;
+    function tap(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        if (gameOver) {
+            resetGame();
         } else {
             resetGame();
         }
@@ -326,8 +331,8 @@ function initFlappyGame() {
         }
     }
 
-    function stopGame() {
-        gameRunning = false;
+    canvas.addEventListener('mousedown', tap);
+    canvas.addEventListener('touchstart', tap, { passive: false });
 
         if (animationId) {
             cancelAnimationFrame(animationId);

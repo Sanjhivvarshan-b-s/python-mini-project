@@ -19,7 +19,7 @@ function getWhackaMoleHTML() {
             .whack-container { max-width: 720px; margin: 0 auto; padding: 1.5rem; text-align: center; }
             .whack-stats { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem; font-weight: 700; flex-wrap: wrap; }
             .whack-board { display: grid; grid-template-columns: repeat(3, minmax(80px, 1fr)); gap: 0.8rem; margin: 1rem auto; max-width: 420px; }
-            .whack-hole { aspect-ratio: 1 / 1; border-radius: 18px; border: 2px solid var(--border-color); background: var(--surface-color); font-size: 2rem; cursor: pointer; display: grid; place-items: center; }
+            .whack-hole { aspect-ratio: 1 / 1; border-radius: 18px; border: 2px solid var(--border-color); background: var(--surface-color); font-size: 2rem; cursor: pointer; display: grid; place-items: center; touch-action: manipulation; }
             .whack-hole.active { background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; }
             .whack-actions { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
             .whack-message { margin-top: 1rem; font-weight: 600; min-height: 1.5rem; }
@@ -56,16 +56,9 @@ function initWhackaMole() {
         button.className = 'whack-hole';
         button.textContent = '🕳️';
         button.setAttribute('aria-label', `Hole ${index + 1}`);
-        
-        const handleHit = (e) => {
-            if (e) e.preventDefault();
-            if (!gameActive) return;
-            
-            const isDirectHit = (index === activeIndex);
-            const isGraceHit = (index === lastActiveIndex && (Date.now() - lastActiveTime) < 150);
-            
-            if (!isDirectHit && !isGraceHit) return;
-            
+        function handleHit(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            if (!gameActive || index !== activeIndex) return;
             score += 1;
             scoreEl.textContent = String(score);
             messageEl.textContent = 'Hit! 🔨';
@@ -77,12 +70,10 @@ function initWhackaMole() {
             lastActiveIndex = -1;
             
             clearTimeout(moleId);
-            moleId = setTimeout(showMole, 250);
-        };
-
-        button.addEventListener('pointerdown', handleHit);
-        button.addEventListener('click', handleHit);
-        
+            showMole();
+        }
+        button.addEventListener('mousedown', handleHit);
+        button.addEventListener('touchstart', handleHit, { passive: false });
         board.appendChild(button);
         return button;
     });

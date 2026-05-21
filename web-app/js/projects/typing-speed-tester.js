@@ -6,6 +6,98 @@ function getTypingSpeedTesterHTML() {
                 gap: 1.5rem;
                 min-height: 640px;
             }
+        <div class="project-content">
+
+            <h2>⌨️ Typing Speed Tester</h2>
+
+            <p style="margin-bottom: 10px;">
+                Type the exact sentence shown below 👇
+            </p>
+            
+
+            <div 
+                id="typingSentence"
+                style="
+                    background: var(--surface-color);
+                    color: var(--text-color);
+                    padding: 15px;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                    font-size: 18px;
+                    line-height: 1.8;
+                    min-height: 80px;
+                "
+            >
+                Click Start Test 🚀
+            </div>
+
+            <button
+                id="startTypingBtn"
+                type="button"
+                class="btn-generate"
+                style="
+                    margin-bottom: 20px;
+                    font-weight: 700;
+                    font-size: 16px;
+                    width:auto;   
+                    min-height: 44px;
+                    padding: 12px 24px;               
+                    border-radius: 30px;
+                    background-color:var(--accent-color);
+                    color:white;
+                "
+            >
+                Start Test 🚀
+            </button>
+
+            <button
+                id="newSentenceBtn"
+                type="button"
+                class="btn-generate"
+                style="
+                    margin-bottom: 20px;
+                    margin-left: 10px;
+                    font-weight: 700;
+                    font-size: 16px;
+                    width:auto;
+                    min-height: 44px;
+                    padding: 12px 24px;
+                    border-radius: 30px;
+                    background-color:#9333ea;
+                    color:white;
+                "
+            >
+                🔄 New Sentence
+            </button>
+
+            <div>
+            <textarea
+            id="typingInput"
+            placeholder="Start typing here..."
+            rows="5"
+            disabled
+            style="
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            background: var(--surface-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            "
+            ></textarea>
+            </div>
+        
+
+            <div
+                id="typingResult"
+                style="
+                    margin-top: 25px;
+                    font-size: 18px;
+                    line-height: 1.8;
+                "
+            ></div>
 
             .typing-tester .stage {
                 background: linear-gradient(180deg, rgba(34, 197, 94, 0.06), rgba(15, 23, 42, 0.04));
@@ -81,6 +173,21 @@ function getTypingSpeedTesterHTML() {
                 color: var(--on-accent);
                 border-color: var(--accent-color);
             }
+    if (
+        !sentenceElement ||
+        !inputElement ||
+        !button ||
+        !newSentenceBtn ||
+        !result
+    ) {
+        return;
+    }
+
+    let startTime = null;
+    let currentSentence = "";
+
+    inputElement.disabled = true;
+    inputElement.setAttribute("aria-disabled", "true");
 
             .typing-tester .hero-footer {
                 display: flex;
@@ -147,6 +254,22 @@ function getTypingSpeedTesterHTML() {
             .typing-tester .sentence-card span {
                 transition: color 0.2s ease;
             }
+        sentenceElement.innerHTML =
+            currentSentence
+                .split("")
+                .map(function (char) {
+                    return "<span>" + char + "</span>";
+                })
+                .join("");
+
+        inputElement.value = "";
+        inputElement.disabled = false;
+        inputElement.removeAttribute("aria-disabled");
+        inputElement.focus();
+
+        result.innerHTML = "";
+        startTime = Date.now();
+    }
 
             .typing-tester .sentence-card .correct { color: #22c55e; }
             .typing-tester .sentence-card .incorrect { color: #ef4444; }
@@ -219,6 +342,12 @@ function getTypingSpeedTesterHTML() {
                 transform: translateY(-2px) scale(0.995);
                 box-shadow: 0 8px 20px rgba(34,197,94,0.14);
             }
+    inputElement.addEventListener("input", function () {
+
+        if (!startTime || !currentSentence) return;
+
+        const typedText = inputElement.value;
+        const totalTime = Math.max((Date.now() - startTime) / 1000, 0.001);
 
             /* Top stats bar */
             .typing-tester .stats-bar {
@@ -257,6 +386,11 @@ function getTypingSpeedTesterHTML() {
                 text-align: center;
                 margin-bottom: 1.25rem;
             }
+        for (let i = 0; i < spans.length; i++) {
+            spans[i].style.color = "";
+        }
+
+        for (let i = 0; i < typedText.length; i++) {
 
             .typing-tester .game-top .hero-title {
                 margin-bottom: 0;
@@ -282,6 +416,20 @@ function getTypingSpeedTesterHTML() {
                 grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
                 gap: 0.75rem;
             }
+                if (spans[i]) spans[i].style.color = "#22c55e";
+
+            } else {
+                incorrectChars++;
+                if (spans[i]) spans[i].style.color = "#ef4444";
+            }
+        }
+
+        const accuracy =
+            currentSentence.length
+                ? Math.round(
+                    (correctChars / currentSentence.length) * 100
+                )
+                : 0;
 
             .typing-tester .stat-card {
                 background: var(--surface-color);
@@ -745,6 +893,9 @@ function initTypingSpeedTester() {
             totalWordsTyped += currentStats.words;
             sentencesCompleted += 1;
             generateSentence();
+        inputElement.disabled = true;
+        inputElement.setAttribute("aria-disabled", "true");
+        inputElement.blur();
         }
     });
 

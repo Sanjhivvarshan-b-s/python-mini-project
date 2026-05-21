@@ -104,6 +104,10 @@ function getSnakeGameHTML() {
                     linear-gradient(90deg, var(--border-color, rgba(255,255,255,0.05)) 1px, transparent 1px);
                 background-size: 20px 20px;
                 display: block;
+                width: 100%;
+                max-width: 600px;
+                height: auto;
+                touch-action: none;
             }
             #score-board {
                 display: flex;
@@ -245,9 +249,6 @@ function gameEngine() {
         const selector = document.getElementById('difficultySelect');
         if (selector) selector.disabled = false;
 
-        snakeArr = [{ x: 13, y: 10 }];
-        score = 0;
-        document.getElementById('score').innerHTML = score;
         return;
     }
 
@@ -291,6 +292,34 @@ function initSnakeGame() {
     
     // Set initial historic rendering metrics
     updateBestScoreUI();
+    function restartGame() {
+    // Hide game over overlay
+    document.getElementById('game-over-overlay').classList.add('hidden');
+
+    // Reset snake
+    snakeArr = [{ x: 13, y: 10 }];
+
+    // Reset score
+    score = 0;
+    document.getElementById('score').innerHTML = score;
+
+    // Reset direction and start moving
+    direction = { x: 1, y: 0 };
+
+    // Generate new food
+    food = {
+        x: Math.round(2 + (16 - 2) * Math.random()),
+        y: Math.round(2 + (16 - 2) * Math.random())
+    };
+
+    // Re-enable difficulty selection before start
+    if (selector) {
+        selector.disabled = true;
+    }
+
+    // Reset frame timing
+    lastPaintTime = 0;
+}
 
     // Map difficulty listener parameters
     const selector = document.getElementById('difficultySelect');
@@ -307,18 +336,9 @@ function initSnakeGame() {
         direction = { x: 1, y: 0 }; // Start moving right
     });
 
-    document.getElementById('restartSnakeBtn').addEventListener('click', () => {
-        location.reload();
-    });
+    document.getElementById('restartSnakeBtn').addEventListener('click', restartGame);
 
-    document.getElementById('overlayRestartBtn').addEventListener('click', () => {
-        document.getElementById('game-over-overlay').classList.add('hidden');
-        if (selector) selector.disabled = false;
-        direction = { x: 0, y: 0 };
-        snakeArr = [{ x: 13, y: 10 }];
-        score = 0;
-        document.getElementById('score').innerHTML = score;
-    });
+    document.getElementById('overlayRestartBtn').addEventListener('click', restartGame);
 
     window.addEventListener('keydown', e => {
         // Change difficulty selection dynamic evaluations if arrow key registers 
@@ -335,6 +355,34 @@ function initSnakeGame() {
             case "ArrowRight": if (direction.x !== -1) { direction.x = 1; direction.y = 0; } break;
         }
     });
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    const canvas = document.getElementById('snakeCanvas');
+    if (canvas) {
+        canvas.addEventListener('touchstart', e => {
+            e.preventDefault();
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', e => {
+            e.preventDefault();
+            let touchEndX = e.changedTouches[0].screenX;
+            let touchEndY = e.changedTouches[0].screenY;
+            
+            let dx = touchEndX - touchStartX;
+            let dy = touchEndY - touchStartY;
+            
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (dx > 30 && direction.x !== -1) { direction.x = 1; direction.y = 0; }
+                else if (dx < -30 && direction.x !== 1) { direction.x = -1; direction.y = 0; }
+            } else {
+                if (dy > 30 && direction.y !== -1) { direction.x = 0; direction.y = 1; }
+                else if (dy < -30 && direction.y !== 1) { direction.x = 0; direction.y = -1; }
+            }
+        }, { passive: false });
+    }
 }
 
 // Global scope assignments

@@ -649,6 +649,10 @@ if (stickyFilterBar && heroSection) {
 
         modal.classList.add('active');
         modal.setAttribute('aria-hidden', 'false');
+        
+        // Prevent scroll shift by adding padding equal to scrollbar width
+        var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.paddingRight = scrollbarWidth + 'px';
         document.body.style.overflow = 'hidden';
         setMainInert(true);
 
@@ -675,6 +679,7 @@ if (stickyFilterBar && heroSection) {
         if (!modal || !modal.classList.contains('active')) return;
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
+        document.body.style.paddingRight = '';
         document.body.style.overflow = '';
         setMainInert(false);
         if (removeTrap) { removeTrap(); removeTrap = null; }
