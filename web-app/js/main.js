@@ -878,4 +878,19 @@ function showToast(message) {
     }
 })();
 
+// 4. On page load, check for ?category= param and apply filter
+(function () {
+    var params = new URLSearchParams(window.location.search);
+    var categoryParam = params.get('category');
+    var validCategories = ['all', 'games', 'math', 'utilities', 'playground', 'favorites'];
+    if (!categoryParam || !validCategories.includes(categoryParam)) return;
+
+    var matchingTab = document.querySelector('[data-category="' + categoryParam + '"]');
+    if (matchingTab) {
+        setTimeout(function () {
+            matchingTab.click();
+        }, 100);
+    }
+})();
+
 });
