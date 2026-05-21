@@ -835,58 +835,86 @@
 <!-- ── Sticky Category Filter Bar ─────────────────────────────── -->
 <!-- Appears below navbar when user scrolls past the hero section  -->
 <div aria-label="Project categories (sticky)" class="sticky-filter-bar" id="stickyFilterBar" role="tablist">
-<div class="sticky-filter-inner">
-<button aria-selected="true" class="sticky-tab active" data-sticky-category="all" role="tab" tabindex="0">
-<i aria-hidden="true" data-lucide="star"></i>
-<span>all</span>
-</button>
-<button aria-selected="false" class="sticky-tab" data-sticky-category="games" role="tab" tabindex="-1">
-<i aria-hidden="true" data-lucide="gamepad-2"></i>
-<span>games</span>
-</button>
-<button aria-selected="false" class="sticky-tab" data-sticky-category="math" role="tab" tabindex="-1">
-<i aria-hidden="true" data-lucide="hash"></i>
-<span>math</span>
-</button>
-<button aria-selected="false" class="sticky-tab" data-sticky-category="utilities" role="tab" tabindex="-1">
-<i aria-hidden="true" data-lucide="lock"></i>
-<span>utilities</span>
-</button>
-<button aria-selected="false" class="sticky-tab" data-sticky-category="playground" role="tab" tabindex="-1">
-<i aria-hidden="true" data-lucide="terminal"></i>
-<span>playground</span>
-</button>
+    <div class="sticky-filter-inner">
+        <button aria-selected="true" class="sticky-tab active" data-sticky-category="all" role="tab" tabindex="0">
+            <i aria-hidden="true" data-lucide="layout-grid"></i>
+            <span>all</span>
+        </button>
+        <button aria-selected="false" class="sticky-tab" data-sticky-category="games" role="tab" tabindex="-1">
+            <i aria-hidden="true" data-lucide="gamepad-2"></i>
+            <span>games</span>
+        </button>
+        <button aria-selected="false" class="sticky-tab" data-sticky-category="math" role="tab" tabindex="-1">
+            <i aria-hidden="true" data-lucide="hash"></i>
+            <span>math</span>
+        </button>
+        <button aria-selected="false" class="sticky-tab" data-sticky-category="utilities" role="tab" tabindex="-1">
+            <i aria-hidden="true" data-lucide="lock"></i>
+            <span>utilities</span>
+        </button>
+        <button aria-selected="false" class="sticky-tab" data-sticky-category="playground" role="tab" tabindex="-1">
+            <i aria-hidden="true" data-lucide="terminal"></i>
+            <span>playground</span>
+        </button>
+        <button aria-selected="false" class="sticky-tab" data-sticky-category="favorites" role="tab" tabindex="-1">
+            <i aria-hidden="true" class="fas fa-star"></i>
+            <span>favorites</span>
+        </button>
+    </div>
 </div>
-</div><main id="main-content" tabindex="-1"><section aria-label="Welcome" class="hero-section"><div class="container"><div aria-label="Project categories" class="hero-features" role="tablist">
-<button aria-selected="true" class="feature-badge tab active" data-category="all" role="tab" tabindex="0">
-<span class="feature-icon"><i data-lucide="star"></i></span>
-<span class="feature-label">all</span>
-</button>
-<button aria-selected="false" class="feature-badge tab" data-category="games" role="tab" tabindex="-1">
-<span class="feature-icon"><i data-lucide="gamepad-2"></i></span>
-<span class="feature-label">games</span>
-</button>
-<button aria-selected="false" class="feature-badge tab" data-category="math" role="tab" tabindex="-1">
-<span class="feature-icon"><i data-lucide="hash"></i></span>
-<span class="feature-label">math</span>
-</button>
-<button aria-selected="false" class="feature-badge tab" data-category="utilities" role="tab" tabindex="-1">
-<span class="feature-icon"><i data-lucide="lock"></i></span>
-<span class="feature-label">utilities</span>
-</button>
-<!--
-                            PLAYGROUND TAB
-                            data-category="playground" is detected by main.js
-                            and delegates to window.playgroundAPI instead of
-                            running applyCategoryFilter().
-                        -->
-<button aria-selected="false" class="feature-badge tab" data-category="playground" id="playgroundTab" role="tab" tabindex="-1">
-<span class="feature-icon"><i data-lucide="terminal"></i></span>
-<span class="feature-label">playground</span>
-</button>
-</div><button class="btn-random-project" id="randomProjectBtn" title="Discover a random project!">
-        launch random →
-    </button></div></section><section class="projects-section"><div class="container"><div class="projects-grid"><div class="project-card" data-category="games" data-project="blackjack(21)">
+
+<main id="main-content" tabindex="-1">
+    <section class="hero-section" aria-label="Welcome">
+        <div class="hero-background"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">Learn Python the Fun Way!</h2>
+                <p class="hero-subtitle">25+ Mini Projects • Beautiful UI • Beginner Friendly • Zero Dependencies</p>
+
+                <div aria-label="Project categories" class="hero-features" role="tablist">
+                    <button aria-selected="true" class="feature-badge tab active" data-category="all" role="tab" tabindex="0">
+                        <span class="feature-icon"><i data-lucide="layout-grid"></i></span>
+                        <span class="feature-label">all</span>
+                    </button>
+                    <button aria-selected="false" class="feature-badge tab" data-category="games" role="tab" tabindex="-1">
+                        <span class="feature-icon"><i data-lucide="gamepad-2"></i></span>
+                        <span class="feature-label">games</span>
+                    </button>
+                    <button aria-selected="false" class="feature-badge tab" data-category="math" role="tab" tabindex="-1">
+                        <span class="feature-icon"><i data-lucide="hash"></i></span>
+                        <span class="feature-label">math</span>
+                    </button>
+                    <button aria-selected="false" class="feature-badge tab" data-category="utilities" role="tab" tabindex="-1">
+                        <span class="feature-icon"><i data-lucide="lock"></i></span>
+                        <span class="feature-label">utilities</span>
+                    </button>
+                    <!--
+                        PLAYGROUND TAB
+                        data-category="playground" is detected by main.js
+                        and delegates to window.playgroundAPI instead of
+                        running applyCategoryFilter().
+                    -->
+                    <button aria-selected="false" class="feature-badge tab" data-category="playground" id="playgroundTab" role="tab" tabindex="-1">
+                        <span class="feature-icon"><i data-lucide="terminal"></i></span>
+                        <span class="feature-label">playground</span>
+                    </button>
+                    <button aria-selected="false" class="feature-badge tab" data-category="favorites" role="tab" tabindex="-1">
+                        <span class="feature-icon"><i class="fas fa-star"></i></span>
+                        <span class="feature-label">favorites</span>
+                    </button>
+                </div>
+
+                <button class="btn-random-project" id="randomProjectBtn" title="Discover a random project!">
+                    launch random →
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects-section">
+        <div class="container">
+            <div class="projects-grid">
+                <div class="project-card" data-category="games" data-project="blackjack(21)">
 <div class="card-icon">🃏</div>
 <h3>BlackJack21</h3>
 <p>Beat the dealer!</p>
@@ -1183,10 +1211,7 @@ print('Hello, World!')" spellcheck="false"></textarea>
 
 
 
-<button aria-selected="false" class="feature-badge tab" data-category="favorites" role="tab" tabindex="-1">
-<span class="feature-icon"><i class="fas fa-star"></i></span>
-<span class="feature-label">Favorites</span>
-</button>
+
 
 
 
