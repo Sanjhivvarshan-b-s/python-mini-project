@@ -2,7 +2,6 @@
 // WORD SCRAMBLE GAME
 // ============================================
 
-console.log('📝 Word Scramble loaded - Version with Timer');
 
 function getWordScrambleHTML() {
     console.log('🎨 Generating Word Scramble HTML');
@@ -423,7 +422,7 @@ function initWordScramble() {
         renderWord(shuffleWord(current.word));
         updateStats();
         setMessage(keepStreak ? 'Unscramble the letters.' : 'Fresh word loaded.');
-        guessInput.focus();
+        guessInput.focus({ preventScroll: true });
         
         // Launch countdown engine for the active round
         startTimer();
@@ -507,7 +506,7 @@ function checkGuess() {
     shuffleBtn.addEventListener('click', () => {
         if (!current) return;
         renderWord(shuffleWord(current.word));
-        guessInput.focus();
+        guessInput.focus({ preventScroll: true });
     });
 
     nextBtn.addEventListener('click', () => {

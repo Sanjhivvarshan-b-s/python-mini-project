@@ -33,23 +33,32 @@ class Snake:
             y = self.parts[i - 1].ycor()
             self.parts[i].goto(x, y)
 
-        if len(self.parts) > 0:
+        if self.parts:
             self.parts[0].goto(self.head.xcor(), self.head.ycor())
 
-        if self.head.direction == "up":
-            self.head.sety(self.head.ycor() + MOVE_DISTANCE)
-        if self.head.direction == "down":
-            self.head.sety(self.head.ycor() - MOVE_DISTANCE)
-        if self.head.direction == "left":
-            self.head.setx(self.head.xcor() - MOVE_DISTANCE)
-        if self.head.direction == "right":
-            self.head.setx(self.head.xcor() + MOVE_DISTANCE)
+        moves = {
+            "up": (0, MOVE_DISTANCE),
+            "down": (0, -MOVE_DISTANCE),
+            "left": (-MOVE_DISTANCE, 0),
+            "right": (MOVE_DISTANCE, 0)
+        }
+
+        if self.head.direction in moves:
+            dx, dy = moves[self.head.direction]
+            self.head.goto(self.head.xcor() + dx, self.head.ycor() + dy)
 
     def add_part(self):
         new_part = turtle.Turtle()
         new_part.shape("square")
         new_part.color("lightgreen")
         new_part.penup()
+
+        if self.parts:
+            last_part = self.parts[-1]
+            new_part.goto(last_part.xcor(), last_part.ycor())
+        else:
+            new_part.goto(self.head.xcor(), self.head.ycor())
+
         self.parts.append(new_part)
 
     def check_boundary_collision(self) -> bool:
@@ -61,15 +70,21 @@ class Snake:
         )
 
     def check_self_collision(self) -> bool:
-        for p in self.parts:
-            if p.distance(self.head) < BODY_COLLISION_DISTANCE:
+        head_pos = (int(self.head.xcor()), int(self.head.ycor()))
+
+        for p in self.parts[1:]:  # It will skip first segment
+            if (int(p.xcor()), int(p.ycor())) == head_pos:
                 return True
         return False
 
     def reset(self):
-        time.sleep(1)
         self.head.goto(0, 0)
         self.head.direction = "stop"
+
         for p in self.parts:
             p.goto(1000, 1000)
+
         self.parts.clear()
+
+    def is_moving(self):
+        return self.head.direction != "stop"

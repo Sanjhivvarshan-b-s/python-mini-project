@@ -17,6 +17,8 @@ function get2048GameHTML() {
                     </div>
                 </div>
 
+                <div id="game-message"></div>
+
                 <div class="game-layout">
                     <div id="grid-container"></div>
 
@@ -57,6 +59,13 @@ function get2048GameHTML() {
                     max-width: 480px;
                 }
 
+                #game-message {
+                    margin-bottom: 15px;
+                    min-height: 24px;
+                    font-weight: bold;
+                    color: #ef4444;
+                }
+
                 .score-box {
                     background: var(--accent-soft, #f3f4f6);
                     border: 1px solid var(--accent-border, #e5e7eb);
@@ -69,13 +78,9 @@ function get2048GameHTML() {
                     box-shadow: var(--shadow, 0 2px 4px rgba(0,0,0,0.05));
                 }
 
-                /* Layout Manager for Board + Controls */
-                .game-layout {
-                    display: flex;
-                    flex-direction: row; /* Aligns items horizontally */
-                    align-items: center;
-                    justify-content: center;
-                    gap: 30px; /* Space between board and controls */
+                #grid-container {
+                    width: 100%;
+                    max-width: 440px;
                     margin: auto;
                 }
 
@@ -83,30 +88,30 @@ function get2048GameHTML() {
                     width: 340px;
                     height: 340px;
                     display: grid;
-                    grid-template-columns: repeat(4, 70px);
-                    grid-template-rows: repeat(4, 70px);
+                    grid-template-columns: repeat(4, 1fr);
                     gap: 10px;
                     background: var(--panel-color, #bbada0);
                     border: 10px solid var(--panel-color, #bbada0);
                     padding: 0;
                     border-radius: 10px;
-                    box-sizing: border-box;
-                    box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);
+                    touch-action: none;
                 }
 
                 .tile {
-                    width: 70px;
-                    height: 70px;
+                    width: 100%;
+                    aspect-ratio: 1 / 1;
+                    height: auto;
+                    background: var(--control-color);
+
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    font-size: 26px;
-                    font-weight: bold;
-                    border-radius: 6px;
-                    box-sizing: border-box;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                }
 
+                    font-size: clamp(16px, 5vw, 28px);
+                    font-weight: bold;
+
+                    border-radius: 12px;
+                }
                 /* Right Side Controls Layout */
                 .controls {
                     display: flex;
@@ -218,6 +223,7 @@ function init2048Game() {
             [0,0,0,0]
         ];
         score = 0;
+        document.getElementById("game-message").textContent = "";
         addNewTile();
         addNewTile();
         drawBoard();
@@ -328,16 +334,64 @@ function init2048Game() {
         return moved;
     }
 
+    function checkGameOver() {
+        for (let r = 0; r < 4; r++) {
+            for (let c = 0; c < 4; c++) {
+                
+                if (board[r][c] === 0)
+                    return false;
+
+                
+                if (
+                    c < 3 &&
+                    board[r][c] === board[r][c + 1]
+                )
+                    return false;
+
+                
+                if (
+                    r < 3 &&
+                    board[r][c] === board[r + 1][c]
+                )
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
     function makeMove(dir) {
+
         let moved = false;
+
         if (dir === "left") moved = moveLeft();
         if (dir === "right") moved = moveRight();
         if (dir === "up") moved = moveUp();
         if (dir === "down") moved = moveDown();
 
+        const gameMessage =
+            document.getElementById("game-message");
+
         if (moved) {
+
+            gameMessage.textContent = "";
+
             addNewTile();
+
+            if (checkGameOver()) {
+                gameMessage.textContent = "GAME OVER!";
+            }
+
             drawBoard();
+
+        } else {
+
+            if (checkGameOver()) {
+                gameMessage.textContent = "GAME OVER!";
+            } else {
+                gameMessage.textContent =
+                    "No move possible in this direction!";
+            }
         }
     }
 
@@ -383,28 +437,35 @@ function init2048Game() {
         }
     }
 
-    gridContainer.addEventListener("touchstart", (e) => {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-    }, { passive: true });
 
-    gridContainer.addEventListener("touchend", (e) => {
-        if (!e.changedTouches.length) return;
-        handleSwipeEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-    }, { passive: true });
+    gridContainer.addEventListener('touchstart', e => {
+        e.preventDefault();
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: false });
 
-    let isDragging = false;
-    gridContainer.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        touchStartX = e.clientX;
-        touchStartY = e.clientY;
-    });
+        gridContainer.addEventListener('touchend', e => {
+        e.preventDefault();
+        let touchEndX = e.changedTouches[0].screenX;
+        let touchEndY = e.changedTouches[0].screenY;
 
-    window.addEventListener("mouseup", (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        handleSwipeEnd(e.clientX, e.clientY);
-    });
+        let dx = touchEndX - touchStartX;
+        let dy = touchEndY - touchStartY;
+        let moved = false;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 30) moved = moveRight();
+            else if (dx < -30) moved = moveLeft();
+        } else {
+            if (dy > 30) moved = moveDown();
+            else if (dy < -30) moved = moveUp();
+        }
+
+        if(moved) {
+            addNewTile();
+            drawBoard();
+        }
+    }, { passive: false });
 
     createBoard();
 }

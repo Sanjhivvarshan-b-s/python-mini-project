@@ -1,8 +1,35 @@
 // Project Registry
 // Each project's HTML and logic lives in its own file under js/projects/
 
+//To Prevent duplicate intialisation
+let activeProject=null;
+
 function getProjectHTML(projectName) {
     const projects = {
+        'rock-paper-scissor': getRockPaperScissorHTML(),
+        'dice-rolling': getDiceRollingHTML(),
+        'coin-flip': getCoinFlipHTML(),
+        'number-guessing': getNumberGuessingHTML(),
+        'hangman': getHangmanHTML(),
+        'flames': getFlamesHTML(),
+        'emoji-memory': getEmojiMemoryGameHTML(),
+        'fibonacci': getFibonacciHTML(),
+        'progression-recognizer': getProgressionRecognizerHTML(),
+        'pascal-triangle': getPascalTriangleHTML(),
+        'armstrong': getArmstrongHTML(),
+        'calculator': getCalculatorHTML(),
+        'collatz': getCollatzHTML(),
+        'prime-analyzer': getPrimeAnalyzerHTML(),
+        'projectile-motion': getProjectileMotionHTML(),
+        'coordinate-polar-transform': getCoordinatePolarTransformHTML(),
+        'derivative-calculator': getDerivativeCalculatorHTML(),
+        'morse-code': getMorseCodeHTML(),
+        'tower-of-hanoi': getTowerOfHanoiHTML(),
+        'number-converter': getNumberConverterHTML(),
+        'typing-speed-tester': getTypingSpeedTesterHTML(),
+        'snake-game': getsnakeGameHTML(),
+        'password-forge': getPasswordForgeHTML(),
+        'whack-a-mole': getWhackaMoleHTML(),
         'tic-tac-toe': () => getTicTacToeHTML(),
         'rock-paper-scissor': () => getRockPaperScissorHTML(),
         'dice-rolling': () => getDiceRollingHTML(),
@@ -1507,14 +1534,28 @@ function initFibonacci() {
     const ctx = canvas.getContext('2d');
     
     function generateFibonacci() {
-        const n = parseInt(termsInput.value) || 10;
+        const value = termsInput.value.trim();
+        const n = parseInt(value);
+
+        // Validation
+        if (value === '' || isNaN(n) || n <= 0) {
+            display.innerHTML = `
+                <p class="fib-error">
+                    Please enter a number greater than 0
+                </p>
+            `;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+
         display.innerHTML = '';
-        
+    
         let fib = [0, 1];
         for (let i = 2; i < n; i++) {
-            fib[i] = fib[i-1] + fib[i-2];
+            fib[i] = fib[i - 1] + fib[i - 2];
         }
-        
+
         fib.slice(0, n).forEach((num, index) => {
             const numEl = document.createElement('div');
             numEl.className = 'fib-number';
@@ -1522,7 +1563,7 @@ function initFibonacci() {
             numEl.style.animationDelay = `${index * 0.1}s`;
             display.appendChild(numEl);
         });
-        
+
         drawSpiral(fib.slice(0, Math.min(n, 12)));
     }
     
@@ -1799,7 +1840,7 @@ function initFlames() {
             </div>
         `;
     }
-    
+
     calculateBtn.addEventListener('click', calculateFlames);
     name1Input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') calculateFlames();
@@ -1811,7 +1852,7 @@ function initFlames() {
 
 // ============================================
 // COLLATZ CONJECTURE
-// ============================================
+// ===========================================
 function getCollatzHTML() {
     return `
         <div class="project-content">
@@ -2049,7 +2090,7 @@ function initCollatz() {
         const yScale = graphHeight / maxValue;
         
         // Draw axes
-        ctx.strokeStyle = 'var(--text-secondary)';
+        ctx.strokeStyle = '#64748b';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(padding, padding);
@@ -3711,6 +3752,9 @@ function getProductivePetHTML() {
 
 
 function initializeProject(projectName) {
+    if (activeProject === projectName) return;
+    activeProject = projectName;
+
     const initializers = {
         'tic-tac-toe': 'initTicTacToe',
         'rock-paper-scissor': 'initRockPaperScissor',

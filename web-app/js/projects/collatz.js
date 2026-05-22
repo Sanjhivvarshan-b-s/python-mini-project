@@ -230,7 +230,7 @@ function initCollatz() {
         const xStep = graphWidth / (sequence.length - 1);
         const yScale = graphHeight / maxValue;
         
-        ctx.strokeStyle = 'var(--text-secondary)';
+        ctx.strokeStyle = '#64748b';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(padding, padding);

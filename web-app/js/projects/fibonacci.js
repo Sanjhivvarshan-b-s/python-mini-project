@@ -51,7 +51,8 @@ function getFibonacciHTML() {
             #fibTerms{
                 padding:13px;
                 background-color:var(--bg-color);
-                border:1px solid white;
+                color: var(--text-color);
+                border:1px solid var(--text-color);
                 outline:none;
                 border-radius:30px;
             }
@@ -60,6 +61,11 @@ function getFibonacciHTML() {
                 gap:15px;
                 align-items:center;
                 justify-content:center;
+            }
+            .fib-error{
+                color:red;
+                font-weight:bold;
+                margin-top:1rem;
             }
         </style>
     `;
@@ -73,14 +79,27 @@ function initFibonacci() {
     const ctx = canvas.getContext('2d');
     
     function generateFibonacci() {
-        const n = parseInt(termsInput.value) || 10;
+        const value = termsInput.value.trim();
+        const n = parseInt(value);
+
+        // Validation
+        if (value === '' || isNaN(n) || n <= 0) {
+            display.innerHTML = `
+                <p class="fib-error">
+                    Please enter a number greater than 0
+                </p>
+            `;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+
         display.innerHTML = '';
-        
+    
         let fib = [0, 1];
         for (let i = 2; i < n; i++) {
-            fib[i] = fib[i-1] + fib[i-2];
+            fib[i] = fib[i - 1] + fib[i - 2];
         }
-        
+
         fib.slice(0, n).forEach((num, index) => {
             const numEl = document.createElement('div');
             numEl.className = 'fib-number';
@@ -88,7 +107,7 @@ function initFibonacci() {
             numEl.style.animationDelay = `${index * 0.1}s`;
             display.appendChild(numEl);
         });
-        
+
         drawSpiral(fib.slice(0, Math.min(n, 12)));
     }
     

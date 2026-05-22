@@ -713,7 +713,6 @@ function initColorPalette() {
 
         output.style.display = 'block';
         controls.style.display = 'none';
-        output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
 
     copyBtn.addEventListener('click', () => {
