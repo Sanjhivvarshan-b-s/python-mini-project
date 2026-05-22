@@ -46,6 +46,24 @@ function syncThemeColor(theme) {
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    // Sort project cards lexicographically (alphabetically) by title
+    var projectsGrid = document.querySelector('.projects-grid');
+    var rawCards = projectsGrid ? Array.from(projectsGrid.querySelectorAll('.project-card')) : [];
+    if (rawCards.length > 0) {
+        rawCards.sort(function (a, b) {
+            var h3A = a.querySelector('h3');
+            var h3B = b.querySelector('h3');
+            var titleA = h3A ? h3A.textContent.trim() : '';
+            var titleB = h3B ? h3B.textContent.trim() : '';
+            return titleA.localeCompare(titleB);
+        });
+        var reorderedCards = document.createDocumentFragment();
+        rawCards.forEach(function (card) {
+            reorderedCards.appendChild(card);
+        });
+        projectsGrid.appendChild(reorderedCards);
+    }
+
     // ── DOM references ──────────────────────────────────────────────
     var html = document.documentElement;
     var themeToggle = document.getElementById('themeToggle');
