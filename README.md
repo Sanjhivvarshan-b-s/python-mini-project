@@ -573,9 +573,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
       </a>
     </td>
     <td align="center" width="120">
-      <a href="https://github.com/gatiksolanki13-netizen">
-        <img src="https://github.com/gatiksolanki13-netizen.png?size=100" width="100" height="100" style="border-radius:50%; border:2px solid #555;" alt="gatiksolanki13-netizen" /><br />
-        <sub><b>@gatiksolanki13-netizen</b></sub>
+      <a href="https://github.com/gatiksolanki13">
+        <img src="https://github.com/gatiksolanki13.png?size=100" width="100" height="100" style="border-radius:50%; border:2px solid #555;" alt="gatiksolanki13" /><br />
+        <sub><b>@gatiksolanki13</b></sub>
       </a>
     </td>
   </tr>
